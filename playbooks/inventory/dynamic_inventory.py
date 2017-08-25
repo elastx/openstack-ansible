@@ -616,7 +616,7 @@ def network_entry(is_metal, interface,
 def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                              bridge, net_type, net_mtu, user_config,
                              is_ssh_address, is_container_address,
-                             static_routes):
+                             static_routes, dhcp):
     """Process additional ip adds and append then to hosts as needed.
 
     If the host is found to be "is_metal" it will be marked as "on_metal"
@@ -633,6 +633,7 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
     :param is_ssh_address: ``bol`` set this address as ansible_ssh_host.
     :param is_container_address: ``bol`` set this address to container_address.
     :param static_routes: ``list`` List containing static route dicts.
+    :param dhcp: ``bol`` set this interface to use DHCP.
     """
 
     base_hosts = inventory['_meta']['hostvars']
@@ -653,7 +654,8 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                 user_config,
                 is_ssh_address,
                 is_container_address,
-                static_routes
+                static_routes,
+                dhcp
             )
 
     # Make sure the lookup object has a value.
@@ -705,6 +707,8 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                     network['address'] = address
 
             network['netmask'] = netmask
+            if dhcp is True:
+                network['dhcp'] = True
         elif is_metal:
             network = networks[old_address] = network_entry(
                 is_metal,
@@ -714,6 +718,8 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                 net_mtu
             )
             network['netmask'] = netmask
+            if dhcp is True:
+                network['dhcp'] = True
             if is_ssh_address or is_container_address:
                 # Container physical host group
                 cphg = container.get('physical_host_group')
@@ -813,7 +819,8 @@ def container_skel_load(container_skel, inventory, config):
                     user_config=config,
                     is_ssh_address=p_net.get('is_ssh_address'),
                     is_container_address=p_net.get('is_container_address'),
-                    static_routes=p_net.get('static_routes')
+                    static_routes=p_net.get('static_routes'),
+                    dhcp=dhcp
                 )
 
     populate_lxc_hosts(inventory)
