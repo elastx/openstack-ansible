@@ -707,8 +707,7 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                     network['address'] = address
 
             network['netmask'] = netmask
-            if dhcp is True:
-                network['dhcp'] = True
+            network['dhcp'] = dhcp
         elif is_metal:
             network = networks[old_address] = network_entry(
                 is_metal,
@@ -718,8 +717,7 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                 net_mtu
             )
             network['netmask'] = netmask
-            if dhcp is True:
-                network['dhcp'] = True
+            network['dhcp'] = dhcp
             if is_ssh_address or is_container_address:
                 # Container physical host group
                 cphg = container.get('physical_host_group')
@@ -820,7 +818,7 @@ def container_skel_load(container_skel, inventory, config):
                     is_ssh_address=p_net.get('is_ssh_address'),
                     is_container_address=p_net.get('is_container_address'),
                     static_routes=p_net.get('static_routes'),
-                    dhcp=dhcp
+                    dhcp=p_net.get('dhcp')
                 )
 
     populate_lxc_hosts(inventory)
