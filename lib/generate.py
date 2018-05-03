@@ -532,7 +532,8 @@ def network_entry(is_metal, interface,
 def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                              bridge, net_type, net_mtu, user_config,
                              is_ssh_address, is_container_address,
-                             static_routes, dhcp):
+                             static_routes, reference_group, address_prefix,
+                             dhcp):
     """Process additional ip adds and append then to hosts as needed.
 
     If the host is found to be "is_metal" it will be marked as "on_metal"
@@ -549,6 +550,8 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
     :param is_ssh_address: ``bol`` set this address as ansible_host.
     :param is_container_address: ``bol`` set this address to container_address.
     :param static_routes: ``list`` List containing static route dicts.
+    :param reference_group: ``str`` group to filter membership of host against.
+    :param address_prefix: ``str`` override prefix of key for network address.
     :param dhcp: ``bol`` set this interface to use DHCP.
     """
 
@@ -571,6 +574,8 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                 is_ssh_address,
                 is_container_address,
                 static_routes,
+                reference_group,
+                address_prefix,
                 dhcp
             )
 
@@ -582,14 +587,22 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
     else:
         return
 
+    if address_prefix:
+        old_address = '%s_address' % address_prefix
     # TODO(cloudnull) after a few releases this should be removed.
-    if q_name:
+    elif q_name:
         old_address = '{}_address'.format(q_name)
     else:
         old_address = '{}_address'.format(interface)
 
     for container_host in hosts:
         container = base_hosts[container_host]
+
+        physical_host = container.get('physical_host')
+        if (reference_group and
+                physical_host not in
+                inventory.get(reference_group).get('hosts')):
+            continue
 
         # TODO(cloudnull) after a few releases this should be removed.
         # This removes the old container network value that now serves purpose.
@@ -731,6 +744,8 @@ def container_skel_load(container_skel, inventory, config):
                     is_ssh_address=p_net.get('is_ssh_address'),
                     is_container_address=p_net.get('is_container_address'),
                     static_routes=p_net.get('static_routes'),
+                    reference_group=p_net.get('reference_group'),
+                    address_prefix=p_net.get('address_prefix'),
                     dhcp=p_net.get('dhcp')
                 )
 
@@ -1061,11 +1076,27 @@ def main(config=None, check=False, debug=False, environment=None, **kwargs):
     if not cidr_networks:
         raise SystemExit('No container CIDR specified in user config')
 
+    user_cidr = None
     if 'container' in cidr_networks:
         user_cidr = cidr_networks['container']
     elif 'management' in cidr_networks:
         user_cidr = cidr_networks['management']
     else:
+        overrides = user_defined_config.get('global_overrides')
+        pns = overrides.get('provider_networks', list())
+        for pn in pns:
+            p_net = pn.get('network')
+            if not p_net:
+                continue
+            q_name = p_net.get('ip_from_q')
+            if q_name and q_name in cidr_networks:
+                if (p_net.get('address_prefix') in ('container',
+                                                    'management')):
+                    if user_cidr is None:
+                        user_cidr = []
+                    user_cidr.append(cidr_networks[q_name])
+
+    if user_cidr is None:
         raise SystemExit('No container or management network '
                          'specified in user config.')
 
