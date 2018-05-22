@@ -116,8 +116,8 @@
   version: 556203c2f2af92cff0e5e7cd8e1ab8e81dbaa8ad
 - name: os_swift
   scm: git
-  src: https://git.openstack.org/openstack/openstack-ansible-os_swift
-  version: c024460e5a9a2b7ca652295b570334a4d0f78761
+  src: https://github.com/elastx/openstack-ansible-os_swift.git
+  version: 6066fc6bf57f46bb5ff529b58233fe9e9f0946c4
 - name: os_tempest
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_tempest
