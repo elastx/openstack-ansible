@@ -203,7 +203,7 @@ swift_git_project_group: swift_all
 
 ## Swift3 middleware
 swift_swift3_git_repo: https://git.openstack.org/openstack/swift3
-swift_swift3_git_install_branch: 520b8888343a96ef0253af8701b45f0bd5238264 # HEAD of "master" as of 13.04.2018
+swift_swift3_git_install_branch: 9997bc1953f5b5d23065dae6222327b9a11cca95 # Modified by Joakim Hindersson 2018-05-24, last commit that builds towards ocata
 swift_swift3_git_project_group: swift_all
 
 
