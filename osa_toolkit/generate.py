@@ -532,7 +532,8 @@ def network_entry(is_metal, interface,
 def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                              bridge, net_type, net_mtu, user_config,
                              is_ssh_address, is_container_address,
-                             static_routes, reference_group, address_prefix):
+                             static_routes, reference_group, address_prefix,
+                             dhcp):
     """Process additional ip adds and append then to hosts as needed.
 
     If the host is found to be "is_metal" it will be marked as "on_metal"
@@ -551,6 +552,7 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
     :param static_routes: ``list`` List containing static route dicts.
     :param reference_group: ``str`` group to filter membership of host against.
     :param address_prefix: ``str`` override prefix of key for network address.
+    :param dhcp: ``bol`` set this interface to use DHCP.
     """
 
     base_hosts = inventory['_meta']['hostvars']
@@ -573,7 +575,8 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                 is_container_address,
                 static_routes,
                 reference_group,
-                address_prefix
+                address_prefix,
+                dhcp
             )
 
     # Make sure the lookup object has a value.
@@ -640,6 +643,7 @@ def _add_additional_networks(key, inventory, ip_q, q_name, netmask, interface,
                     network['address'] = address
 
             network['netmask'] = netmask
+            network['dhcp'] = dhcp
         elif is_metal:
             network = networks[old_address] = _network
             network['netmask'] = netmask
@@ -745,7 +749,8 @@ def container_skel_load(container_skel, inventory, config):
                     is_container_address=p_net.get('is_container_address'),
                     static_routes=p_net.get('static_routes'),
                     reference_group=p_net.get('reference_group'),
-                    address_prefix=p_net.get('address_prefix')
+                    address_prefix=p_net.get('address_prefix'),
+                    dhcp=p_net.get('dhcp')
                 )
 
     populate_lxc_hosts(inventory)
