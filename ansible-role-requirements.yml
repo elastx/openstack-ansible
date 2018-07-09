@@ -33,7 +33,7 @@
 - name: lxc_container_create
   scm: git
   src: https://git.openstack.org/elastx/openstack-ansible-lxc_container_create
-  version: <fix version when ready>
+  version: 0ee18a274eefee2b55ffad8d141e2fd08b2aa327
 - name: lxc_hosts
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-lxc_hosts
@@ -105,7 +105,7 @@
 - name: os_neutron
   scm: git
   src: https://git.openstack.org/elastx/openstack-ansible-os_neutron
-  version: opflex/pike
+  version: 828ec842b3f3ae1fe41a5d3f328ddbeb8a79c6d5
 - name: os_nova
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_nova
