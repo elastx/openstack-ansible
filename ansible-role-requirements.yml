@@ -32,7 +32,7 @@
   version: 3.0.3
 - name: lxc_container_create
   scm: git
-  src: https://git.openstack.org/elastx/openstack-ansible-lxc_container_create
+  src: https://github.com/elastx/openstack-ansible-lxc_container_create
   version: 0ee18a274eefee2b55ffad8d141e2fd08b2aa327
 - name: lxc_hosts
   scm: git
