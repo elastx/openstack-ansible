@@ -272,4 +272,3 @@ haproxy_default_services:
       haproxy_balance_type: http
       haproxy_backend_options:
         - "httpchk GET /"
-      haproxy_whitelist_networks: "{{ haproxy_octavia_whitelist_networks }}"
