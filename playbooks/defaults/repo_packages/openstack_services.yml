@@ -42,7 +42,7 @@ aodh_git_project_group: aodh_all
 
 ## Barbican service
 barbican_git_repo: https://git.openstack.org/openstack/barbican
-barbican_git_install_branch: bb9e08995380a3d553a94aff5ff85a4cdfe14ef5 # HEAD of "stable/pike" as of 09.06.2018
+barbican_git_install_branch: eff5f04ed7aa2f399e1495c50cfbb98db79853d6 # (holmsten) HEAD of "master" as of 2018-08-24
 barbican_git_project_group: barbican_all
 
 
