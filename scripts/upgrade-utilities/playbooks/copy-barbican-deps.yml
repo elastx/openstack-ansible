@@ -41,15 +41,16 @@
         create: yes
         mode: "0644"
       with_items:
-        - "export FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
-        - "export FORTANIX_PKCS11_GENERATE_SIGNING_AES_KEY_AS_HMAC={{ fortanix_gen_sign_aes_as_hmac | default('false') }}"
+        - "FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
+        - "FORTANIX_PKCS11_GENERATE_SIGNING_AES_KEY_AS_HMAC={{ fortanix_gen_sign_aes_as_hmac | default('false') }}"
       when:
         - fortanix_envvars_file is defined
 
     - name: Restart barbican services
-      service:
+      systemd:
         name: "{{ item }}"
         state: restarted
+        daemon_reload: yes
       retries: 5
       delay: 10
       with_items:
