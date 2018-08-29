@@ -32,7 +32,7 @@
         line: "{{ item }}"
       with_items:
         - "export FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
-        - "export FORTANIX_PKCS11_GENERATE_SIGNING_AES_KEY_AS_HMAC={{ fortanix_gen_sign_aes_as_hmac | default('false') }}"
+        - "export FORTANIX_PKCS11_SIGNING_AES_KEY_AS_HMAC={{ fortanix_sign_aes_as_hmac | default('false') }}"
 
     - name: Create Fortanix envvars file
       lineinfile:
@@ -42,7 +42,7 @@
         mode: "0644"
       with_items:
         - "FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
-        - "FORTANIX_PKCS11_GENERATE_SIGNING_AES_KEY_AS_HMAC={{ fortanix_gen_sign_aes_as_hmac | default('false') }}"
+        - "FORTANIX_PKCS11_SIGNING_AES_KEY_AS_HMAC={{ fortanix_sign_aes_as_hmac | default('false') }}"
       when:
         - fortanix_envvars_file is defined
 
