@@ -210,3 +210,8 @@ octavia_git_project_group: octavia_all
 molteniron_git_repo: https://git.openstack.org/openstack/molteniron
 molteniron_git_install_branch: 094276cda77d814d07ad885e7d63de8d1243750a # HEAD of "master" as of 09.06.2018
 molteniron_git_project_group: molteniron_all
+
+## Cloudkitty service
+cloudkitty_git_repo: https://git.openstack.org/openstack/cloudkitty
+cloudkitty_git_install_branch: 0c3b0f1506de754f0b5dd35009a61af2a6652487 # HEAD of stable/pike as of 2018-09-05
+cloudkitty_git_project_group: cloudkitty_all

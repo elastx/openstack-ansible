@@ -66,6 +66,10 @@
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_ceilometer
   version: 712573dfbb098b2dc71ac2ac52ed64f0ebe99f4f
+- name: os_cloudkitty
+  scm: git
+  src: https://github.com/elastx/openstack-ansible-os_cloudkitty
+  version: f8fed520be18751f474bd1693edb009a71a37867
 - name: os_cinder
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_cinder
@@ -88,8 +92,8 @@
   version: e28dd67860037003e08ec3e5c6bbc54b73db230c
 - name: os_horizon
   scm: git
-  src: https://git.openstack.org/openstack/openstack-ansible-os_horizon
-  version: 0571b414fb217665457ac3fd250674758275ec7a
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: 0a273d1fd60343c30fe7effc469e175427d5d308
 - name: os_ironic
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_ironic

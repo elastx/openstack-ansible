@@ -272,3 +272,13 @@ haproxy_default_services:
       haproxy_balance_type: http
       haproxy_backend_options:
         - "httpchk GET /"
+  - service:
+      haproxy_service_name: cloudkitty_api
+      haproxy_backend_nodes: "{{ groups['cloudkitty_api'] | default([]) }}"
+      haproxy_port: 8089
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_balance_type: http
+      haproxy_backend_options:
+       - "forwardfor"
+       - "httpchk"
+       - "httplog"
