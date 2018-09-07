@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cloudkitty_service_port: 9292
+cloudkitty_service_port: 8089
 cloudkitty_service_proto: http
 cloudkitty_service_publicuri_proto: "{{ openstack_service_publicuri_proto | default(cloudkitty_service_proto) }}"
 cloudkitty_service_adminuri_proto: "{{ openstack_service_adminuri_proto | default(cloudkitty_service_proto) }}"
