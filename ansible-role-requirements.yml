@@ -69,7 +69,7 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: f8fed520be18751f474bd1693edb009a71a37867
+  version: 9327081b6315114e25f71dcdf7d118fbb84e7624
 - name: os_cinder
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_cinder
