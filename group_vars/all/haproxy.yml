@@ -76,6 +76,8 @@ haproxy_default_services:
       haproxy_port: 8041
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
       haproxy_backend_options:
         - "httpchk /healthcheck"
   - service:
@@ -184,6 +186,8 @@ haproxy_default_services:
       haproxy_backend_port: 80
       haproxy_redirect_http_port: 80
       haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
       haproxy_balance_alg: source
       haproxy_backend_options:
         - "httpchk HEAD /"
@@ -203,6 +207,8 @@ haproxy_default_services:
       haproxy_balance_alg: source
       haproxy_port: 8080
       haproxy_balance_type: http
+      haproxy_timeout_client: 30m
+      haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk /healthcheck"
   - service:
@@ -278,6 +284,8 @@ haproxy_default_services:
       haproxy_port: 8089
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
       haproxy_backend_options:
        - "forwardfor"
        - "httpchk"
