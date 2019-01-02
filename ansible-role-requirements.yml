@@ -45,7 +45,7 @@
 - name: openstack_hosts
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-openstack_hosts
-  version: 5014e0ee8bddd534d374a407fe8aa259ccfb0c86
+  version: a94d802963c78d16e1cca3c86b9d2df7131262c8
 - name: os_keystone
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_keystone
