@@ -45,7 +45,7 @@
 - name: openstack_hosts
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-openstack_hosts
-  version: 5014e0ee8bddd534d374a407fe8aa259ccfb0c86
+  version: a94d802963c78d16e1cca3c86b9d2df7131262c8
 - name: os_keystone
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_keystone
@@ -69,7 +69,7 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 62d2a27c92354be4cf383b7bc732de145cdfea0c
+  version: b1c2fdf7fbb50fbd1959d8b2141da8b34adcfc3b
 - name: os_cinder
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_cinder
