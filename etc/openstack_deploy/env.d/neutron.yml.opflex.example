@@ -1,0 +1,60 @@
+---
+component_skel:
+  neutron_agent:
+    belongs_to:
+      - neutron_all
+  neutron_metering_agent:
+    belongs_to:
+      - neutron_all
+  neutron_server:
+    belongs_to:
+      - neutron_all
+  neutron_linuxbridge_agent:
+    belongs_to:
+      - neutron_all
+  neutron_opflex_agent:
+    belongs_to:
+      - neutron_all
+  neutron_opflex_aim_agent:
+    belongs_to:
+      - neutron_all
+  neutron_opflex_ovs_agent:
+    belongs_to:
+      - neutron_all
+
+
+container_skel:
+  neutron_opflex_ovs_container:
+    belongs_to:
+      - compute_containers
+    contains:
+      - neutron_opflex_agent
+      - neutron_linuxbridge_agent
+    properties:
+      is_metal: true
+      service_name: neutron
+  neutron_agents_container:
+    belongs_to:
+      - network_containers
+    contains:
+      - neutron_agent
+      - neutron_metering_agent
+    properties:
+      service_name: neutron
+  neutron_server_container:
+    belongs_to:
+      - network_containers
+    contains:
+      - neutron_server
+      - neutron_opflex_aim_agent
+    properties:
+      service_name: neutron
+
+
+physical_skel:
+  network_containers:
+    belongs_to:
+      - all_containers
+  network_hosts:
+    belongs_to:
+      - hosts

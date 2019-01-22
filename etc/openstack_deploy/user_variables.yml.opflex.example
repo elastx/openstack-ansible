@@ -1,0 +1,63 @@
+---
+# This file contains an example of the global variable overrides
+# which may need to be set for a production environment.
+
+openstack_host_specific_kernel_modules:
+  - name: "openvswitch"
+    pattern: "CONFIG_OPENVSWITCH="
+    group: "network_hosts"
+
+### neutron specific config
+neutron_plugin_type: ml2.opflex
+neutron_plugin_types:
+  - ml2.ovs
+  - ml2.lxb
+neutron_ml2_drivers_type: "opflex,local,flat,vlan,gre,vxlan"
+neutron_vxlan_enabled: false
+neutron_provider_networks:
+  network_types: "opflex"
+  network_mappings: "physnet1:{{ opflex_access_bridge }}"
+  network_vlan_ranges: "physnet1:1000:1999"
+  network_flat_networks: "*"
+
+neutron_plugin_base:
+  - group_policy
+  - ncp
+  - apic_aim_l3
+  - metering
+
+neutron_ml2_conf_ini_overrides:
+  ml2:
+    extension_drivers: apic_aim
+    mechanism_drivers: apic_aim,linuxbridge
+
+neutron_linuxbridge_agent_ini_overrides:
+  vxlan:
+    enable_vxlan: False
+
+neutron_openvswitch_agent_ini_overrides:
+  ovs:
+    enable_tunneling: False
+    integration_bridge: "{{ opflex_access_bridge }}"
+    tunnel_bridge:
+    vxlan_udp_port:
+  agent:
+    tunnel_types:
+
+# VLAN
+opflex_integration_bridge: br-fabric
+opflex_access_bridge: br-int
+opflex_vlan_trunk_iface: br-vlan
+opflex_uplink_iface: "{% if 'container' in inventory_hostname %}eth15{% else %}br-apic{% endif %}"
+opflex_apic_system_id: openstack
+opflex_apic_hosts:
+  - 10.0.0.1
+  - 10.0.0.2
+opflex_apic_entity_profile: openstack-profile
+opflex_apic_peer_svi: 10.0.0.30
+opflex_apic_user: opflex
+opflex_apic_vmdom: openstack
+opflex_apt_repo_url: "http://localhost"
+opflex_repo:
+  repo: "deb [trusted=yes] {{ opflex_apt_repo_url }} /"
+  state: present
