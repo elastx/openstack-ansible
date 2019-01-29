@@ -276,6 +276,8 @@ haproxy_default_services:
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_port: 9876
       haproxy_balance_type: http
+      haproxy_timeout_client: 5m
+      haproxy_timeout_server: 5m
       haproxy_backend_options:
         - "httpchk GET /"
   - service:
