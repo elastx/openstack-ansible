@@ -109,7 +109,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: a221da0fca567aca662f84ef665737f812fb74d1
+  version: c7b330d37cb14a098b18ca148c421503edb7a7ea
 - name: os_nova
   scm: git
   src: https://git.openstack.org/openstack/openstack-ansible-os_nova
@@ -182,27 +182,27 @@
   scm: git
   src: https://github.com/logan2211/ansible-resolvconf
   version: '1.4'
-- name: ceph-defaults
-  scm: git
-  src: https://github.com/ceph/ansible-ceph-defaults
-  version: v3.0.8
-- name: ceph-common
-  scm: git
-  src: https://github.com/ceph/ansible-ceph-common
-  version: v3.0.9
-- name: ceph-config
-  scm: git
-  src: https://github.com/ceph/ansible-ceph-config
-  version: v3.0.8
-- name: ceph-mon
-  scm: git
-  src: https://github.com/ceph/ansible-ceph-mon
-  version: v3.0.9
-- name: ceph-mgr
-  scm: git
-  src: https://github.com/ceph/ansible-ceph-mgr
-  version: v3.0.8
-- name: ceph-osd
-  scm: git
-  src: https://github.com/ceph/ansible-ceph-osd
-  version: v3.0.9
+# - name: ceph-defaults
+#   scm: git
+#   src: https://github.com/ceph/ansible-ceph-defaults
+#   version: v3.0.8
+# - name: ceph-common
+#   scm: git
+#   src: https://github.com/ceph/ansible-ceph-common
+#   version: v3.0.9
+# - name: ceph-config
+#   scm: git
+#   src: https://github.com/ceph/ansible-ceph-config
+#   version: v3.0.8
+# - name: ceph-mon
+#   scm: git
+#   src: https://github.com/ceph/ansible-ceph-mon
+#   version: v3.0.9
+# - name: ceph-mgr
+#   scm: git
+#   src: https://github.com/ceph/ansible-ceph-mgr
+#   version: v3.0.8
+# - name: ceph-osd
+#   scm: git
+#   src: https://github.com/ceph/ansible-ceph-osd
+#   version: v3.0.9
