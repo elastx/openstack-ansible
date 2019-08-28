@@ -40,9 +40,9 @@
   trackbranch:
 - name: lxc_container_create
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_container_create
-  version: 46c7c7005c36d24ac56d971ce75018b411201223
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-lxc_container_create
+  version: FIXME
+  trackbranch: stable/elastx-queens
 - name: lxc_hosts
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
@@ -83,6 +83,11 @@
   src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
   version: 1b53ff193c4655fc8f12e95c0dcd6d7eccbcb589
   trackbranch: stable/queens
+- name: os_cloudkitty
+  scm: git
+  src: https://github.com/elastx/openstack-ansible-os_cloudkitty
+  version: FIXME
+  trackbranch: stable/elastx-queens
 - name: os_cinder
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_cinder
@@ -110,9 +115,9 @@
   trackbranch: stable/queens
 - name: os_horizon
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_horizon
-  version: ad4e25720982d0c31f473296722f33505dbf78c9
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: 937fe112a48d02f346785be6188d2dd4c1835ba9
+  trackbranch: cloudkitty_support/queens
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
@@ -130,9 +135,9 @@
   trackbranch: stable/queens
 - name: os_neutron
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_neutron
-  version: 7b14815b1cbdff49ffe654f3d54d114ffb7af360
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_neutron
+  version: FIXME
+  trackbranch: opflex/queens
 - name: os_nova
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_nova

@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: unbound-install.yml
-- include: repo-install.yml
-- include: haproxy-install.yml
-# TODO(evrardjp): Remove the following when repo_build is done
-# before lxc_container_create, and haproxy is moved with it as
-# second step.
-- include: repo-use.yml
-- include: utility-install.yml
-- include: memcached-install.yml
-- include: galera-install.yml
-- include: rabbitmq-install.yml
-- include: etcd-install.yml
-#- include: ceph-install.yml
-- include: rsyslog-install.yml
+- name: Stop aim on neutron nodes
+  hosts: neutron_all
+  serial: 1
+  max_fail_percentage: 0
+  gather_facts: false
+  user: root
+  tasks:
+    - name: Stop aim services
+      service:
+        name: "{{ item }}"
+        state: stopped
+      retries: 5
+      delay: 10
+      with_items:
+        - aim-aid
+        - aim-event-service-polling
+        - aim-event-service-rpc
+      when:
+        - "'neutron_opflex_aim_agent' in group_names"

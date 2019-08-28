@@ -13,17 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: unbound-install.yml
-- include: repo-install.yml
-- include: haproxy-install.yml
-# TODO(evrardjp): Remove the following when repo_build is done
-# before lxc_container_create, and haproxy is moved with it as
-# second step.
-- include: repo-use.yml
-- include: utility-install.yml
-- include: memcached-install.yml
-- include: galera-install.yml
-- include: rabbitmq-install.yml
-- include: etcd-install.yml
-#- include: ceph-install.yml
-- include: rsyslog-install.yml
+component_skel:
+  cloudkitty_api:
+    belongs_to:
+      - cloudkitty_all
+  cloudkitty_engine:
+    belongs_to:
+      - cloudkitty_all
+
+container_skel:
+  cloudkitty_container:
+    belongs_to:
+      - cloudkitty-infra_containers
+    contains:
+      - cloudkitty_api
+      - cloudkitty_engine
+    properties:
+      service_name: cloudkitty
+
+physical_skel:
+ cloudkitty-infra_containers:
+   belongs_to:
+     - all_containers
+ cloudkitty-infra_hosts:
+   belongs_to:
+     - hosts

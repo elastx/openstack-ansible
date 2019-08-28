@@ -1,0 +1,55 @@
+---
+# Copyright 2014, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Install cloudkitty components
+  hosts: cloudkitty_all
+  user: root
+  pre_tasks:
+    - include: common-tasks/os-lxc-container-setup.yml
+    - include: common-tasks/os-log-dir-setup.yml
+      vars:
+        log_dirs:
+          - src: "/openstack/log/{{ inventory_hostname }}-cloudkitty"
+            dest: "/var/log/cloudkitty"
+    - include: common-tasks/rabbitmq-vhost-user.yml
+      vars:
+        user: "{{ cloudkitty_rabbitmq_userid }}"
+        password: "{{ cloudkitty_rabbitmq_password }}"
+        vhost: "{{ cloudkitty_rabbitmq_vhost }}"
+        _rabbitmq_host_group: "{{ cloudkitty_rabbitmq_host_group }}"
+      when:
+        - inventory_hostname == groups['cloudkitty_api'][0]
+        - groups[cloudkitty_rabbitmq_host_group] | length > 0
+      run_once: yes
+
+  roles:
+    - role: "os_cloudkitty"
+    - role: "rsyslog_client"
+      rsyslog_client_log_rotate_file: cloudkitty_log_rotate
+      rsyslog_client_log_dir: "/var/log/cloudkitty"
+      rsyslog_client_config_name: "99-cloudkitty-rsyslog-client.conf"
+      tags:
+        - rsyslog
+    - role: "system_crontab_coordination"
+      tags:
+        - crontab
+  vars:
+    is_metal: "{{ properties.is_metal|default(false) }}"
+    cloudkitty_galera_user: cloudkitty
+    cloudkitty_galera_database: cloudkitty
+    cloudkitty_galera_address: "{{ galera_address }}"
+  environment: "{{ deployment_environment_variables | default({}) }}"
+  tags:
+    - cloudkitty
