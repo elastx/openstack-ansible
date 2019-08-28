@@ -42,7 +42,7 @@
   scm: git
   src: https://github.com/elastx/openstack-ansible-lxc_container_create
   version: FIXME
-  trackbranch: stable/elastx-queens
+  trackbranch: elastx/queens
 - name: lxc_hosts
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
@@ -87,7 +87,7 @@
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
   version: FIXME
-  trackbranch: stable/elastx-queens
+  trackbranch: elastx/queens
 - name: os_cinder
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_cinder
@@ -117,7 +117,7 @@
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_horizon
   version: 937fe112a48d02f346785be6188d2dd4c1835ba9
-  trackbranch: cloudkitty_support/queens
+  trackbranch: elastx/queens
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
@@ -137,7 +137,7 @@
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
   version: FIXME
-  trackbranch: opflex/queens
+  trackbranch: elastx/queens
 - name: os_nova
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_nova
