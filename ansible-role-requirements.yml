@@ -41,7 +41,7 @@
 - name: lxc_container_create
   scm: git
   src: https://github.com/elastx/openstack-ansible-lxc_container_create
-  version: FIXME
+  version: 0c1267c097e02baa2499a8188658489a177b8111
   trackbranch: elastx/queens
 - name: lxc_hosts
   scm: git
@@ -86,7 +86,7 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: FIXME
+  version: 49614cc497e791b3fc86c962c520f66b7f2b721f
   trackbranch: elastx/queens
 - name: os_cinder
   scm: git
