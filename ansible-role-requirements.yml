@@ -80,9 +80,9 @@
   trackbranch: stable/queens
 - name: os_ceilometer
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
-  version: 1b53ff193c4655fc8f12e95c0dcd6d7eccbcb589
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_ceilometer
+  version: 3abf1cb695da81e3843e2fc3962811af15a67f4d
+  trackbranch: elastx/queens
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
