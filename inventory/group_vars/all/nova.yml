@@ -22,3 +22,20 @@ nova_service_project_name: service
 nova_service_project_domain_id: default
 nova_service_user_domain_id: default
 nova_keystone_auth_plugin: password
+
+# RPC
+nova_rabbitmq_userid: nova
+nova_rabbitmq_vhost: /nova
+nova_rabbitmq_port: "{{ rabbitmq_port }}"
+nova_rabbitmq_servers: "{{ rabbitmq_servers }}"
+nova_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
+nova_rabbitmq_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+nova_rabbitmq_telemetry_userid: "{{ nova_rabbitmq_userid }}"
+nova_rabbitmq_telemetry_password: "{{ nova_rabbitmq_password }}"
+nova_rabbitmq_telemetry_vhost: "{{ nova_rabbitmq_vhost }}"
+nova_rabbitmq_telemetry_port: "{{ nova_rabbitmq_port }}"
+nova_rabbitmq_telemetry_servers: "{{ nova_rabbitmq_servers }}"
+nova_rabbitmq_telemetry_use_ssl: "{{ nova_rabbitmq_use_ssl }}"
+nova_rabbitmq_telemetry_host_group: "{{ nova_rabbitmq_host_group }}"

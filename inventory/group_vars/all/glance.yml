@@ -47,3 +47,20 @@ _cors_overrides:
 
 # Default glance API
 glance_glance_api_conf_overrides: "{{ (glance_show_multiple_locations | bool) | ternary(_cors_overrides, {}) }}"
+
+# RPC
+glance_rabbitmq_userid: glance
+glance_rabbitmq_vhost: /glance
+glance_rabbitmq_port: "{{ rabbitmq_port }}"
+glance_rabbitmq_servers: "{{ rabbitmq_servers }}"
+glance_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
+glance_rabbitmq_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications used by ceilometer
+glance_rabbitmq_telemetry_userid: "{{ glance_rabbitmq_userid }}"
+glance_rabbitmq_telemetry_password: "{{ glance_rabbitmq_password }}"
+glance_rabbitmq_telemetry_vhost: "{{ glance_rabbitmq_vhost }}"
+glance_rabbitmq_telemetry_port: "{{ glance_rabbitmq_port }}"
+glance_rabbitmq_telemetry_servers: "{{ glance_rabbitmq_servers }}"
+glance_rabbitmq_telemetry_use_ssl: "{{ glance_rabbitmq_use_ssl }}"
+glance_rabbitmq_telemetry_host_group: "{{ glance_rabbitmq_host_group }}"

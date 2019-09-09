@@ -52,3 +52,20 @@ keystone_service_publicuri_insecure: |-
   {{ _insecure }}
 keystone_service_publicuri: "{{ keystone_service_publicuri_proto }}://{{ external_lb_vip_address }}:{{ keystone_service_port }}"
 keystone_service_publicurl: "{{ keystone_service_publicuri }}/v3"
+
+# RPC
+keystone_rabbitmq_userid: keystone
+keystone_rabbitmq_vhost: /keystone
+keystone_rabbitmq_port: "{{ rabbitmq_port }}"
+keystone_rabbitmq_servers: "{{ rabbitmq_servers }}"
+keystone_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
+keystone_rabbitmq_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+keystone_rabbitmq_telemetry_userid: "{{ keystone_rabbitmq_userid }}"
+keystone_rabbitmq_telemetry_password: "{{ keystone_rabbitmq_password }}"
+keystone_rabbitmq_telemetry_vhost: "{{ keystone_rabbitmq_vhost }}"
+keystone_rabbitmq_telemetry_port: "{{ keystone_rabbitmq_port }}"
+keystone_rabbitmq_telemetry_servers: "{{ keystone_rabbitmq_servers }}"
+keystone_rabbitmq_telemetry_use_ssl: "{{ keystone_rabbitmq_use_ssl }}"
+keystone_rabbitmq_telemetry_host_group: "{{ keystone_rabbitmq_host_group }}"

@@ -33,3 +33,12 @@ neutron_rabbitmq_port: "{{ rabbitmq_port }}"
 neutron_rabbitmq_servers: "{{ rabbitmq_servers }}"
 neutron_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
 neutron_rabbitmq_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications used by ceilometer
+neutron_rabbitmq_telemetry_userid: "{{ neutron_rabbitmq_userid }}"
+neutron_rabbitmq_telemetry_password: "{{ neutron_rabbitmq_password }}"
+neutron_rabbitmq_telemetry_vhost: "{{ neutron_rabbitmq_vhost }}"
+neutron_rabbitmq_telemetry_port: "{{ neutron_rabbitmq_port }}"
+neutron_rabbitmq_telemetry_servers: "{{ neutron_rabbitmq_servers }}"
+neutron_rabbitmq_telemetry_use_ssl: "{{ neutron_rabbitmq_use_ssl }}"
+neutron_rabbitmq_telemetry_host_group: "{{ neutron_rabbitmq_host_group }}"

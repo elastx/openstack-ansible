@@ -16,3 +16,20 @@
 # Consumed by the Nova role so it must remain in the 'all' scoped vars
 cinder_ceph_client: cinder
 cinder_service_port: 8776
+
+# RPC
+cinder_rabbitmq_userid: cinder
+cinder_rabbitmq_vhost: /cinder
+cinder_rabbitmq_port: "{{ rabbitmq_port }}"
+cinder_rabbitmq_servers: "{{ rabbitmq_servers }}"
+cinder_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
+cinder_rabbitmq_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications used by ceilometer
+cinder_rabbitmq_telemetry_userid: "{{ cinder_rabbitmq_userid }}"
+cinder_rabbitmq_telemetry_password: "{{ cinder_rabbitmq_password }}"
+cinder_rabbitmq_telemetry_vhost: "{{ cinder_rabbitmq_vhost }}"
+cinder_rabbitmq_telemetry_port: "{{ cinder_rabbitmq_port }}"
+cinder_rabbitmq_telemetry_servers: "{{ cinder_rabbitmq_servers }}"
+cinder_rabbitmq_telemetry_use_ssl: "{{ cinder_rabbitmq_use_ssl }}"
+cinder_rabbitmq_telemetry_host_group: "{{ cinder_rabbitmq_host_group }}"
