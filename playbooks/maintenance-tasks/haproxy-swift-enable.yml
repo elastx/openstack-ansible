@@ -1,0 +1,21 @@
+# Enable HAProxy Swift service
+# Use with limit to a container to disable it in haproxy
+- name: Enable swift backend
+  hosts: swift_proxy
+  serial: "1"
+  gather_facts: "{{ osa_gather_facts | default(True) }}"
+  user: root
+  environment: "{{ deployment_environment_variables | default({}) }}"
+  tags:
+    - swift
+  tasks:
+    - include: common-tasks/haproxy-endpoint-manage.yml
+      vars:
+        haproxy_backend: "{{ backend_name }}"
+        haproxy_state: enabled
+      loop_control:
+        loop_var: backend_name
+      with_items:
+        - "swift_proxy-back"
+        - "swift_proxy_public_vip-back"
+
