@@ -13,19 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- hosts: utility[0]
-  become: yes
-  gather_facts: no
-  tasks:
-    - name: Disable cinder services in containers which will be deleted
-      command: >-
-        openstack --os-cloud default volume service set
-            --disable --disable-reason 'Disabled after pike to queens upgrade'
-            {{ service_host }} cinder-scheduler
-      vars:
-        service_host: "{{ hostvars[item]['ansible_hostname'] }}"
-      with_items: "{{ groups['cinder_scheduler_container'] }}"
-
 - hosts: cinder_scheduler_container
   become: yes
   gather_facts: no
@@ -40,9 +27,18 @@
         enabled: no
         state: stopped
 
-- include: "{{ playbook_dir }}/../../../playbooks/lxc-containers-destroy.yml"
-  vars:
-    container_group: "cinder_scheduler_container"
+- hosts: utility[0]
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Disable cinder services in containers which will be deleted
+      command: >-
+        openstack --os-cloud default volume service set
+            --disable --disable-reason 'Disabled after pike to queens upgrade'
+            {{ service_host }} cinder-scheduler
+      vars:
+        service_host: "{{ hostvars[item]['ansible_hostname'] }}"
+      with_items: "{{ groups['cinder_scheduler_container'] }}"
 
 - hosts: cinder_api[0]
   become: yes
@@ -55,6 +51,10 @@
       vars:
         service_host: "{{ hostvars[item]['ansible_hostname'] }}"
       with_items: "{{ groups['cinder_scheduler_container'] }}"
+
+- include: "{{ playbook_dir }}/../../../playbooks/lxc-containers-destroy.yml"
+  vars:
+    container_group: "cinder_scheduler_container"
 
 - hosts: localhost
   connection: local
