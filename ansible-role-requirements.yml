@@ -253,3 +253,8 @@
   src: https://github.com/logan2211/ansible-haproxy-endpoints
   version: 49901861b16b8afaa9bccdbc649ac956610ff22b
   trackbranch:
+- name: os_adjutant
+  scm: git
+  src: https://github.com/elastx/openstack-ansible-os_adjutant
+  version: 72531160574a10c6da13e22839fca94baf235b43
+  trackbranch: master

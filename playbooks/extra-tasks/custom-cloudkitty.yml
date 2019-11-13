@@ -1,0 +1,92 @@
+---
+# Copyright 2014, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# For now we run this playbook after os-cloudkitty-install.yml
+# Right now it rebuilds venv every run
+- name: Install cloudkitty components
+  hosts: cloudkitty_all
+  user: root
+  pre_tasks:
+    - name: Stop services
+      service:
+        name: "{{ item.value.service_name }}"
+        enabled: "{{ (item.value.service_enabled | bool) | ternary('yes', 'no') }}"
+        state: stopped
+        daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+      with_dict: "{{ cloudkitty_services }}"
+      when: inventory_hostname in groups[item.value.group]
+      register: _stop
+      until: _stop | success
+      retries: 5
+      delay: 2
+
+  roles:
+    - role: "ansible-role-python_venv_build"
+
+  post_tasks:
+    - name: Start services
+      service:
+        name: "{{ item.value.service_name }}"
+        enabled: yes
+        state: "started"
+        daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+      with_dict: "{{ cloudkitty_services }}"
+      when:
+        - inventory_hostname in groups[item.value.group]
+        - item.value.service_enabled | bool
+      register: _start
+      until: _start | success
+      retries: 5
+      delay: 2
+
+  vars:
+    venv_build_distro_package_list:
+      - cmake
+      - gcc
+      - python3-dev
+      - python3-pkgconfig
+      - apache2-dev
+      - libxml2
+    venv_install_destination_path: "/openstack/venvs/cloudkitty-{{ cloudkitty_venv_tag }}"
+    venv_python_executable: "python3"
+    venv_pip_packages:
+      - git+git://github.com/openstack/cloudkitty.git@5e16701f4787336dae9732f42399ed64192ec3e4
+      - cryptography
+      - msgpack-python
+      - osprofiler
+      - PyMySQL
+      - python-memcached
+      - SQLAlchemy>=1.0.10
+      - tooz
+      - uwsgi
+      - mod_wsgi
+    venv_rebuild: yes
+    venv_wheel_build_enable: false
+    cloudkitty_services:
+      apache2:
+        group: cloudkitty_api
+        service_name: apache2
+        service_enabled: true
+      cloudkitty-api:
+        group: cloudkitty_api
+        service_name: cloudkitty-api
+        service_enabled: false
+      cloudkitty-processor:
+        group: cloudkitty_api
+        service_name: cloudkitty-processor
+        service_enabled: true
+  environment: "{{ deployment_environment_variables | default({}) }}"
+  tags:
+    - cloudkitty

@@ -296,3 +296,10 @@ tacker_git_repo: https://opendev.org/openstack/tacker
 tacker_git_install_branch: 323c3481cc8b51b1131fd7cef02c65370a835f4e # HEAD as of 25.08.2019
 tacker_git_project_group: tacker_all
 tacker_git_track_branch: stable/queens
+
+
+## Adjutant service
+adjutant_git_repo: https://opendev.org/openstack/adjutant
+adjutant_git_install_branch: 4c78d2cf6df8cf9865001d66002aa1534011f816 # HEAD of stable/queens as of 2019-11-13
+adjutant_git_project_group: adjutant_all
+adjutant_git_track_branch: stable/queens

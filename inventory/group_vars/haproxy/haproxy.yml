@@ -377,3 +377,16 @@ haproxy_default_services:
       haproxy_timeout_server: 5000s
       haproxy_whitelist_networks: "{{ haproxy_opendaylight_whitelist_networks }}"
       haproxy_service_enabled: "{{ neutron_plugin_type == 'ml2.opendaylight' }}"
+  - service:
+      haproxy_service_name: adjutant_api
+      haproxy_backend_nodes: "{{ groups['adjutant_api'] | default([]) }}"
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_port: 5050
+      haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
+      haproxy_backend_options:
+        - "forwardfor"
+        - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+        - "httplog"
+      haproxy_service_enabled: "{{ groups['adjutant_api'] is defined and groups['adjutant_api'] | length > 0 }}"
