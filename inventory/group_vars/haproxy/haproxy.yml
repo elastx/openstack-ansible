@@ -383,8 +383,6 @@ haproxy_default_services:
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_port: 5050
       haproxy_balance_type: http
-      haproxy_timeout_client: 10m
-      haproxy_timeout_server: 10m
       haproxy_backend_options:
         - "forwardfor"
         - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
