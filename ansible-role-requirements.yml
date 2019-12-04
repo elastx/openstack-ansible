@@ -256,7 +256,7 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: a77beb6bca1e8fe92852935c6d1f04c4f02badf4
+  version: f8a494c358f3c5c9273b1fa75aa9515dbd9e8895
   trackbranch: master
 - name: ansible-role-python_venv_build
   scm: git
