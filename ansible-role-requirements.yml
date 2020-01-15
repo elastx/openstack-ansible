@@ -116,7 +116,7 @@
 - name: os_horizon
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_horizon
-  version: c797e2744b24adcaefe14a5c418781e50b61bcad
+  version: e34d01994cbfbd7e8fbaac73b2ca64c304385f1e
   trackbranch: elastx-test/queens
 - name: os_ironic
   scm: git
