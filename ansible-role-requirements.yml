@@ -136,7 +136,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: a954fa6191f73e68506012e0943904129b82335c
+  version: 5d16fbe29101864c94f1fcc69ee6fa1572ea571f
   trackbranch: elastx/queens
 - name: os_nova
   scm: git
@@ -256,7 +256,7 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: 0c672405b4e156591985c064dad8e62eaac06ec5
+  version: b02dc735e3935ab1d18a768079f0499e15c39b38
   trackbranch: master
 - name: ansible-role-python_venv_build
   scm: git
