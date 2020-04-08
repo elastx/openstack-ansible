@@ -116,7 +116,7 @@
 - name: os_horizon
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_horizon
-  version: 324cf6c329e342058fdbd3c34d5c75e731923ae2
+  version: 49790257863c527106a544fe195830c492b012e0
   trackbranch: elastx-test/queens
 - name: os_ironic
   scm: git
@@ -256,7 +256,7 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: 0279ac01670b9e612cd09156feaa1f694c6bfe89
+  version: 0c672405b4e156591985c064dad8e62eaac06ec5
   trackbranch: master
 - name: ansible-role-python_venv_build
   scm: git
