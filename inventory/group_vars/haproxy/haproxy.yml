@@ -162,6 +162,8 @@ haproxy_default_services:
       haproxy_port: 9696
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 5m
+      haproxy_timeout_server: 5m
       haproxy_backend_options:
         - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['neutron_server'] is defined and groups['neutron_server'] | length > 0 }}"
