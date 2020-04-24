@@ -141,7 +141,7 @@
 - name: os_nova
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_nova
-  version: 1a9b2af957649db73483b41029432cfd0fa12ff6
+  version: 2dae463c2c539089b623db704c0bee942a91bb29
   trackbranch: stable/queens
 - name: os_octavia
   scm: git
