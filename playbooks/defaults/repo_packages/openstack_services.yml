@@ -181,11 +181,6 @@ neutron_dynamic_routing_git_install_branch: acdef8ed195d0d4f4326cb0a0d85bbe12c7b
 neutron_dynamic_routing_git_project_group: neutron_all
 neutron_dynamic_routing_git_track_branch: stable/queens
 
-networking_calico_git_repo: https://opendev.org/openstack/networking-calico
-networking_calico_git_install_branch: 79bdf4995d102833d23479180350216fc59e4b94  # HEAD as of 25.08.2019
-networking_calico_git_project_group: neutron_all
-networking_calico_git_track_branch: master
-
 networking_odl_git_repo: https://opendev.org/openstack/networking-odl
 networking_odl_git_install_branch: 692dd5fc143e2a63b993ac8992706b20f97e54a3  # HEAD as of 25.08.2019
 networking_odl_git_project_group: neutron_all
@@ -296,3 +291,10 @@ tacker_git_repo: https://opendev.org/openstack/tacker
 tacker_git_install_branch: 323c3481cc8b51b1131fd7cef02c65370a835f4e # HEAD as of 25.08.2019
 tacker_git_project_group: tacker_all
 tacker_git_track_branch: stable/queens
+
+
+## Adjutant service
+adjutant_git_repo: https://opendev.org/openstack/adjutant
+adjutant_git_install_branch: 4c78d2cf6df8cf9865001d66002aa1534011f816 # HEAD of stable/queens as of 2019-11-13
+adjutant_git_project_group: adjutant_all
+adjutant_git_track_branch: stable/queens

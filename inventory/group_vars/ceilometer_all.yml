@@ -52,3 +52,58 @@ swift_system_user_name: "{{ hostvars['localhost']['swift_system_user_name'] }}"
 swift_system_shell: "{{ hostvars['localhost']['swift_system_shell'] }}"
 swift_system_comment: "{{ hostvars['localhost']['swift_system_comment'] }}"
 swift_system_home_folder: "{{ hostvars['localhost']['swift_system_home_folder'] }}"
+
+# Queens workaround for ceilometer, variables is moved from all which causes ceilometer to fail to configure on central lxc
+# Telemetry notifications
+glance_rabbitmq_telemetry_userid: "{{ glance_rabbitmq_userid }}"
+glance_rabbitmq_telemetry_password: "{{ glance_rabbitmq_password }}"
+glance_rabbitmq_telemetry_vhost: "{{ glance_rabbitmq_vhost }}"
+glance_rabbitmq_telemetry_port: "{{ rabbitmq_port }}"
+glance_rabbitmq_telemetry_servers: "{{ rabbitmq_servers }}"
+glance_rabbitmq_telemetry_use_ssl: "{{ rabbitmq_use_ssl }}"
+glance_rabbitmq_telemetry_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+cinder_rabbitmq_telemetry_userid: "{{ cinder_rabbitmq_userid }}"
+cinder_rabbitmq_telemetry_password: "{{ cinder_rabbitmq_password }}"
+cinder_rabbitmq_telemetry_vhost: "{{ cinder_rabbitmq_vhost }}"
+cinder_rabbitmq_telemetry_port: "{{ rabbitmq_port }}"
+cinder_rabbitmq_telemetry_servers: "{{ rabbitmq_servers }}"
+cinder_rabbitmq_telemetry_use_ssl: "{{ rabbitmq_use_ssl }}"
+cinder_rabbitmq_telemetry_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+nova_rabbitmq_telemetry_userid: "{{ nova_rabbitmq_userid }}"
+nova_rabbitmq_telemetry_password: "{{ nova_rabbitmq_password }}"
+nova_rabbitmq_telemetry_vhost: "{{ nova_rabbitmq_vhost }}"
+nova_rabbitmq_telemetry_port: "{{ rabbitmq_port }}"
+nova_rabbitmq_telemetry_servers: "{{ rabbitmq_servers }}"
+nova_rabbitmq_telemetry_use_ssl: "{{ rabbitmq_use_ssl }}"
+nova_rabbitmq_telemetry_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+neutron_rabbitmq_telemetry_userid: "{{ neutron_rabbitmq_userid }}"
+neutron_rabbitmq_telemetry_password: "{{ neutron_rabbitmq_password }}"
+neutron_rabbitmq_telemetry_vhost: "{{ neutron_rabbitmq_vhost }}"
+neutron_rabbitmq_telemetry_port: "{{ rabbitmq_port }}"
+neutron_rabbitmq_telemetry_servers: "{{ rabbitmq_servers }}"
+neutron_rabbitmq_telemetry_use_ssl: "{{ rabbitmq_use_ssl }}"
+neutron_rabbitmq_telemetry_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+heat_rabbitmq_telemetry_userid: "{{ heat_rabbitmq_userid }}"
+heat_rabbitmq_telemetry_password: "{{ heat_rabbitmq_password }}"
+heat_rabbitmq_telemetry_vhost: "{{ heat_rabbitmq_vhost }}"
+heat_rabbitmq_telemetry_port: "{{ rabbitmq_port }}"
+heat_rabbitmq_telemetry_servers: "{{ rabbitmq_servers }}"
+heat_rabbitmq_telemetry_use_ssl: "{{ rabbitmq_use_ssl }}"
+heat_rabbitmq_telemetry_host_group: "{{ rabbitmq_host_group }}"
+
+# Telemetry notifications
+keystone_rabbitmq_telemetry_userid: "{{ keystone_rabbitmq_userid }}"
+keystone_rabbitmq_telemetry_password: "{{ keystone_rabbitmq_password }}"
+keystone_rabbitmq_telemetry_vhost: "{{ keystone_rabbitmq_vhost }}"
+keystone_rabbitmq_telemetry_port: "{{ rabbitmq_port }}"
+keystone_rabbitmq_telemetry_servers: "{{ rabbitmq_servers }}"
+keystone_rabbitmq_telemetry_use_ssl: "{{ rabbitmq_use_ssl }}"
+keystone_rabbitmq_telemetry_host_group: "{{ rabbitmq_host_group }}"

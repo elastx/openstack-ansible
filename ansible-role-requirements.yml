@@ -86,8 +86,8 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 49614cc497e791b3fc86c962c520f66b7f2b721f
-  trackbranch: elastx/queens
+  version: 48cf1e963c69265c40148190ba0cd703f29660fa
+  trackbranch: elastx/ck-stein-in-queens
 - name: os_cinder
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_cinder
@@ -116,8 +116,8 @@
 - name: os_horizon
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_horizon
-  version: 937fe112a48d02f346785be6188d2dd4c1835ba9
-  trackbranch: elastx/queens
+  version: a7f18db443df612de0e7e1a7ff31e39b8e052f1d
+  trackbranch: elastx-test/queens
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
@@ -137,7 +137,7 @@
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
   version: 6daf6a56f541f896c3168c72b50f7402d12137d2
-  trackbranch: elastx/queens
+  trackbranch: opflex/queens
 - name: os_nova
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_nova
@@ -253,3 +253,13 @@
   src: https://github.com/logan2211/ansible-haproxy-endpoints
   version: 49901861b16b8afaa9bccdbc649ac956610ff22b
   trackbranch:
+- name: os_adjutant
+  scm: git
+  src: https://github.com/elastx/openstack-ansible-os_adjutant
+  version: 78e0ca9f709f1502c08d4409de0c36b0f299f84d
+  trackbranch: master
+- name: ansible-role-python_venv_build
+  scm: git
+  src: https://github.com/elastx/ansible-role-python_venv_build
+  version: 288176711b0436043788fcd389e018eb40543388
+  trackbranch: elastx/queens
