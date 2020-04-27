@@ -257,7 +257,7 @@
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
   version: 9d15fff1728981576a9fbddb89b6cad7201c5f05
-  trackbranch: master
+  trackbranch: elastx/queens
 - name: ansible-role-python_venv_build
   scm: git
   src: https://github.com/elastx/ansible-role-python_venv_build
