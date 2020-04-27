@@ -86,7 +86,7 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 48cf1e963c69265c40148190ba0cd703f29660fa
+  version: 0cd6c9335f45e92c7ba3fa71f06a1c131d9dea59
   trackbranch: elastx/ck-stein-in-queens
 - name: os_cinder
   scm: git
@@ -256,7 +256,7 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: 78e0ca9f709f1502c08d4409de0c36b0f299f84d
+  version: 9d15fff1728981576a9fbddb89b6cad7201c5f05
   trackbranch: master
 - name: ansible-role-python_venv_build
   scm: git
