@@ -140,9 +140,9 @@
   trackbranch: opflex/queens
 - name: os_nova
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_nova
-  version: 2dae463c2c539089b623db704c0bee942a91bb29
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_nova
+  version: 5516ec8a4e3465d29b57fbd48f8dc3977abcd3d7
+  trackbranch: elastx/queens
 - name: os_octavia
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_octavia
