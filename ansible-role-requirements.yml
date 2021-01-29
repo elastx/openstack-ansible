@@ -60,9 +60,9 @@
   trackbranch: stable/queens
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: 30d7f6536cce7c6a150c8314df59223823741414
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: 102cda8348f25096694cd709546e8cec5d7d1e70
+  trackbranch: elastx/queens
 - name: openstack_openrc
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
