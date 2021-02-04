@@ -1,0 +1,63 @@
+---
+# We use ignore errors because not all queues is present in the telemetry cluster
+- name: Prepare MQ/DB services
+  hosts: "{{ rabbitmq_host_group | default('rabbitmq_all') }}[0]"
+  user: root
+  environment: "{{ deployment_environment_variables | default({}) }}"
+  tasks:
+    - name: Fix policies for all vhosts in rabbitmq
+      rabbitmq_policy:
+        node: "rabbit@{{ ansible_hostname }}"
+        name: "HA"
+        vhost: "{{ item  }}"
+        pattern: '^(?!(amq\.)|(.*_fanout_)|(reply_)).*'
+        priority: 100
+        tags:
+          ha-mode: exactly
+          ha-params: 2
+          ha-promote-on-shutdown: always
+          ha-sync-mode: automatic
+      ignore_errors: yes
+      with_items:
+        - '/barbican'
+        - '/ceilometer'
+        - '/cinder'
+        - '/cloudkitty'
+        - '/glance'
+        - '/heat'
+        - '/keystone'
+        - '/neutron'
+        - '/nova'
+        - '/octavia'
+        - '/swift'
+      tags:
+        - rabbit-ha
+
+
+    - name: Fix monitoring user permissions to all venvs
+      rabbitmq_user:
+        user: "{{ rabbitmq_monitoring_userid |default('monitoring') }}"
+        password: "{{ rabbitmq_monitoring_password }}"
+        vhost: "{{ item }}"
+        configure_priv: ".*"
+        read_priv: ".*"
+        write_priv: ".*"
+        tags: "monitoring,administrator"
+        state: "present"
+      no_log: true
+      ignore_errors: yes
+      with_items:
+        - '/barbican'
+        - '/ceilometer'
+        - '/cinder'
+        - '/cloudkitty'
+        - '/glance'
+        - '/heat'
+        - '/keystone'
+        - '/neutron'
+        - '/nova'
+        - '/octavia'
+        - '/swift'
+      tags:
+        - rabbit-monitor
+
