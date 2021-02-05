@@ -180,9 +180,9 @@
   trackbranch: stable/queens
 - name: plugins
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-plugins
-  version: 8e57491ee5cda12effc2739a853c3dae2e9c3c62
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-plugins
+  version: 36c93f99398f18e79f12714f6d515d5ab1eaced1
+  trackbranch: elastx/queens
 - name: rabbitmq_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-rabbitmq_server
