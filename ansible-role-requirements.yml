@@ -30,9 +30,9 @@
   trackbranch: stable/queens
 - name: haproxy_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-haproxy_server
-  version: 2de976eb18951a9c416e7930c9f23e4601e5476b
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-haproxy_server
+  version: 9f1fcab210bc76a327ebf2ba28fd87e2baf49891
+  trackbranch: elastx/queens
 - name: keepalived
   scm: git
   src: https://github.com/evrardjp/ansible-keepalived
