@@ -40,8 +40,9 @@ haproxy_opendaylight_whitelist_networks: "{{ haproxy_whitelist_networks }}"
 haproxy_default_services:
   - service:
       haproxy_service_name: galera
-      haproxy_backend_nodes: "{{ (groups['galera_all'] | default([]))[:1] }}"  # list expected
-      haproxy_backup_nodes: "{{ (groups['galera_all'] | default([]))[1:] }}"
+      # ELX change, we use sto3 as primary galera backend
+      haproxy_backend_nodes: "{{ [2] | map('extract',groups['galera_all']) | list }}"  # list expected
+      haproxy_backup_nodes: "{{ (groups['galera_all'] | default([]))| difference(groups['galera_all'][2]) }}"
       haproxy_bind: "{{ [internal_lb_vip_address] }}"
       haproxy_port: 3306
       haproxy_check_port: 9200
