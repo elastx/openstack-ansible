@@ -141,7 +141,7 @@
 - name: os_nova
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_nova
-  version: 5516ec8a4e3465d29b57fbd48f8dc3977abcd3d7
+  version: bb2ea174d54fc22ede01420a6ce231083f7cffb3
   trackbranch: elastx/queens
 - name: os_octavia
   scm: git
