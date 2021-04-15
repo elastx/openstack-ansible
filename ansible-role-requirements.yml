@@ -91,8 +91,8 @@
 - name: os_cinder
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cinder
-  version: b410dab76d2f2eb97880407dd2cb44ec861493b0
-  trackbranch: stable/queens
+  version: be54a7c8fd5a4f5e71b27fabb76a78f1085b2107
+  trackbranch: elastx/queens
 - name: os_designate
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_designate
@@ -141,7 +141,7 @@
 - name: os_nova
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_nova
-  version: 5516ec8a4e3465d29b57fbd48f8dc3977abcd3d7
+  version: bb2ea174d54fc22ede01420a6ce231083f7cffb3
   trackbranch: elastx/queens
 - name: os_octavia
   scm: git
