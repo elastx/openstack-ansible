@@ -90,9 +90,9 @@
   trackbranch: elastx/ck-stein-in-queens
 - name: os_cinder
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cinder
-  version: b180454346cc84dc2e70a14d95ba2ea5614928e8
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_cinder
+  version: e3ea9bd33340ee0fe2dc89e3815f12420c63f271
+  trackbranch: elastx/queens
 - name: os_designate
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_designate
