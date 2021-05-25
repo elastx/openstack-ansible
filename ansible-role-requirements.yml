@@ -45,9 +45,9 @@
   trackbranch: elastx/queens
 - name: lxc_hosts
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
-  version: c8095fc486252cae2b401e9ca2fe23b5f7d72dde
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-lxc_hosts
+  version: a454706ccea304415f58c0904bad675a505014a6
+  trackbranch: elastx/queens
 - name: memcached_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-memcached_server
