@@ -81,7 +81,7 @@
 - name: os_ceilometer
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_ceilometer
-  version: 003decf07dc6ae9a28118d7734376e2373782284
+  version: 3737440aa30f483f03fe589d770f4c0f73417c35
   trackbranch: elastx/queens
 - name: os_cloudkitty
   scm: git
