@@ -150,8 +150,8 @@
   trackbranch: stable/queens
 - name: os_rally
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_rally
-  version: a9ca6748d913b3bba0e5ba0c4bfdc9b4b08dcba7
+  src: https://github.com/elastx/openstack-ansible-os_rally
+  version: 072bd8358101b4f711fb09cfde8c564f52de30e4
   trackbranch: stable/queens
 - name: os_sahara
   scm: git
