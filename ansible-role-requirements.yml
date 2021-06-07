@@ -86,7 +86,7 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 0cd6c9335f45e92c7ba3fa71f06a1c131d9dea59
+  version: 2d53f10f012d6e233421270ec1bb9a1384b4b391
   trackbranch: elastx/ck-stein-in-queens
 - name: os_cinder
   scm: git
