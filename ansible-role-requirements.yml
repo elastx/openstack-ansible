@@ -136,7 +136,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: 16a486ba581a5580fc803467222ab98a51d2aa77
+  version: 4a26703170203d14bbc3bf8af9cfdaf72109cbd4
   trackbranch: opflex/queens
 - name: os_nova
   scm: git
