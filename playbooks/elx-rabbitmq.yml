@@ -1,5 +1,4 @@
 ---
-# We use ignore errors because not all queues is present in the telemetry cluster
 - name: Prepare MQ/DB services
   hosts: "{{ rabbitmq_host_group | default('rabbitmq_all') }}[0]"
   user: root
@@ -33,7 +32,6 @@
       tags:
         - rabbit-ha
 
-
     - name: Fix monitoring user permissions to all venvs
       rabbitmq_user:
         user: "{{ rabbitmq_monitoring_userid |default('monitoring') }}"
@@ -45,7 +43,6 @@
         tags: "monitoring,administrator"
         state: "present"
       no_log: true
-      ignore_errors: yes
       with_items:
         - '/barbican'
         - '/ceilometer'

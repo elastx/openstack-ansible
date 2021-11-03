@@ -62,7 +62,7 @@
     venv_python_executable: "python3"
     venv_pip_packages:
       - git+git://github.com/openstack/cloudkitty.git@5e16701f4787336dae9732f42399ed64192ec3e4
-      - cryptography
+      - cryptography==2.1.4
       - msgpack-python
       - osprofiler
       - PyMySQL
