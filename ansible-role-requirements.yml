@@ -140,9 +140,9 @@
   trackbranch: stable/rocky
 - name: os_nova
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_nova
-  version: 39e1064599cc553628c6a1197fda63f8b973dcb5
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-os_nova
+  version: 2746e2e1190a8b311c9508d1785434c38c4b3c51
+  trackbranch: elastx/rocky
 - name: os_octavia
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_octavia
