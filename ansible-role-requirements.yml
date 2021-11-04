@@ -30,9 +30,9 @@
   trackbranch: stable/train
 - name: haproxy_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-haproxy_server
-  version: 963bfd24347ae88d4dc2d7de863b85453f3e66df
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-haproxy_server
+  version: fddc57147835b3914ef12b0109dc134c8a007423
+  trackbranch: elastx/train
 - name: keepalived
   scm: git
   src: https://github.com/evrardjp/ansible-keepalived
