@@ -60,9 +60,9 @@
   trackbranch: stable/rocky
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: 1d12e1553ce332863c879c6df1617724b95e329d
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: 2611332d1c82802654806173c932515498d2bbf3
+  trackbranch: elastx/rocky
 - name: openstack_openrc
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
