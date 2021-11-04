@@ -160,9 +160,9 @@
   trackbranch: stable/train
 - name: os_nova
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_nova
-  version: de80af931fa61216c2217d1c183ec6e8dde44a3c
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_nova
+  version: f859677f1a14604d960316b2ee005be43822f0fc
+  trackbranch: elastx/train
 - name: os_octavia
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_octavia
