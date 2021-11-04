@@ -60,9 +60,9 @@
   trackbranch: stable/train
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: 60f7f7f2851106fbfa42956814ed8265187396ac
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: c605771935e56cabcc194ea2d879daef61d635e1
+  trackbranch: elastx/train
 - name: openstack_openrc
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
