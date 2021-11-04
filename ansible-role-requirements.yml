@@ -274,7 +274,7 @@
   version: 6b5f441210896f4e1fb658f0a8471bb5fca3760a
   trackbranch: stable/rocky
 - name: python_venv_build
-  src: https://github.com/elastx//ansible-role-python_venv_build
+  src: https://github.com/elastx/ansible-role-python_venv_build
   scm: git
   version: 2520c9a04946b5cf75893600268a92a0ed665932
   trackbranch: elastx/rocky
