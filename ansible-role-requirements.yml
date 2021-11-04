@@ -90,9 +90,9 @@
   trackbranch: stable/train
 - name: os_cinder
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cinder
-  version: 75d09f16af73dec5395858143400992f27a3a93e
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_cinder
+  version: b803325e43e57ae9f70349a3dd86c2a0fe35032c
+  trackbranch: elastx/train
 - name: os_congress
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_congress
