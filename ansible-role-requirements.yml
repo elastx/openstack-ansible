@@ -41,7 +41,7 @@
 - name: lxc_container_create
   scm: git
   src: https://github.com/elastx/openstack-ansible-lxc_container_create
-  version: aca906d10f8888d7ed0b56ea1b2e7e5c0f7e930d
+  version: 26284387d18634920c6fc84b747c7d6b06cb004c
   trackbranch: elastx/rocky
 - name: lxc_hosts
   scm: git
