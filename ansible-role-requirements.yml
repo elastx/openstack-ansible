@@ -40,9 +40,9 @@
   trackbranch:
 - name: lxc_container_create
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_container_create
-  version: 0ae0b51de8da04e6f11d587d703f761435f07b56
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-lxc_container_create
+  version: 26284387d18634920c6fc84b747c7d6b06cb004c
+  trackbranch: elastx/rocky
 - name: lxc_hosts
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
