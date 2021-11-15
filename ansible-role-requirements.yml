@@ -120,9 +120,9 @@
   trackbranch: stable/train
 - name: os_horizon
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_horizon
-  version: 569fe91752a14fec65900e120a97347a6bc8f295
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: 5d7501e199dd0efd8293f1e598ee8734e679f469
+  trackbranch: elastx/train
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
