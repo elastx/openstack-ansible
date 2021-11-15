@@ -115,9 +115,9 @@
   trackbranch: stable/rocky
 - name: os_horizon
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_horizon
-  version: f6c829902dc224cd8bed6946a58ed86965fa261e
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: b72ea0fd8869509fe7dbe6332325e4a439b25b6a
+  trackbranch: elastx/rocky
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
