@@ -135,9 +135,9 @@
   trackbranch: stable/rocky
 - name: os_neutron
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_neutron
-  version: e16efea1e2442f5372833c5876e713e1cd9462ba
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-os_neutron
+  version: d04a9dd7478b448a34afc7de0b5f2ba9c2149ee3
+  trackbranch: elastx/rocky
 - name: os_nova
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_nova
