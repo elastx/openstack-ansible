@@ -60,9 +60,9 @@
   trackbranch: stable/queens
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: 30d7f6536cce7c6a150c8314df59223823741414
-  trackbranch: stable/queens
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: e693867b342dec9dc647146255d75523a642b1e3
+  trackbranch: elastx/queens
 - name: openstack_openrc
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
@@ -116,7 +116,7 @@
 - name: os_horizon
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_horizon
-  version: 8bbb105c4a381607586b096520c58782ab2cc5af
+  version: 5107542be3c1f6782f17516f75d60c450894d534
   trackbranch: elastx/queens
 - name: os_ironic
   scm: git
@@ -256,7 +256,7 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: 9d15fff1728981576a9fbddb89b6cad7201c5f05
+  version: ee743483390772784e476068cdc7311494e5ba8f
   trackbranch: elastx/queens
 - name: ansible-role-python_venv_build
   scm: git
