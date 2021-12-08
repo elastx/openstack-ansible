@@ -61,7 +61,7 @@
 - name: os_keystone
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_keystone
-  version: 2611332d1c82802654806173c932515498d2bbf3
+  version: e21c5ee7b11a19d5479c104d23945c34983357e6
   trackbranch: elastx/rocky
 - name: openstack_openrc
   scm: git
