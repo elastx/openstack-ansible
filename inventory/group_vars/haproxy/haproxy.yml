@@ -40,8 +40,9 @@ haproxy_opendaylight_whitelist_networks: "{{ haproxy_whitelist_networks }}"
 haproxy_default_services:
   - service:
       haproxy_service_name: galera
-      haproxy_backend_nodes: "{{ (groups['galera_all'] | default([]))[:1] }}"  # list expected
-      haproxy_backup_nodes: "{{ (groups['galera_all'] | default([]))[1:] }}"
+      # ELX change, we use sto3 as primary galera backend
+      haproxy_backend_nodes: "{{ [1] | map('extract',groups['galera_all']) | list }}"  # list expected
+      haproxy_backup_nodes: "{{ (groups['galera_all'] | default([]))| difference(groups['galera_all'][1]) }}"
       haproxy_bind: "{{ [internal_lb_vip_address] }}"
       haproxy_port: 3306
       haproxy_check_port: 9200
@@ -100,6 +101,8 @@ haproxy_default_services:
       haproxy_port: 8041
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
       haproxy_backend_options:
         - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['gnocchi_all'] is defined and groups['gnocchi_all'] | length > 0 }}"
@@ -147,6 +150,8 @@ haproxy_default_services:
       haproxy_port: 9696
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 5m
+      haproxy_timeout_server: 5m
       haproxy_backend_options:
         - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['neutron_server'] is defined and groups['neutron_server'] | length > 0 }}"
@@ -215,6 +220,8 @@ haproxy_default_services:
       haproxy_backend_port: 80
       haproxy_redirect_http_port: 80
       haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
       haproxy_balance_alg: source
       haproxy_backend_options:
         - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
@@ -236,6 +243,8 @@ haproxy_default_services:
       haproxy_balance_alg: source
       haproxy_port: 8080
       haproxy_balance_type: http
+      haproxy_timeout_client: 30m
+      haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['swift_proxy'] is defined and groups['swift_proxy'] | length > 0 }}"
@@ -321,6 +330,8 @@ haproxy_default_services:
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_port: 9876
       haproxy_balance_type: http
+      haproxy_timeout_client: 5m
+      haproxy_timeout_server: 5m
       haproxy_backend_options:
         - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['octavia_all'] is defined and groups['octavia_all'] | length > 0 }}"
@@ -372,3 +383,28 @@ haproxy_default_services:
   - service:
       haproxy_service_name: repo_cache
       state: absent
+  # Elastx modifications for adding Cloudkitty and Adjutant
+  - service:
+      haproxy_service_name: cloudkitty_api
+      haproxy_backend_nodes: "{{ groups['cloudkitty_api'] | default([]) }}"
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_port: 8089
+      haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
+      haproxy_backend_options:
+        - "forwardfor"
+        - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+        - "httplog"
+      haproxy_service_enabled: "{{ groups['cloudkitty_api'] is defined and groups['cloudkitty_api'] | length > 0 }}"
+  - service:
+      haproxy_service_name: adjutant_api
+      haproxy_backend_nodes: "{{ groups['adjutant_api'] | default([]) }}"
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_port: 5050
+      haproxy_balance_type: http
+      haproxy_backend_options:
+        - "forwardfor"
+        - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+        - "httplog"
+      haproxy_service_enabled: "{{ groups['adjutant_api'] is defined and groups['adjutant_api'] | length > 0 }}"

@@ -128,3 +128,5 @@ is_metal: >-
   {{ (properties is defined) and
      (properties.is_metal is defined) and
      (properties.is_metal | bool) }}
+
+elx_rsyslog_site_host: "{{ elx_rsyslog_hostname_sto1a }}"

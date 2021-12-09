@@ -73,3 +73,5 @@ pkg_locations:
   - "{{ playbook_dir }}/../"
   - /etc/ansible/roles
   - /etc/openstack_deploy
+
+elx_rsyslog_site_host: "{{ elx_rsyslog_hostname_sto1a }}"

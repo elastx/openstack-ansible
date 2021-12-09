@@ -1,0 +1,3 @@
+---
+elx_site: sto3a
+elx_rsyslog_site_host: "{{ elx_rsyslog_hostname_sto3a }}"
