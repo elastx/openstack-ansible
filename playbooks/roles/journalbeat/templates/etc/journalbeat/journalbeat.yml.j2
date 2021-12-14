@@ -52,7 +52,7 @@ name: {{ ansible_hostname }}
 # Optional fields that you can specify to add additional information to the
 # output.
 fields:
-  groups: [{% for group in group_names %}"{{ group }}"{% if not loop.last %},{% endif %}{% endfor %}]
+  groups: [{% for group in journalbeat_all_groups %}"{{ group }}"{% if not loop.last %},{% endif %}{% endfor %}]
 
 queue:
   mem:
