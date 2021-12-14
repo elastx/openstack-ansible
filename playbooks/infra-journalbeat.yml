@@ -1,11 +1,25 @@
 ---
-- name: Gather facts
+- name: Gather facts hosts
+  hosts: hosts
+  gather_facts: "{{ osa_gather_facts | default(True) }}"
+  tags:
+    - always
+    
+- name: Install Journalbeat on hosts
+  hosts: hosts
+  become: yes
+  roles:
+    - role: "journalbeat"
+  tags:
+    - journalbeat
+
+- name: Gather facts lxc_containers
   hosts: all_containers
   gather_facts: "{{ osa_gather_facts | default(True) }}"
   tags:
     - always
 
-- name: Install Journalbeat
+- name: Install Journalbeat in lxc containers
   hosts: all_containers
   become: yes
   roles:
