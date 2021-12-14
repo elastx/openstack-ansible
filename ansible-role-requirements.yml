@@ -45,9 +45,9 @@
   trackbranch: elastx/rocky
 - name: lxc_hosts
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
-  version: 5b67e317ab6f4741fbb3f28b848a62a10057e829
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-lxc_hosts
+  version: 69acfb64443d989ee9eb4086825ff18125b8be6f
+  trackbranch: elastx/rocky
 - name: memcached_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-memcached_server
