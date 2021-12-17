@@ -86,7 +86,7 @@
 - name: os_cinder
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cinder
-  version: a5a355db9be231028d2cef7589fd7ced7a77eb36
+  version: b00cd87db8112bba753bb64a8502f2907c0dacdc
   trackbranch: elastx/rocky
 - name: os_congress
   scm: git
