@@ -26,13 +26,13 @@
         dest: "{{ barbican_p11_lib_path }}/{{ item.value.dest }}"
       with_dict: "{{ barbican_p11_lib_files | default({}) }}"
 
-    - name: Set Fortanix envs in apache2 envvars
-      lineinfile:
-        path: /etc/apache2/envvars
-        line: "{{ item }}"
-      with_items:
-        - "export FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
-        - "export FORTANIX_PKCS11_SIGNING_AES_KEY_AS_HMAC={{ fortanix_sign_aes_as_hmac | default('false') }}"
+    #- name: Set Fortanix envs in apache2 envvars
+    #  lineinfile:
+    #    path: /etc/apache2/envvars
+    #    line: "{{ item }}"
+    #  with_items:
+    #    - "export FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
+    #    - "export FORTANIX_PKCS11_SIGNING_AES_KEY_AS_HMAC={{ fortanix_sign_aes_as_hmac | default('false') }}"
 
     - name: Create Fortanix envvars file
       lineinfile:
@@ -54,5 +54,6 @@
       retries: 5
       delay: 10
       with_items:
-        - apache2
-        - uwsgi
+        #- apache2
+        #- uwsgi
+        - barbican
