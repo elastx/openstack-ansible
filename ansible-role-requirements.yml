@@ -146,7 +146,7 @@
 - name: os_octavia
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_octavia
-  version: bc839ccfe6902d1ae3aaee7edffa574f409960dc
+  version: ce2272a8fe8e14a13685f12609672180d02073f5
   trackbranch: elastx/rocky
 - name: os_rally
   scm: git
