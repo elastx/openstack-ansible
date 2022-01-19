@@ -281,10 +281,10 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: 2897ba40adac3a60c6027a8d492350e562abc917
+  version: 55877e05b0a066f741b57327f594dde52f437678
   trackbranch: elastx/rocky
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 2800d1f537ed7322a771d00a11d9dea4002a2a0d
+  version: 013a34f91a4087076dead2934a113edead990f72
   trackbranch: elastx/rocky
