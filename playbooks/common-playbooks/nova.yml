@@ -153,6 +153,8 @@
         nova_management_address: "{{ management_address }}"
         nova_cinder_rbd_inuse: "{{ hostvars['localhost']['nova_cinder_rbd_inuse'] }}"
       when: install_method == "source"
+      tags:
+        - always
 
     - name: Installing the Nova service (distro)
       include_role:
@@ -161,6 +163,8 @@
         nova_management_address: "{{ management_address }}"
         nova_cinder_rbd_inuse: "{{ hostvars['localhost']['nova_cinder_rbd_inuse'] }}"
       when: install_method == "distro"
+      tags:
+        - always
 
     - name: Configuring system crontab
       include_role:
