@@ -20,3 +20,8 @@ cloudkitty_galera_user: cloudkitty
 # venv fetch configuration
 cloudkitty_venv_tag: "{{ venv_tag }}"
 cloudkitty_venv_download_url: "{{ venv_base_download_url }}/cloudkitty-{{ openstack_release }}-{{ ansible_architecture | lower }}.tgz"
+
+# custom pip config
+pip_extra_index_url: "https://pypi.org/simple"
+pip_extra_trusted_host_list:
+- pypi.org
