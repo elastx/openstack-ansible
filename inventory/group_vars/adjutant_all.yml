@@ -27,6 +27,5 @@ pip_default_index: https://pypi.org/simple
 
 # custom pip config
 pip_extra_index_url: "https://pypi.org/simple"
-pip_links_host_list:
-- ops-int-test.elastx.cloud
+pip_extra_trusted_host_list:
 - pypi.org
