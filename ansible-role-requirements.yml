@@ -10,9 +10,9 @@
   trackbranch: stable/rocky
 - name: pip_install
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-pip_install
-  version: 04ba1935f915ba8207b6ef970949791807a1c12e
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-pip_install
+  version: 639d5bd779fccc6a6b61afc042f318b6a51ada81
+  trackbranch: elastx/rocky
 - name: galera_client
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-galera_client
