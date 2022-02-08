@@ -11,7 +11,7 @@
 - name: pip_install
   scm: git
   src: https://github.com/elastx/openstack-ansible-pip_install
-  version: 639d5bd779fccc6a6b61afc042f318b6a51ada81
+  version: ca5fb0bbc8c5d30490036d06cb20932eef1ed594
   trackbranch: elastx/rocky
 - name: galera_client
   scm: git
