@@ -10,5 +10,7 @@
   become: yes
   roles:
     - role: "logrotate"
+  vars_files:
+    - /playbooks/roles/logrotate/vars/compute-logrotate.yml
   tags:
-    - logritate
+    - logrotate
