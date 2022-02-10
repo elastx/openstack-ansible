@@ -11,7 +11,6 @@ logrotate_applications:
           - notifempty
           - compress
           - delaycompress
-          - endscript
   - name: ceilometer
     definitions:
       - logs:
@@ -27,7 +26,6 @@ logrotate_applications:
           - notifempty
           - nocreate
           - sharedscripts
-          - endscript
   - name: nova
     definitions:
       - logs:
@@ -44,7 +42,6 @@ logrotate_applications:
           - notifempty
           - nocreate
           - sharedscripts
-          - endscript
   - name: neutron
     definitions:
       - logs:
@@ -70,4 +67,3 @@ logrotate_applications:
           - notifempty
           - nocreate
           - sharedscripts
-          - endscript
