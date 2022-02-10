@@ -1,0 +1,14 @@
+---
+- name: Gather facts
+  hosts: compute_hosts
+  gather_facts: "{{ osa_gather_facts | default(True) }}"
+  tags:
+    - always
+    
+- name: Install Logrotate on hypervisors
+  hosts: compute_hosts
+  become: yes
+  roles:
+    - role: "logrotate"
+  tags:
+    - logritate
