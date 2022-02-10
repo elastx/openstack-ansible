@@ -1,0 +1,73 @@
+---
+logrotate_applications:
+  - name: haproxy
+    definitions:
+      - logs:
+          - /var/log/haproxy.log
+        options:
+          - daily
+          - rotate 52
+          - missingok
+          - notifempty
+          - compress
+          - delaycompress
+          - endscript
+  - name: ceilometer
+    definitions:
+      - logs:
+          - /var/log/ceilometer/ceilometer-polling.log
+        options:
+          - copytruncate
+          - daily
+          - missingok
+          - rotate 7
+          - compress
+          - dateext
+          - maxage 14
+          - notifempty
+          - nocreate
+          - sharedscripts
+          - endscript
+  - name: nova
+    definitions:
+      - logs:
+          - /var/log/nova/nova-compute.log
+          - /var/log/nova/privsep-helper.log
+        options:
+          - copytruncate
+          - daily
+          - missingok
+          - rotate 7
+          - compress
+          - dateext
+          - maxage 14
+          - notifempty
+          - nocreate
+          - sharedscripts
+          - endscript
+  - name: neutron
+    definitions:
+      - logs:
+          - /var/log/conntrackd-stats.log
+          - /var/log/conntrackd.log
+          - /var/log/neutron/cisco-apic-host-agent.log
+          - /var/log/neutron/metadata-agent.log
+          - /var/log/neutron/metadata-supervisor.log
+          - /var/log/neutron/neutron-linuxbridge-agent.log
+          - /var/log/neutron/neutron.log
+          - /var/log/neutron/opflex-agent.log
+          - /var/log/neutron/opflex-ep-watcher.log
+          - /var/log/neutron/opflex-ns-proxy-*.log
+          - /var/log/neutron/opflex-state-watcher.log
+        options:
+          - copytruncate
+          - daily
+          - missingok
+          - rotate 7
+          - compress
+          - dateext
+          - maxage 14
+          - notifempty
+          - nocreate
+          - sharedscripts
+          - endscript
