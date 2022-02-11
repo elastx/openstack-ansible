@@ -5,20 +5,24 @@ logrotate_applications:
       - logs:
           - /var/log/horizon/*.log
         options:
+          - copytruncate
           - daily
-          - rotate 52
           - missingok
-          - notifempty
+          - rotate 52
           - compress
-          - delaycompress
+          - dateext
+          - maxage 60
+          - notifempty
   - name: apache2
     definitions:
       - logs:
           - /var/log/apache2/*.log
         options:
+          - copytruncate
           - daily
-          - rotate 52
           - missingok
-          - notifempty
+          - rotate 14
           - compress
-          - delaycompress
+          - dateext
+          - maxage 30
+          - notifempty

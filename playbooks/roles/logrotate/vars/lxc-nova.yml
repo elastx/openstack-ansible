@@ -5,9 +5,11 @@ logrotate_applications:
       - logs:
           - /var/log/nova/*.log
         options:
+          - copytruncate
           - daily
-          - rotate 52
           - missingok
-          - notifempty
+          - rotate 14
           - compress
-          - delaycompress
+          - dateext
+          - maxage 30
+          - notifempty

@@ -5,12 +5,14 @@ logrotate_applications:
       - logs:
           - /var/log/haproxy.log
         options:
+          - copytruncate
           - daily
-          - rotate 52
           - missingok
-          - notifempty
+          - rotate 14
           - compress
-          - delaycompress
+          - dateext
+          - maxage 30
+          - notifempty
   - name: lxc_containers
     definitions:
       - logs:
@@ -19,10 +21,8 @@ logrotate_applications:
           - copytruncate
           - daily
           - missingok
-          - rotate 7
+          - rotate 14
           - compress
           - dateext
-          - maxage 14
+          - maxage 30
           - notifempty
-          - nocreate
-          - sharedscripts

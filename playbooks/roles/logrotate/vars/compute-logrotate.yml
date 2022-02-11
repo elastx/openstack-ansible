@@ -8,13 +8,11 @@ logrotate_applications:
           - copytruncate
           - daily
           - missingok
-          - rotate 7
+          - rotate 14
           - compress
           - dateext
-          - maxage 14
+          - maxage 30
           - notifempty
-          - nocreate
-          - sharedscripts
   - name: nova
     definitions:
       - logs:
@@ -23,13 +21,11 @@ logrotate_applications:
           - copytruncate
           - daily
           - missingok
-          - rotate 7
+          - rotate 14
           - compress
           - dateext
-          - maxage 14
+          - maxage 30
           - notifempty
-          - nocreate
-          - sharedscripts
   - name: neutron
     definitions:
       - logs:
@@ -38,10 +34,8 @@ logrotate_applications:
           - copytruncate
           - daily
           - missingok
-          - rotate 7
+          - rotate 14
           - compress
           - dateext
-          - maxage 14
+          - maxage 30
           - notifempty
-          - nocreate
-          - sharedscripts

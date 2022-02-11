@@ -5,9 +5,11 @@ logrotate_applications:
       - logs:
           - /var/log/adjutant/*.log
         options:
+          - copytruncate
           - daily
-          - rotate 52
           - missingok
-          - notifempty
+          - rotate 52
           - compress
-          - delaycompress
+          - dateext
+          - maxage 60
+          - notifempty
