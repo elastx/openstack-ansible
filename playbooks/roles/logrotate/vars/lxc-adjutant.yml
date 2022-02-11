@@ -13,3 +13,4 @@ logrotate_applications:
           - dateext
           - maxage 60
           - notifempty
+          - nocreate

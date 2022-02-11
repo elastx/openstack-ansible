@@ -13,6 +13,7 @@ logrotate_applications:
           - dateext
           - maxage 30
           - notifempty
+          - nocreate
   - name: lxc_containers
     definitions:
       - logs:
@@ -26,3 +27,4 @@ logrotate_applications:
           - dateext
           - maxage 30
           - notifempty
+          - nocreate
