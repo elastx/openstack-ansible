@@ -1,0 +1,28 @@
+---
+logrotate_applications:
+  - name: haproxy
+    definitions:
+      - logs:
+          - /var/log/haproxy.log
+        options:
+          - daily
+          - rotate 52
+          - missingok
+          - notifempty
+          - compress
+          - delaycompress
+  - name: lxc_containers
+    definitions:
+      - logs:
+          - /var/log/lxc/lxc-elx-*.log
+        options:
+          - copytruncate
+          - daily
+          - missingok
+          - rotate 7
+          - compress
+          - dateext
+          - maxage 14
+          - notifempty
+          - nocreate
+          - sharedscripts

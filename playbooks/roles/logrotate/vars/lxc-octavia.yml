@@ -1,0 +1,13 @@
+---
+logrotate_applications:
+  - name: octavia
+    definitions:
+      - logs:
+          - /var/log/octavia/*.log
+        options:
+          - daily
+          - rotate 52
+          - missingok
+          - notifempty
+          - compress
+          - delaycompress

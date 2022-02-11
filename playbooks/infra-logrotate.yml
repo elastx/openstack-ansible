@@ -1,16 +1,221 @@
 ---
+
+# Gather facts
 - name: Gather facts
-  hosts: compute_hosts
+  hosts: all
   gather_facts: "{{ osa_gather_facts | default(True) }}"
   tags:
     - always
-    
+
+# Compute nodes / hypervisors
+# /var/log/ceilometer/*.log
+# /var/log/nova/*.log
+# /var/log/neutron/*.log
 - name: Install Logrotate on hypervisors
   hosts: compute_hosts
   become: yes
   roles:
     - role: "logrotate"
   vars_files:
-    - /playbooks/roles/logrotate/vars/compute-logrotate.yml
+    - roles/logrotate/vars/compute-logrotate.yml
+  tags:
+    - logrotate
+
+# LXC Nodes
+# /var/log/haproxy.log
+# /var/log/lxc/lxc-elx-*.log
+- name: Install Logrotate on lxc nodes
+  hosts: lxc_hosts
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-nodes.yml
+  tags:
+    - logrotate
+
+# Adjutant lxc containers
+# /var/log/adjutant/*.log
+- name: Install Logrotate in adjutant lxc containers
+  hosts: adjutant_api
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-adjutant.yml
+  tags:
+    - logrotate
+
+# Barbican lxc containers
+# no logs currently
+
+# Ceilometer lxc containers
+# no logs currently
+
+# Cinder_api lxc containers
+# no logs currently
+
+# Cloudkitty lxc containers
+# /var/log/cloudkitty/*log
+- name: Install Logrotate in cloudkitty lxc containers
+  hosts: cloudkitty_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-cloudkitty.yml
+  tags:
+    - logrotate
+
+# Galera lxc containers
+# /var/log/mysql_logs/*log
+- name: Install Logrotate in galera lxc containers
+  hosts: galera_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-galera.yml
+  tags:
+    - logrotate
+
+# Glance lxc containers
+# /var/log/glance/*log
+- name: Install Logrotate in glance lxc containers
+  hosts: glance_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-glance.yml
+  tags:
+    - logrotate
+
+# Heat lxc containers
+# /var/log/heat/*log
+- name: Install Logrotate in heat lxc containers
+  hosts: heat_api
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-heat.yml
+  tags:
+    - logrotate
+
+# Horizon lxc containers
+# /var/log/horizon/*.log
+# /var/log/apache2/*.log
+- name: Install Logrotate in horizon lxc containers
+  hosts: horizon
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-horizon.yml
+  tags:
+    - logrotate
+
+# Keystone lxc containers
+# /var/log/apache2/*.log
+- name: Install Logrotate in keystone lxc containers
+  hosts: keystone_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-keystone.yml
+  tags:
+    - logrotate
+
+# Memcached lxc containers
+# no logs currently
+
+# neutron_agents lxc containers
+# /var/log/neutron/*.log
+- name: Install Logrotate in neutron_agents lxc containers
+  hosts: neutron_agents_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-neutron_agents.yml
+  tags:
+    - logrotate
+
+# neutron_server lxc containers
+# /var/log/neutron/*.log
+- name: Install Logrotate in neutron_server lxc containers
+  hosts: neutron_server_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-neutron_server.yml
+  tags:
+    - logrotate
+
+# nova_api lxc containers
+# /var/log/nova/*.log
+- name: Install Logrotate in nova lxc containers
+  hosts: nova_api_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-nova.yml
+  tags:
+    - logrotate
+
+# octavia lxc containers
+# /var/log/octavia/*.log
+- name: Install Logrotate in octavia lxc containers
+  hosts: octavia-api
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-octavia.yml
+  tags:
+    - logrotate
+
+# rabbit_mq lxc containers
+# /var/log/rabbitmq/*.log
+# /var/log/rabbitmq/log/*.log
+- name: Install Logrotate in rabbit_mq lxc containers
+  hosts: rabbitmq
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-rabbit_mq.yml
+  tags:
+    - logrotate
+
+# telemetry_rabbitmq lxc containers
+# /var/log/rabbitmq/*.log
+# /var/log/rabbitmq/log/*.log
+- name: Install Logrotate in telemetry_rabbit_mq lxc containers
+  hosts: telemetry_rabbitmq
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-rabbit_mq.yml
+  tags:
+    - logrotate
+
+# utility lxc containers
+# no logs currently
+
+# swift_proxy lxc containers
+# /var/log/swift/*.log
+- name: Install Logrotate in swift_proxy lxc containers
+  hosts: swift_proxy_container
+  become: yes
+  roles:
+    - role: "logrotate"
+  vars_files:
+    - roles/logrotate/vars/lxc-swift_proxy.yml
   tags:
     - logrotate

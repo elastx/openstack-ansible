@@ -1,0 +1,13 @@
+---
+logrotate_applications:
+  - name: neutron
+    definitions:
+      - logs:
+          - /var/log/neutron/*.log
+        options:
+          - daily
+          - rotate 52
+          - missingok
+          - notifempty
+          - compress
+          - delaycompress

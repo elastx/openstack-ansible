@@ -1,0 +1,17 @@
+---
+logrotate_applications:
+  - name: galera
+    definitions:
+      - logs:
+          - /var/log/mysql_logs/*log
+        options:
+          - copytruncate
+          - daily
+          - missingok
+          - rotate 7
+          - compress
+          - dateext
+          - maxage 14
+          - notifempty
+          - nocreate
+          - sharedscripts

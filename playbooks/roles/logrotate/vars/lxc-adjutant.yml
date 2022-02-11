@@ -1,0 +1,13 @@
+---
+logrotate_applications:
+  - name: adjutant
+    definitions:
+      - logs:
+          - /var/log/adjutant/*.log
+        options:
+          - daily
+          - rotate 52
+          - missingok
+          - notifempty
+          - compress
+          - delaycompress

@@ -1,0 +1,13 @@
+---
+logrotate_applications:
+  - name: swift
+    definitions:
+      - logs:
+          - /var/log/swift/*.log
+        options:
+          - daily
+          - rotate 52
+          - missingok
+          - notifempty
+          - compress
+          - delaycompress

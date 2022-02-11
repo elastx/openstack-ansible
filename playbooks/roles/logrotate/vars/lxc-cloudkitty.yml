@@ -1,0 +1,17 @@
+---
+logrotate_applications:
+  - name: cloudkitty
+    definitions:
+      - logs:
+          - /var/log/cloudkitty/*log
+        options:
+          - copytruncate
+          - daily
+          - missingok
+          - rotate 7
+          - compress
+          - dateext
+          - maxage 14
+          - notifempty
+          - nocreate
+          - sharedscripts
