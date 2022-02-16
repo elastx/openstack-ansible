@@ -160,9 +160,9 @@
   trackbranch: stable/rocky
 - name: os_swift
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_swift
-  version: 817090d65d36c69cd9bea3b4f3d38ddb5ef28a3b
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-os_swift
+  version: ecc01faf9461416eb09fe4bf903f7db03ff1eb46
+  trackbranch: elastx/rocky
 - name: os_tacker
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_tacker
