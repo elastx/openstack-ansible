@@ -1,4 +1,14 @@
 ---
+- name: Install logrotate
+  package:
+    name: logrotate
+    state: present
+
+- name: Create rsyslog group if needed
+  group:
+    name: syslog
+    state: present
+
 - name: create logrotate application configuration files
   become: true
   template:
