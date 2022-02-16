@@ -80,9 +80,9 @@
   trackbranch: stable/rocky
 - name: os_ceilometer
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
-  version: 257e22ccf78716cc7a09ae67b27ae8027adfce57
-  trackbranch: stable/rocky
+  src: https://github.com/elastx/openstack-ansible-os_ceilometer
+  version: 65b4fd5a229d10dc29f217517b41bccd996c15c0
+  trackbranch: elastx/rocky
 - name: os_cinder
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cinder
