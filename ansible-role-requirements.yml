@@ -81,7 +81,7 @@
 - name: os_ceilometer
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_ceilometer
-  version: 65b4fd5a229d10dc29f217517b41bccd996c15c0
+  version: 2149acde33f88f46677076b8b0ae128cd958b7cc
   trackbranch: elastx/rocky
 - name: os_cinder
   scm: git
