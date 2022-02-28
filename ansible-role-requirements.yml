@@ -286,5 +286,5 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 6e224c6f7db0828deb3003d4a13a6f3303168cde
+  version: 35be556e0db65ff0d799e29cd15c0ee1dad2edf8
   trackbranch: elastx/rocky
