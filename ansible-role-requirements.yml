@@ -45,9 +45,9 @@
   trackbranch: elastx/train
 - name: lxc_hosts
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
-  version: e46eccbd404171ad291d4665814420e9a046e5a7
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-lxc_hosts
+  version: e70940aae807c8ebf869e038f3d73a2a36f5fddb
+  trackbranch: elastx/train
 - name: memcached_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-memcached_server
