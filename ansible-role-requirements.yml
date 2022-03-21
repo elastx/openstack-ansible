@@ -306,7 +306,7 @@
 - name: python_venv_build
   src: https://opendev.org/openstack/ansible-role-python_venv_build
   scm: git
-  version: 74d3eeacc72d5d6bb7a915e83440626a8d16a1c0
+  version: 93a0e6c90b91e0691c11d39db077f6f2d715d463
   trackbranch: stable/train
 - name: uwsgi
   src: https://opendev.org/openstack/ansible-role-uwsgi
