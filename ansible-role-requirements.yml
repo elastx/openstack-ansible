@@ -85,9 +85,9 @@
   trackbranch: stable/train
 - name: os_ceilometer
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
-  version: 3aca390dddd88efe9366cf1e22b160b6dfd13d86
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_ceilometer
+  version: 2788e670ef462fd67c3ba02d71197a78ec036b17
+  trackbranch: elastx/train
 - name: os_cinder
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cinder
