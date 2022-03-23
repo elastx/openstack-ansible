@@ -93,6 +93,11 @@
   src: https://github.com/elastx/openstack-ansible-os_cinder
   version: a9529728c8c53cb1be3613451cc08be02ad71d00
   trackbranch: elastx/train
+- name: os_cloudkitty
+  scm: git
+  src: https://opendev.org/openstack/openstack-ansible-os_cloudkitty
+  version: a9c8e0f8a2b2e0afe155c315b16b3baf76fea579
+  trackbranch: stable/train
 - name: os_congress
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_congress
