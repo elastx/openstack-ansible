@@ -31,6 +31,7 @@ export ANSIBLE_FILTER_PLUGINS="${ANSIBLE_FILTER_PLUGINS:-/etc/ansible/roles/ceph
 export ANSIBLE_ACTION_PLUGINS="${ANSIBLE_ACTION_PLUGINS:-/etc/ansible/roles/ceph-ansible/plugins/actions}"
 export ANSIBLE_CALLBACK_PLUGINS="${ANSIBLE_CALLBACK_PLUGINS:-/etc/ansible/roles/ceph-ansible/plugins/callback}"
 export ANSIBLE_MODULE_UTILS="${ANSIBLE_MODULE_UTILS:-/etc/ansible/roles/ceph-ansible/module_utils}"
+export ANSIBLE_CALLBACK_WHITELIST="profile_tasks"
 
 export ANSIBLE_GATHERING="${ANSIBLE_GATHERING:-smart}"
 export ANSIBLE_GATHER_SUBSET="${ANSIBLE_GATHER_SUBSET:-!all,min}"
