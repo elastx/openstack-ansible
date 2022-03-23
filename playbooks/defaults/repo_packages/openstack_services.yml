@@ -63,6 +63,20 @@ cinder_git_project_group: cinder_all
 cinder_git_track_branch: stable/ussuri
 
 
+## Cloudkitty service
+cloudkitty_git_repo: https://opendev.org/openstack/cloudkitty
+cloudkitty_git_install_branch: 1eb5f317e16f84a17a337882a04b04e9d9111df5  # HEAD as of 04.26.2023
+cloudkitty_git_project_group: cloudkitty_all
+cloudkitty_git_track_branch: stable/ussuri
+
+
+# Cloudkitty dashboard plugin
+cloudkitty_dashboard_git_repo: https://opendev.org/openstack/cloudkitty-dashboard
+cloudkitty_dashboard_git_install_branch: 8a7b700bda5994d5c854df55edc8cda5819811f2  # HEAD as of 04.26.2023
+cloudkitty_dashboard_git_project_group: horizon_all
+cloudkitty_dashboard_git_track_branch: stable/ussuri
+
+
 ## Designate service
 designate_git_repo: https://opendev.org/openstack/designate
 designate_git_install_branch: bdbbe6a396682f316304027845c818f94e6f4cd3  # HEAD as of 04.20.2023

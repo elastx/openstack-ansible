@@ -204,6 +204,18 @@ haproxy_default_services:
         - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['cinder_api'] is defined and groups['cinder_api'] | length > 0 }}"
   - service:
+      haproxy_service_name: cloudkitty_api
+      haproxy_backend_nodes: "{{ groups['cloudkitty_api'] | default([]) }}"
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_port: 8089
+      haproxy_balance_type: http
+      haproxy_balance_alg: source
+      haproxy_timeout_client: 30m
+      haproxy_timeout_server: 30m
+      haproxy_backend_options:
+        - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+      haproxy_service_enabled: "{{ groups['cloudkitty_api'] is defined and groups['cloudkitty_api'] | length > 0 }}"
+  - service:
       haproxy_service_name: horizon
       haproxy_backend_nodes: "{{ groups['horizon_all'] | default([]) }}"
       haproxy_ssl: "{{ haproxy_ssl }}"
