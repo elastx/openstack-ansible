@@ -31,7 +31,7 @@
 
 ## Global Requirements
 requirements_git_repo: https://opendev.org/openstack/requirements
-requirements_git_install_branch: 0a1371c621c6ca5600ab6d5546e3ba64306956cc # HEAD as of 09.05.2021
+requirements_git_install_branch: ef77a2ae95debb2be64598c1c624d5d4e08b4cdb # HEAD as of 03.25.2022
 requirements_git_track_branch: stable/train
 
 
@@ -44,28 +44,28 @@ aodh_git_track_branch: stable/train
 
 ## Barbican service
 barbican_git_repo: https://opendev.org/openstack/barbican
-barbican_git_install_branch: 3b66ec1a22e10e817e43d3594f4d0edc39386a50  # HEAD as of 09.05.2021
+barbican_git_install_branch: c718783492a8759cc9fc2a58df192e5a5b570bed  # HEAD as of 03.25.2022
 barbican_git_project_group: barbican_all
 barbican_git_track_branch: stable/train
 
 
 ## Ceilometer service
 ceilometer_git_repo: https://opendev.org/openstack/ceilometer
-ceilometer_git_install_branch: 527e58bb852d3ef3a42e72691dc4a16b0e8006f8  # HEAD as of 09.05.2021
+ceilometer_git_install_branch: 20756c9bd8ccb5e25c61e68769d04d4913725128  # HEAD as of 03.25.2022
 ceilometer_git_project_group: all
 ceilometer_git_track_branch: stable/train
 
 
 ## Cinder service
 cinder_git_repo: https://opendev.org/openstack/cinder
-cinder_git_install_branch: daa211e28e790e3047444f0dcb5a0d26adb92dac  # HEAD as of 09.05.2021
+cinder_git_install_branch: c093edab2d11938ac88cbde3323b90d50e8120a6  # HEAD as of 03.25.2022
 cinder_git_project_group: cinder_all
 cinder_git_track_branch: stable/train
 
 
 ## Designate service
 designate_git_repo: https://opendev.org/openstack/designate
-designate_git_install_branch: f101fab29540ba11481abbf9c7558f976d14b26b  # HEAD as of 09.05.2021
+designate_git_install_branch: 58e441e4b06bb607ce24b893fb0f80ff21742446  # HEAD as of 03.25.2022
 designate_git_project_group: designate_all
 designate_git_track_branch: stable/train
 
@@ -86,7 +86,7 @@ glance_git_track_branch: stable/train
 
 ## Heat service
 heat_git_repo: https://opendev.org/openstack/heat
-heat_git_install_branch: 437c43d45259fd2d08e65c653daee9f2ab12f17a  # HEAD as of 09.05.2021
+heat_git_install_branch: 09373756437234f9c79c12acc25229964bda61b0  # HEAD as of 03.25.2022
 heat_git_package_name: openstack-heat
 heat_git_project_group: heat_all
 heat_git_track_branch: stable/train
@@ -99,7 +99,7 @@ heat_dashboard_git_track_branch: stable/train # Not branched yet
 
 ## Horizon service
 horizon_git_repo: https://opendev.org/openstack/horizon
-horizon_git_install_branch: b72b7e7ac92bd8ce246e9539d2442d729dec4cde  # HEAD as of 09.05.2021
+horizon_git_install_branch: 3153a5bca88548f1b14efd8844d9b722b5dfeafd  # HEAD as of 03.25.2022
 horizon_git_project_group: horizon_all
 horizon_git_track_branch: stable/train
 
@@ -136,7 +136,7 @@ sahara_dashboard_git_track_branch: stable/train
 
 ## Keystone service
 keystone_git_repo: https://opendev.org/openstack/keystone
-keystone_git_install_branch: fd5fa12977d07b4441307ac52dd0db7966ad3a4f  # HEAD as of 09.05.2021
+keystone_git_install_branch: 568888ae4b433c0f41968891fabf04c19b1c7139  # HEAD as of 03.25.2022
 keystone_git_project_group: keystone_all
 keystone_git_track_branch: stable/train
 
@@ -150,12 +150,12 @@ manila_git_track_branch: stable/train
 
 ## Neutron service
 neutron_git_repo: https://opendev.org/openstack/neutron
-neutron_git_install_branch: 0f18d406a4134cf769fdf6f2a004c98cbe409215  # HEAD as of 09.05.2021
+neutron_git_install_branch: c3c2d9d3cc45e3d196339587bf1a35be4e43b4b8  # HEAD as of 03.25.2022
 neutron_git_project_group: neutron_all
 neutron_git_track_branch: stable/train
 
 neutron_vpnaas_git_repo: https://opendev.org/openstack/neutron-vpnaas
-neutron_vpnaas_git_install_branch: d16083786341308b9d8dbe173ae920bc1b9396c9  # HEAD as of 09.05.2021
+neutron_vpnaas_git_install_branch: ddba180bd5e6bdfe4f2c459ab1078cd0cf42860d  # HEAD as of 03.25.2022
 neutron_vpnaas_git_project_group: neutron_all
 neutron_vpnaas_git_track_branch: stable/train
 
@@ -200,7 +200,7 @@ networking_sfc_git_track_branch: stable/train
 
 ## Nova service
 nova_git_repo: https://opendev.org/openstack/nova
-nova_git_install_branch: 10df17638a1587f740c46a574c923df9348c3344  # HEAD as of 09.05.2021
+nova_git_install_branch: a5da31ec1ea1d1c7b4df146857982699ebdc328e  # HEAD as of 03.25.2022
 nova_git_project_group: nova_all
 nova_git_track_branch: stable/train
 
@@ -214,7 +214,7 @@ sahara_git_track_branch: stable/train
 
 ## Swift service
 swift_git_repo: https://opendev.org/openstack/swift
-swift_git_install_branch: 96e24bb1dbbac0313cea1f233f8cd918c6d820ac # HEAD as of 09.05.2021
+swift_git_install_branch: 2bffa1e205c499768abd767f0ec4d6f0dc745e85 # HEAD as of 03.25.2022
 swift_git_project_group: swift_all
 swift_git_track_branch: stable/train
 
@@ -271,7 +271,7 @@ trove_dashboard_git_track_branch: stable/train
 
 ## Octavia service
 octavia_git_repo: https://opendev.org/openstack/octavia
-octavia_git_install_branch: db24d7bb5187676c0501e722b7eaa5bd9161829e  # HEAD as of 09.05.2021
+octavia_git_install_branch: 82e3ede9584d7dbbfdf93c704d8f380e6141a09c  # HEAD as of 03.25.2022
 octavia_git_project_group: octavia_all
 octavia_git_track_branch: stable/train
 
@@ -306,7 +306,7 @@ congress_git_track_branch: stable/train
 
 ## Horizon Octavia dashboard plugin
 octavia_dashboard_git_repo: https://opendev.org/openstack/octavia-dashboard
-octavia_dashboard_git_install_branch: 8463b8f443e2a1f493c5b7cedf7fca5259a231aa  # HEAD as of 09.05.2021
+octavia_dashboard_git_install_branch: 12ca23a55225b66767f343a63559c0e2a8753216  # HEAD as of 03.25.2022
 octavia_dashboard_git_project_group: horizon_all
 octavia_dashboard_git_track_branch: stable/train
 
