@@ -1,0 +1,18 @@
+journalbeat_repo_apt: https://artifacts.elastic.co/packages/7.x/apt
+journalbeat_major_version: "7.x"
+journalbeat_version: "7.12.0"
+
+journalbeat_logstash_output_enabled: true
+journalbeat_logstash_targets:
+  - example-server.com:5044
+
+journalbeat_queue_mem_events: 4096
+
+journalbeat_intput_paths: "[]"
+
+# Note that this is en explicit list of which inputs is to be gathered
+journalbeat_input_includes: "[]"
+
+journalbeat_extra_groups: "[]"
+
+journalbeat_all_groups: "{{ group_names + journalbeat_extra_groups }}"
