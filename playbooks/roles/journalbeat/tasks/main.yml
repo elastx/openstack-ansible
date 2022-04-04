@@ -1,0 +1,61 @@
+---
+# Journalbeat uses elasticsearch repository
+- name: Add Elastic GPG key
+  apt_key:
+    id: D88E42B4
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  tags:
+    - journalbeat
+    - gpg
+
+#- name: Configure journalbeat repo (RPM)
+- name: Configure journalbeat repo (APT)
+  apt_repository:
+    repo: "deb {{ journalbeat_repo_apt }} stable main"
+    filename: "{{ journalbeat_major_version }}"
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - journalbeat
+    - repo
+
+- name: Create apt preferences to select and hold specific version
+  template:
+    src: etc/apt/preferences.d/journalbeat.j2
+    dest: /etc/apt/preferences.d/journalbeat
+  when: ansible_os_family == "Debian"
+  tags:
+    - journalbeat
+    - package
+
+#- name: Install journalbeat (RPM)
+- name: Install journalbeat (APT)
+  apt:
+    name: journalbeat
+    state: latest
+  notify: restart journalbeat
+  tags:
+    - journalbeat
+    - package
+
+- name: Configure journalbeat
+  template:
+    src: etc/journalbeat/journalbeat.yml.j2
+    dest: /etc/journalbeat/journalbeat.yml
+  notify: restart journalbeat
+  tags:
+    - journalbeat
+
+- name: Start and enable journalbeat
+  service:
+    name: journalbeat
+    state: started
+    enabled: true
+  tags:
+    - journalbeat
+
+- name: Flush handlers
+  meta: flush_handlers
+  tags:
+    - journalbeat

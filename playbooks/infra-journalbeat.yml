@@ -1,0 +1,14 @@
+---
+- name: Gather facts
+  hosts: hosts:all_containers
+  gather_facts: "{{ osa_gather_facts | default(True) }}"
+  tags:
+    - always
+
+- name: Install Journalbeat on hosts
+  hosts: hosts:all_containers
+  become: yes
+  roles:
+    - role: "journalbeat"
+  tags:
+    - journalbeat
