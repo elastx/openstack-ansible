@@ -170,9 +170,9 @@
   trackbranch: elastx/train
 - name: os_octavia
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_octavia
-  version: 7cbec4b075e1af1747b7c7909b57cea2efbcf6b6
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_octavia
+  version: e5c3871b419e4318906e5e9575b08a450eb3f08f
+  trackbranch: elastx/train
 - name: os_panko
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_panko
