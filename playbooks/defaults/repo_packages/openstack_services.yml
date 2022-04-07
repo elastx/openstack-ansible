@@ -336,3 +336,17 @@ blazar_nova_git_repo: https://opendev.org/openstack/blazar-nova
 blazar_nova_git_install_branch: 48579dd44794810f8f3eafe18de6b73569483086  # HEAD as of 09.05.2021
 blazar_nova_git_project_group: blazar_all
 blazar_nova_git_track_branch: stable/train
+
+
+## Adjutant service
+adjutant_git_repo: https://opendev.org/openstack/adjutant
+adjutant_git_install_branch: 592e24170ef917d490203a6d2daaaabd0c467b7f  # HEAD as of 2022-04-07
+adjutant_git_project_group: adjutant_all
+adjutant_git_track_branch: 0.5.0
+
+
+# Adjutant dashboard plugin
+adjutant_dashboard_git_repo: https://github.com/elastx/adjutant-ui
+adjutant_dashboard_git_install_branch: b836967f337b514773f1da3b53ba089075c68745  # HEAD as of 2022-04-07
+adjutant_dashboard_git_project_group: horizon_all
+adjutant_dashboard_git_track_branch: elastx/train
