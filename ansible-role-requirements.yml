@@ -96,8 +96,8 @@
 - name: os_cloudkitty
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_cloudkitty
-  version: 109825adb004259daad8a786b705d48b51be0c9c
-  trackbranch: stable/train
+  version: f6d40ee6496f55dc2f5f4ae6e0af732ccf1de8bb
+  trackbranch: elastx/train
 - name: os_congress
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_congress
