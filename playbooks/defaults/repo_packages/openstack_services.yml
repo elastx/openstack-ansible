@@ -340,3 +340,17 @@ zun_kuryr_lib_git_repo: https://opendev.org/openstack/kuryr
 zun_kuryr_lib_git_install_branch: dbcca8aa716677c273ec898bc6bc5dc08a17644f # HEAD as of 10.09.2021
 zun_kuryr_lib_git_project_group: zun_all
 zun_kuryr_lib_git_track_branch: stable/ussuri
+
+
+## Adjutant service
+adjutant_git_repo: https://opendev.org/openstack/adjutant
+adjutant_git_install_branch: 4f205ddc0b9e1356d6679651b488f2fbe02c8e6d  # HEAD as of 2023-04-24
+adjutant_git_project_group: adjutant_all
+adjutant_git_track_branch: 0.5.1
+
+
+# Adjutant dashboard plugin
+adjutant_dashboard_git_repo: https://github.com/elastx/adjutant-ui
+adjutant_dashboard_git_install_branch: b836967f337b514773f1da3b53ba089075c68745  # HEAD as of 2022-04-07
+adjutant_dashboard_git_project_group: horizon_all
+adjutant_dashboard_git_track_branch: elastx/train

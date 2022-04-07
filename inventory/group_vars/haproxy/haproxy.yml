@@ -478,3 +478,14 @@ haproxy_default_services:
       haproxy_backend_options:
         - "httpchk GET /v1 HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['zun_api'] is defined and groups['zun_api'] | length > 0 }}"
+  - service:
+      haproxy_service_name: adjutant_api
+      haproxy_backend_nodes: "{{ groups['adjutant_api'] | default([]) }}"
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_port: 5050
+      haproxy_balance_type: http
+      haproxy_backend_options:
+        - "forwardfor"
+        - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+        - "httplog"
+      haproxy_service_enabled: "{{ groups['adjutant_api'] is defined and groups['adjutant_api'] | length > 0 }}"

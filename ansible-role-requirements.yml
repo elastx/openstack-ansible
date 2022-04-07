@@ -318,3 +318,8 @@
   scm: git
   version: 69f254bbead86af9c8fa3dae9576b359f8cb4c2e
   trackbranch: stable/ussuri
+- name: os_adjutant
+  scm: git
+  src: https://github.com/elastx/openstack-ansible-os_adjutant
+  version: 39fe84b594fed13d32b514f43f15642059d12c37
+  trackbranch: stable/train
