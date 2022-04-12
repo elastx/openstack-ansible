@@ -351,6 +351,6 @@ adjutant_git_track_branch: 0.5.1
 
 # Adjutant dashboard plugin
 adjutant_dashboard_git_repo: https://github.com/elastx/adjutant-ui
-adjutant_dashboard_git_install_branch: b836967f337b514773f1da3b53ba089075c68745  # HEAD as of 2022-04-07
+adjutant_dashboard_git_install_branch: 017b7bf9da5c4b29701ad20facbce85c2c4b8ded  # HEAD as of 2022-04-12
 adjutant_dashboard_git_project_group: horizon_all
-adjutant_dashboard_git_track_branch: elastx/train
+adjutant_dashboard_git_track_branch: elastx/ussuri
