@@ -90,9 +90,9 @@
   trackbranch: elastx/ussuri
 - name: os_cloudkitty
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cloudkitty
-  version: 16ba770bb38ed7f0e4d6992e46623d1bf217c0d7
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_cloudkitty
+  version: 38315c33dbf0ddecd649aff0956bc45fba1e92e6
+  trackbranch: elastx/ussuri
 - name: os_congress
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_congress
@@ -120,9 +120,9 @@
   trackbranch: stable/ussuri
 - name: os_horizon
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_horizon
-  version: 9f2ee988163c1cd0ee220c5d54e99b2d5985bffb
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: f417e75f9c9fa16524bb7ea26ae603108ab8bf9f
+  trackbranch: elastx/ussuri
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
@@ -160,9 +160,9 @@
   trackbranch: stable/ussuri
 - name: os_nova
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_nova
-  version: 56d533d7600943af7bd45e90d90830ee9c3eb39f
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_nova
+  version: 0c520469aaa4fe5cb5aa1bfa11aa5065f44f4083
+  trackbranch: elastx/ussuri
 - name: os_octavia
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_octavia
