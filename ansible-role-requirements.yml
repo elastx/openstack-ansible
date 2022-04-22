@@ -25,9 +25,9 @@
   trackbranch: stable/ussuri
 - name: haproxy_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-haproxy_server
-  version: 4485110ab3b0beb4f9b0687ac32389caa15be327
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-haproxy_server
+  version: c4e30cd0f265d3ee1a1a30a37a74b37043431ed7
+  trackbranch: elastx/ussuri
 - name: keepalived
   scm: git
   src: https://github.com/evrardjp/ansible-keepalived
@@ -35,14 +35,14 @@
   trackbranch: master
 - name: lxc_container_create
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_container_create
-  version: 634471b8e36331bbd72b74db68e224f35dd1ac6c
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-lxc_container_create
+  version: e3be509a5af5a5985e0d14b4f53e2ea126b748d9
+  trackbranch: elastx/ussuri
 - name: lxc_hosts
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
-  version: 46ce3b3edab51e5b56f50e8781d5373b38244a64
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-lxc_hosts
+  version: 0cced1da38fb87e85dc441236fafee20dfc9368c
+  trackbranch: elastx/ussuri
 - name: memcached_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-memcached_server
@@ -55,9 +55,9 @@
   trackbranch: stable/ussuri
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: b8154166bf7c91502b9f088261f0ec409cccc5d1
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: bdf6ebea7f03460c70cea80b7655aa064861f824
+  trackbranch: elastx/ussuri
 - name: openstack_openrc
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
@@ -80,14 +80,14 @@
   trackbranch: stable/ussuri
 - name: os_ceilometer
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
-  version: 396b89817c654ceb18813b624b47bfbf7afcafd8
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_ceilometer
+  version: 3204e8d8cb0f3c97bbdbbf67a665e5630f464b34
+  trackbranch: elastx/ussuri
 - name: os_cinder
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cinder
-  version: 98a8a79449638596e165b0c09ff54097ea2f74f2
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_cinder
+  version: 40c68becc037981ccae39c0b033a693520f500ec
+  trackbranch: elastx/ussuri
 - name: os_cloudkitty
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_cloudkitty
