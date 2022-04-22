@@ -155,9 +155,9 @@
   trackbranch: stable/ussuri
 - name: os_neutron
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_neutron
-  version: bd74c76dfb5ed5e0d1a01ee6e1efd1bdc7871371
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_neutron
+  version: 270e6c3a1c85df3a0bf73a1e99553ca891300792
+  trackbranch: elastx/ussuri
 - name: os_nova
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_nova
