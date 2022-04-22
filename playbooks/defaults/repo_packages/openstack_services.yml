@@ -31,7 +31,7 @@
 
 ## Global Requirements
 requirements_git_repo: https://opendev.org/openstack/requirements
-requirements_git_install_branch: 102490d641ac564bb2ecb760897f67ebbdeea0e4 # HEAD as of 10.09.2021
+requirements_git_install_branch: 36a2c2677e56afe0ece61cc0ade0f89285440ea0 # HEAD as of 04.22.2022
 requirements_git_track_branch: stable/ussuri
 
 
@@ -44,7 +44,7 @@ aodh_git_track_branch: stable/ussuri
 
 ## Barbican service
 barbican_git_repo: https://opendev.org/openstack/barbican
-barbican_git_install_branch: 7cf483e205736483b4999abfe4baf6f626fff862  # HEAD as of 10.09.2021
+barbican_git_install_branch: 71ace78f88302956a6c39af98c8138ef6f02c200  # HEAD as of 04.22.2022
 barbican_git_project_group: barbican_all
 barbican_git_track_branch: stable/ussuri
 
@@ -58,14 +58,14 @@ ceilometer_git_track_branch: stable/ussuri
 
 ## Cinder service
 cinder_git_repo: https://opendev.org/openstack/cinder
-cinder_git_install_branch: b2966f2e892a8caec484f2e80f6be58ed32278e5  # HEAD as of 10.09.2021
+cinder_git_install_branch: 7c3f7379feb41664c3881de99b54ca13a6b8ec61  # HEAD as of 04.22.2022
 cinder_git_project_group: cinder_all
 cinder_git_track_branch: stable/ussuri
 
 
 ## Designate service
 designate_git_repo: https://opendev.org/openstack/designate
-designate_git_install_branch: b967e9f706373f1aad6db882c2295fbbe1fadfc9  # HEAD as of 10.09.2021
+designate_git_install_branch: a9ab61bc1d98248af108d895ce2cb7696818dcda  # HEAD as of 04.22.2022
 designate_git_project_group: designate_all
 designate_git_track_branch: stable/ussuri
 
@@ -79,14 +79,14 @@ designate_dashboard_git_track_branch: stable/ussuri
 
 ## Glance service
 glance_git_repo: https://opendev.org/openstack/glance
-glance_git_install_branch: 5ed4b41a7c8292ebe30c1cbeac54b68439b626dc  # HEAD as of 10.09.2021
+glance_git_install_branch: 27b3ffef9a3ea2165a0fb48918cefa9fe35cc923  # HEAD as of 04.22.2022
 glance_git_project_group: glance_all
 glance_git_track_branch: stable/ussuri
 
 
 ## Heat service
 heat_git_repo: https://opendev.org/openstack/heat
-heat_git_install_branch: c0d82c5e312309320e6c9e5ca84cd3635375cce7  # HEAD as of 10.09.2021
+heat_git_install_branch: 5fb64c0058de9af67f572cc0c6aabf98d58162a0  # HEAD as of 04.22.2022
 heat_git_package_name: openstack-heat
 heat_git_project_group: heat_all
 heat_git_track_branch: stable/ussuri
@@ -99,7 +99,7 @@ heat_dashboard_git_track_branch: stable/ussuri
 
 ## Horizon service
 horizon_git_repo: https://opendev.org/openstack/horizon
-horizon_git_install_branch: 774800c1b6a974da99cf7def554e8a1ae52dd61e  # HEAD as of 10.09.2021
+horizon_git_install_branch: d25fecedda0124ea9743ac259406f6accb11c64a  # HEAD as of 04.22.2022
 horizon_git_project_group: horizon_all
 horizon_git_track_branch: stable/ussuri
 
@@ -117,7 +117,7 @@ magnum_dashboard_git_track_branch: stable/ussuri
 
 ## Horizon Masakari dashboard plugin
 masakari_dashboard_git_repo: https://opendev.org/openstack/masakari-dashboard
-masakari_dashboard_git_install_branch: d5c42e7e1a262ccb782d218a71214b9bbf238c3c  # HEAD as of 10.09.2021
+masakari_dashboard_git_install_branch: 93fc60e681a190caecc65fc3e132ec0cd9a671c0  # HEAD as of 04.22.2022
 masakari_dashboard_git_project_group: horizon_all
 masakari_dashboard_git_track_branch: stable/ussuri
 
@@ -136,21 +136,21 @@ sahara_dashboard_git_track_branch: stable/ussuri
 
 ## Keystone service
 keystone_git_repo: https://opendev.org/openstack/keystone
-keystone_git_install_branch: 2cf2912fd4d23bd8515313eafc77c6df92c68b81  # HEAD as of 10.09.2021
+keystone_git_install_branch: 7941a0b7849dee360baeb7bc9af274b34ef7fa22  # HEAD as of 04.22.2022
 keystone_git_project_group: keystone_all
 keystone_git_track_branch: stable/ussuri
 
 
 ## Manila service
 manila_git_repo: https://opendev.org/openstack/manila
-manila_git_install_branch: 5115f348d455a602d43f70ad4467b8eaa637a845  # HEAD as of 10.09.2021
+manila_git_install_branch: 54cd7315dad439c9d3b51e09a00ebad87c1d65eb  # HEAD as of 04.22.2022
 manila_git_project_group: manila_all
 manila_git_track_branch: stable/ussuri
 
 
 ## Neutron service
 neutron_git_repo: https://opendev.org/openstack/neutron
-neutron_git_install_branch: 6a761dc42da99625bb18b4aabf4e2b340396c78c  # HEAD as of 10.09.2021
+neutron_git_install_branch: ee1b021464630e288095d774ea96165dcc5b431c  # HEAD as of 04.22.2022
 neutron_git_project_group: neutron_all
 neutron_git_track_branch: stable/ussuri
 
@@ -160,7 +160,7 @@ neutron_vpnaas_git_project_group: neutron_all
 neutron_vpnaas_git_track_branch: stable/ussuri
 
 neutron_fwaas_git_repo: https://opendev.org/openstack/neutron-fwaas
-neutron_fwaas_git_install_branch: 59bad17387d15f86ea7d08f8675208160a999ffe  # HEAD as of 10.09.2021
+neutron_fwaas_git_install_branch: c3fce4306b3ec15d2d134b344d2773339221dd61  # HEAD as of 04.22.2022
 neutron_fwaas_git_project_group: neutron_all
 neutron_fwaas_git_track_branch: stable/ussuri
 
@@ -181,7 +181,7 @@ networking_odl_git_project_group: neutron_all
 networking_odl_git_track_branch: stable/ussuri
 
 networking_bgpvpn_git_repo: https://opendev.org/openstack/networking-bgpvpn
-networking_bgpvpn_git_install_branch: c38e8902fd15d36a857b251133cd6db453acd7b9  # HEAD as of 10.09.2021
+networking_bgpvpn_git_install_branch: 5918ad70dc3b9c2c3f09b8c337b947055beba328  # HEAD as of 04.22.2022
 networking_bgpvpn_git_project_group: neutron_all
 networking_bgpvpn_git_track_branch: stable/ussuri
 
@@ -193,42 +193,42 @@ networking_sfc_git_track_branch: stable/ussuri
 
 ## Nova service
 nova_git_repo: https://opendev.org/openstack/nova
-nova_git_install_branch: fa0ad18619bfc1d56afdc7aa61729a1098ef651a  # HEAD as of 10.09.2021
+nova_git_install_branch: 184a3c976faed38907af148a533bc6e9faa410f5  # HEAD as of 04.22.2022
 nova_git_project_group: nova_all
 nova_git_track_branch: stable/ussuri
 
 
 ## Sahara service
 sahara_git_repo: https://opendev.org/openstack/sahara
-sahara_git_install_branch: 57fd4a113716d641017d025dd245e7a2c5d931d1 # HEAD as of 10.09.2021
+sahara_git_install_branch: 699744e863498d16392150925b4d8ae60526f035 # HEAD as of 04.22.2022
 sahara_git_project_group: sahara_all
 sahara_git_track_branch: stable/ussuri
 
 
 ## Swift service
 swift_git_repo: https://opendev.org/openstack/swift
-swift_git_install_branch: 4b0d6a87e9b2d0a032fe3b3a85e6fef0e5e8839f # HEAD as of 10.09.2021
+swift_git_install_branch: 430bb7f5681f80ad96c7d7aca2b40023508d6843 # HEAD as of 04.22.2022
 swift_git_project_group: swift_all
 swift_git_track_branch: stable/ussuri
 
 
 ## Ironic service
 ironic_git_repo: https://opendev.org/openstack/ironic
-ironic_git_install_branch: 38f655f6273ecb6d598a0e780b8a8f769fbec822  # HEAD as of 10.09.2021
+ironic_git_install_branch: 0f7c968ec07550bbc8ca71487525ec92194a222d  # HEAD as of 04.22.2022
 ironic_git_project_group: ironic_all
 ironic_git_track_branch: stable/ussuri
 
 
 ## Ironic inspector service
 ironic_inspector_git_repo: https://opendev.org/openstack/ironic-inspector
-ironic_inspector_git_install_branch: 405576c0b24d4ac80f5dca69dd6a34c468701f24  # HEAD as of 10.09.2021
+ironic_inspector_git_install_branch: 928a7dcc338a871b723fd9425c74f0b77b36f6fd  # HEAD as of 04.22.2022
 ironic_inspector_git_project_group: ironic_inspector
 ironic_inspector_git_track_branch: stable/ussuri
 
 
 ## Magnum service
 magnum_git_repo: https://opendev.org/openstack/magnum
-magnum_git_install_branch: 63b3f20affd8f62ef175aa0aede40566c0002a60  # HEAD as of 10.09.2021
+magnum_git_install_branch: 476f3b6507c66e7891e9b641f2b64a1cd40f01e5  # HEAD as of 04.22.2022
 magnum_git_project_group: magnum_all
 magnum_git_track_branch: stable/ussuri
 
@@ -240,7 +240,7 @@ masakari_git_track_branch: stable/ussuri
 
 ## Masakari monitors services
 masakari_monitors_git_repo: https://opendev.org/openstack/masakari-monitors
-masakari_monitors_git_install_branch: 020e13e04eac6dae2884787a3844cd045b9f166d  # HEAD as of 10.09.2021
+masakari_monitors_git_install_branch: c599293b39d29835811ff3e3c202ade3fe2c128e  # HEAD as of 04.22.2022
 masakari_monitors_git_project_group: masakari_monitor
 masakari_monitors_git_track_branch: stable/ussuri
 
@@ -271,7 +271,7 @@ trove_dashboard_git_track_branch: stable/ussuri
 
 ## Octavia service
 octavia_git_repo: https://opendev.org/openstack/octavia
-octavia_git_install_branch: d79c80c39c6953768c267abdba0c38a7374d6e2b  # HEAD as of 10.09.2021
+octavia_git_install_branch: 5fca1f8b716b191ce5bc00e26a7c1dce67b53c81  # HEAD as of 04.22.2022
 octavia_git_project_group: octavia_all
 octavia_git_track_branch: stable/ussuri
 
@@ -292,7 +292,7 @@ placement_git_track_branch: stable/ussuri
 
 ## Tacker service
 tacker_git_repo: https://opendev.org/openstack/tacker
-tacker_git_install_branch: 5783b9fff46544e1d50f1d3eafc254095f9f9b99 # HEAD as of 10.09.2021
+tacker_git_install_branch: de9fdf5fc6c7c04a77442f6bc7e39331f55578f0 # HEAD as of 04.22.2022
 tacker_git_project_group: tacker_all
 tacker_git_track_branch: stable/ussuri
 
@@ -306,7 +306,7 @@ congress_git_track_branch: refs/heads/stable/ussuri
 
 ## Horizon Octavia dashboard plugin
 octavia_dashboard_git_repo: https://opendev.org/openstack/octavia-dashboard
-octavia_dashboard_git_install_branch: fd73b213026617a2949cebcc834b84246dd540a3  # HEAD as of 10.09.2021
+octavia_dashboard_git_install_branch: 843ac515795b70d2a055556602be69f24fb164c0  # HEAD as of 04.22.2022
 octavia_dashboard_git_project_group: horizon_all
 octavia_dashboard_git_track_branch: stable/ussuri
 
