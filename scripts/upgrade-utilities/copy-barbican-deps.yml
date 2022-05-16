@@ -1,0 +1,49 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Copy Barbican dependencies
+  hosts: barbican_all
+  max_fail_percentage: 0
+  gather_facts: false
+  user: root
+
+  tasks:
+    - name: Uploading barbican custom files
+      copy:
+        src: "{{ item.value.src }}"
+        dest: "{{ barbican_p11_lib_path }}/{{ item.value.dest }}"
+      with_dict: "{{ barbican_p11_lib_files | default({}) }}"
+
+    - name: Create Fortanix envvars file
+      lineinfile:
+        path: "{{ fortanix_envvars_file }}"
+        line: "{{ item }}"
+        create: yes
+        mode: "0644"
+      with_items:
+        - "FORTANIX_API_ENDPOINT={{ fortanix_api_endpoint | default('https://sdkms.fortanix.com') }}"
+        - "FORTANIX_PKCS11_SIGNING_AES_KEY_AS_HMAC={{ fortanix_sign_aes_as_hmac | default('false') }}"
+      when:
+        - fortanix_envvars_file is defined
+
+    - name: Restart barbican services
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+        daemon_reload: yes
+      retries: 5
+      delay: 10
+      with_items:
+        - barbican-api
