@@ -31,7 +31,7 @@
 - name: haproxy_server
   scm: git
   src: https://github.com/elastx/openstack-ansible-haproxy_server
-  version: fddc57147835b3914ef12b0109dc134c8a007423
+  version: 92d526e68fa341814cfd571202a2272a7d1cea1b
   trackbranch: elastx/train
 - name: keepalived
   scm: git
