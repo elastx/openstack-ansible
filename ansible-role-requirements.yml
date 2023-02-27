@@ -20,9 +20,9 @@
   trackbranch: stable/train
 - name: galera_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-galera_server
-  version: 124bbf625147fe56e72283d6e002718baf974314
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-galera_server
+  version: df0d80f7481a7e49a3eb34804080f9a4ec2afa72
+  trackbranch: elastx/train
 - name: ceph_client
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-ceph_client
