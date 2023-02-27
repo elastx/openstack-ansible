@@ -41,3 +41,7 @@ galera_monitoring_allowed_source: >-
 # Galera sessions are long lived, so if we do endpoint maintenance we will
 # force kill the sessions to force a failover to the active endpoint.
 haproxy_shutdown_sessions: yes
+
+# Override galera_cluster_members for Gnocchi cluster
+galera_cluster_members: "{{ groups['gnocchi_galera_all'] }}"
+galera_cluster_name: gnocchi_galera_cluster
