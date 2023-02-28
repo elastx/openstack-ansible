@@ -32,7 +32,7 @@ galera_disable_privatedevices: "{{ not is_metal }}"
 # the load balancers, and the galera nodes.
 galera_monitoring_allowed_source: >-
   {{
-    groups['gnocchi_galera_all'] | union(groups['haproxy'])
+    groups['billing_galera_all'] | union(groups['haproxy'])
       | map('extract', hostvars, 'ansible_host')
       | list
       | join(' ') ~ ' 127.0.0.1'
@@ -43,5 +43,5 @@ galera_monitoring_allowed_source: >-
 haproxy_shutdown_sessions: yes
 
 # Override galera_cluster_members for Gnocchi cluster
-galera_cluster_members: "{{ groups['gnocchi_galera_all'] }}"
-galera_cluster_name: gnocchi_galera_cluster
+galera_cluster_members: "{{ groups['billing_galera_all'] }}"
+galera_cluster_name: billing_galera_cluster
