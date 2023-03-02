@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Galera container config
-  hosts: galera_all
+  hosts: galera_all,billing_galera_all
   gather_facts: "{{ osa_gather_facts | default(True) }}"
   serial: 1
   user: root
@@ -33,7 +33,7 @@
     - galera
 
 - name: Install galera server
-  hosts: galera_all
+  hosts: galera_all,billing_galera_all
   gather_facts: "{{ osa_gather_facts | default(True) }}"
   serial: 1
   user: root
