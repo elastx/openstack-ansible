@@ -31,11 +31,13 @@
     # the load balancer back end for this container.
     - include_tasks: common-tasks/haproxy-endpoint-manage.yml
       vars:
-        haproxy_backend: "{{ item }]"
+        haproxy_backend: "{{ outer_item }}"
         haproxy_state: disabled
       with_items:
         - swift_proxy-back
         - swift_proxy_public_vip-back
+      loop_control:
+        loop_var: outer_item
       when: 
         - inventory_hostname in groups['swift_proxy']
         - "groups['swift_proxy'] | length > 1"
@@ -61,11 +63,13 @@
     # to available again.
     - include_tasks: common-tasks/haproxy-endpoint-manage.yml
       vars:
-        haproxy_backend: "{{ item }]"
+        haproxy_backend: "{{ outer_item }}"
         haproxy_state: enabled
       with_items:
         - swift_proxy-back
         - swift_proxy_public_vip-back
+      loop_control:
+        loop_var: outer_item
       when: 
         - inventory_hostname in groups['swift_proxy']
         - "groups['swift_proxy'] | length > 1"
