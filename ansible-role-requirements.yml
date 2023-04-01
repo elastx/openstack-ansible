@@ -195,9 +195,9 @@
   trackbranch: stable/train
 - name: os_swift
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_swift
-  version: e79f4feb7e02153f2a9ce794c0bc1dde9a4e5a69
-  trackbranch: stable/train
+  src: https://github.com/elastx/openstack-ansible-os_swift
+  version: bd3282b707a6a8db1337c48102a8f158faeb56c5
+  trackbranch: elastx/train
 - name: os_tacker
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_tacker
