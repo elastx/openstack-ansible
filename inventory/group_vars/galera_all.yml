@@ -41,3 +41,7 @@ galera_monitoring_allowed_source: >-
 # Galera sessions are long lived, so if we do endpoint maintenance we will
 # force kill the sessions to force a failover to the active endpoint.
 haproxy_shutdown_sessions: yes
+
+# We need to set these variables since we have two galera clusters
+galera_cluster_members: "{{ groups['galera_all'] }}"
+galera_cluster_name: openstack_galera_cluster
