@@ -31,41 +31,41 @@
 
 ## Global Requirements
 requirements_git_repo: https://opendev.org/openstack/requirements
-requirements_git_install_branch: 36a2c2677e56afe0ece61cc0ade0f89285440ea0 # HEAD as of 04.22.2022
+requirements_git_install_branch: 02ef245c6ee3d16c2982abf4b9e1ad4b929cf340 # HEAD as of 04.20.2023
 requirements_git_track_branch: stable/ussuri
 
 
 ## Aodh service
 aodh_git_repo: https://opendev.org/openstack/aodh
-aodh_git_install_branch: d7b4f91c2f2e9d6a18a10ee4b668f8f78890cdb3  # HEAD as of 10.09.2021
+aodh_git_install_branch: 4366d6eae1aad4e15aeca4bc7e8b5e757c7601e8  # HEAD as of 04.20.2023
 aodh_git_project_group: aodh_all
 aodh_git_track_branch: stable/ussuri
 
 
 ## Barbican service
 barbican_git_repo: https://opendev.org/openstack/barbican
-barbican_git_install_branch: 71ace78f88302956a6c39af98c8138ef6f02c200  # HEAD as of 04.22.2022
+barbican_git_install_branch: cc076f24e55c24a6fc8e57ca606130090fb6369b  # HEAD as of 04.20.2023
 barbican_git_project_group: barbican_all
 barbican_git_track_branch: stable/ussuri
 
 
 ## Ceilometer service
 ceilometer_git_repo: https://opendev.org/openstack/ceilometer
-ceilometer_git_install_branch: fae674ad4afe92ff4bb30322edde65e0dfa9d191  # HEAD as of 10.09.2021
+ceilometer_git_install_branch: bcada72c3aaeeb2a86de3368b1787a9253c9d55b  # HEAD as of 04.20.2023
 ceilometer_git_project_group: all
 ceilometer_git_track_branch: stable/ussuri
 
 
 ## Cinder service
 cinder_git_repo: https://opendev.org/openstack/cinder
-cinder_git_install_branch: 7c3f7379feb41664c3881de99b54ca13a6b8ec61  # HEAD as of 04.22.2022
+cinder_git_install_branch: 79b012fbc8b6bc9dcce2c8c52a6fa63976a0309f  # HEAD as of 04.20.2023
 cinder_git_project_group: cinder_all
 cinder_git_track_branch: stable/ussuri
 
 
 ## Designate service
 designate_git_repo: https://opendev.org/openstack/designate
-designate_git_install_branch: a9ab61bc1d98248af108d895ce2cb7696818dcda  # HEAD as of 04.22.2022
+designate_git_install_branch: bdbbe6a396682f316304027845c818f94e6f4cd3  # HEAD as of 04.20.2023
 designate_git_project_group: designate_all
 designate_git_track_branch: stable/ussuri
 
@@ -79,14 +79,14 @@ designate_dashboard_git_track_branch: stable/ussuri
 
 ## Glance service
 glance_git_repo: https://opendev.org/openstack/glance
-glance_git_install_branch: 27b3ffef9a3ea2165a0fb48918cefa9fe35cc923  # HEAD as of 04.22.2022
+glance_git_install_branch: 6f03ccd47772e02f810de8fa3158afddc4a9c158  # HEAD as of 04.20.2023
 glance_git_project_group: glance_all
 glance_git_track_branch: stable/ussuri
 
 
 ## Heat service
 heat_git_repo: https://opendev.org/openstack/heat
-heat_git_install_branch: 5fb64c0058de9af67f572cc0c6aabf98d58162a0  # HEAD as of 04.22.2022
+heat_git_install_branch: 5466ede853bde7d636943cba017ed8265dcfd260  # HEAD as of 04.20.2023
 heat_git_package_name: openstack-heat
 heat_git_project_group: heat_all
 heat_git_track_branch: stable/ussuri
@@ -99,7 +99,7 @@ heat_dashboard_git_track_branch: stable/ussuri
 
 ## Horizon service
 horizon_git_repo: https://opendev.org/openstack/horizon
-horizon_git_install_branch: d25fecedda0124ea9743ac259406f6accb11c64a  # HEAD as of 04.22.2022
+horizon_git_install_branch: e6f3952b878d6b04fde9742987e0f37a1cfad3e5  # HEAD as of 04.20.2023
 horizon_git_project_group: horizon_all
 horizon_git_track_branch: stable/ussuri
 
@@ -136,21 +136,21 @@ sahara_dashboard_git_track_branch: stable/ussuri
 
 ## Keystone service
 keystone_git_repo: https://opendev.org/openstack/keystone
-keystone_git_install_branch: 7941a0b7849dee360baeb7bc9af274b34ef7fa22  # HEAD as of 04.22.2022
+keystone_git_install_branch: 1ab860a08e527ca9e0c82a49fbf004d415fec991  # HEAD as of 04.20.2023
 keystone_git_project_group: keystone_all
 keystone_git_track_branch: stable/ussuri
 
 
 ## Manila service
 manila_git_repo: https://opendev.org/openstack/manila
-manila_git_install_branch: 54cd7315dad439c9d3b51e09a00ebad87c1d65eb  # HEAD as of 04.22.2022
+manila_git_install_branch: ac60804bcf623efe6a14ba2f07a0beda31186402  # HEAD as of 04.20.2023
 manila_git_project_group: manila_all
 manila_git_track_branch: stable/ussuri
 
 
 ## Neutron service
 neutron_git_repo: https://opendev.org/openstack/neutron
-neutron_git_install_branch: ee1b021464630e288095d774ea96165dcc5b431c  # HEAD as of 04.22.2022
+neutron_git_install_branch: fe2445d99c430bb080ac45a19e4958b1ae7c9857  # HEAD as of 04.20.2023
 neutron_git_project_group: neutron_all
 neutron_git_track_branch: stable/ussuri
 
@@ -193,35 +193,35 @@ networking_sfc_git_track_branch: stable/ussuri
 
 ## Nova service
 nova_git_repo: https://opendev.org/openstack/nova
-nova_git_install_branch: 184a3c976faed38907af148a533bc6e9faa410f5  # HEAD as of 04.22.2022
+nova_git_install_branch: 3fe8880d3759cbd7b19d75dcf235dfd5c511be13  # HEAD as of 04.20.2023
 nova_git_project_group: nova_all
 nova_git_track_branch: stable/ussuri
 
 
 ## Sahara service
 sahara_git_repo: https://opendev.org/openstack/sahara
-sahara_git_install_branch: 699744e863498d16392150925b4d8ae60526f035 # HEAD as of 04.22.2022
+sahara_git_install_branch: b9762a4d470250f49cf515515a8f953d913b9f34 # HEAD as of 04.20.2023
 sahara_git_project_group: sahara_all
 sahara_git_track_branch: stable/ussuri
 
 
 ## Swift service
 swift_git_repo: https://opendev.org/openstack/swift
-swift_git_install_branch: 430bb7f5681f80ad96c7d7aca2b40023508d6843 # HEAD as of 04.22.2022
+swift_git_install_branch: 1721d8586c53609f75070e10e21de9fcf262c0bc # HEAD as of 04.20.2023
 swift_git_project_group: swift_all
 swift_git_track_branch: stable/ussuri
 
 
 ## Ironic service
 ironic_git_repo: https://opendev.org/openstack/ironic
-ironic_git_install_branch: 0f7c968ec07550bbc8ca71487525ec92194a222d  # HEAD as of 04.22.2022
+ironic_git_install_branch: 859e51c8b4b8344827b5bba1f9a0b737ffbc1ebc  # HEAD as of 04.20.2023
 ironic_git_project_group: ironic_all
 ironic_git_track_branch: stable/ussuri
 
 
 ## Ironic inspector service
 ironic_inspector_git_repo: https://opendev.org/openstack/ironic-inspector
-ironic_inspector_git_install_branch: 928a7dcc338a871b723fd9425c74f0b77b36f6fd  # HEAD as of 04.22.2022
+ironic_inspector_git_install_branch: 44c4b4e39c32e70c9101905491ba7743b597e468  # HEAD as of 04.20.2023
 ironic_inspector_git_project_group: ironic_inspector
 ironic_inspector_git_track_branch: stable/ussuri
 
@@ -240,7 +240,7 @@ masakari_git_track_branch: stable/ussuri
 
 ## Masakari monitors services
 masakari_monitors_git_repo: https://opendev.org/openstack/masakari-monitors
-masakari_monitors_git_install_branch: c599293b39d29835811ff3e3c202ade3fe2c128e  # HEAD as of 04.22.2022
+masakari_monitors_git_install_branch: 2719241a68116c9ef9efcb9421935d6b1b68d113  # HEAD as of 04.20.2023
 masakari_monitors_git_project_group: masakari_monitor
 masakari_monitors_git_track_branch: stable/ussuri
 
@@ -252,7 +252,7 @@ mistral_git_track_branch: stable/ussuri
 
 ## Murano service
 murano_git_repo: https://opendev.org/openstack/murano
-murano_git_install_branch: 1daccfced80ae3dfac59f08fd20d31244ef9d94a  # HEAD as of 10.09.2021
+murano_git_install_branch: 44f52b51150b556f27ee0141d6a8e05c25adc199  # HEAD as of 04.20.2023
 murano_git_project_group: murano_all
 murano_git_track_branch: stable/ussuri
 
@@ -271,7 +271,7 @@ trove_dashboard_git_track_branch: stable/ussuri
 
 ## Octavia service
 octavia_git_repo: https://opendev.org/openstack/octavia
-octavia_git_install_branch: 5fca1f8b716b191ce5bc00e26a7c1dce67b53c81  # HEAD as of 04.22.2022
+octavia_git_install_branch: 2067c034d2b59ad86e751965206c79cf185e7dec  # HEAD as of 04.20.2023
 octavia_git_project_group: octavia_all
 octavia_git_track_branch: stable/ussuri
 
@@ -285,7 +285,7 @@ panko_git_track_branch: stable/ussuri
 
 ## Placement service
 placement_git_repo: https://opendev.org/openstack/placement
-placement_git_install_branch: de030ef7a78b1b9ee2da75552d1edc829f830aa4  # HEAD as of 10.09.2021
+placement_git_install_branch: 5a865abc2545544870ad972f70cd54ebd14c19a8  # HEAD as of 04.20.2023
 placement_git_project_group: placement_all
 placement_git_track_branch: stable/ussuri
 
@@ -306,7 +306,7 @@ congress_git_track_branch: refs/heads/stable/ussuri
 
 ## Horizon Octavia dashboard plugin
 octavia_dashboard_git_repo: https://opendev.org/openstack/octavia-dashboard
-octavia_dashboard_git_install_branch: 843ac515795b70d2a055556602be69f24fb164c0  # HEAD as of 04.22.2022
+octavia_dashboard_git_install_branch: 58cbf93412b8eb67340f5e71e9da45cbee378a38  # HEAD as of 04.20.2023
 octavia_dashboard_git_project_group: horizon_all
 octavia_dashboard_git_track_branch: stable/ussuri
 
