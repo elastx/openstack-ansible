@@ -26,7 +26,7 @@
 - name: haproxy_server
   scm: git
   src: https://github.com/elastx/openstack-ansible-haproxy_server
-  version: c4e30cd0f265d3ee1a1a30a37a74b37043431ed7
+  version: e5a7285ed9f147bdc95aebe14e16dc46b6e25602
   trackbranch: elastx/ussuri
 - name: keepalived
   scm: git
@@ -41,7 +41,7 @@
 - name: lxc_hosts
   scm: git
   src: https://github.com/elastx/openstack-ansible-lxc_hosts
-  version: 0cced1da38fb87e85dc441236fafee20dfc9368c
+  version: 7527180383c7a25ac4c4608a42c21237b3261d41
   trackbranch: elastx/ussuri
 - name: memcached_server
   scm: git
