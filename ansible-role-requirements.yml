@@ -81,7 +81,7 @@
 - name: os_ceilometer
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_ceilometer
-  version: 3204e8d8cb0f3c97bbdbbf67a665e5630f464b34
+  version: fe8d45d791ce446796808569c92a6d5fd61c4e9c
   trackbranch: elastx/ussuri
 - name: os_cinder
   scm: git
@@ -156,7 +156,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: 70e1810c682dbf27e5d85107b700e0b19d870e2b
+  version: 797f7ccbdf5700c824eb02569c6ba9854fe76ee8
   trackbranch: elastx/ussuri
 - name: os_nova
   scm: git
