@@ -15,9 +15,9 @@
   trackbranch: master
 - name: galera_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-galera_server
-  version: 23339d18eae09f6252e42eee8ca58946b930d554
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-galera_server
+  version: 9c1493a03f30c0ea1d3f05db20aa8f7aa6197c0b
+  trackbranch: elastx/ussuri
 - name: ceph_client
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-ceph_client
