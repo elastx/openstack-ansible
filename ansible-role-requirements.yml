@@ -11,12 +11,12 @@
 - name: config_template
   scm: git
   src: https://opendev.org/openstack/ansible-config_template
-  version: 8a9b9622d5225177891bf0fa14b4b37b8c5fb379
+  version: 7422a0941b8aa29eebe45c192844a27c25c216ef
   trackbranch: master
 - name: galera_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-galera_server
-  version: 1daad2e41817322077e11a4477591fe8368d90d5
+  version: 23339d18eae09f6252e42eee8ca58946b930d554
   trackbranch: stable/ussuri
 - name: ceph_client
   scm: git
@@ -31,7 +31,7 @@
 - name: keepalived
   scm: git
   src: https://github.com/evrardjp/ansible-keepalived
-  version: b5fe49d98601f62055365645df47ef1bae30ee74
+  version: 78fcf28f2c7be772d16740e8154c21a78a19e775
   trackbranch: master
 - name: lxc_container_create
   scm: git
@@ -51,7 +51,7 @@
 - name: openstack_hosts
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_hosts
-  version: af22637b74a6ae3bdf76e612d2dc3c03d7e224a0
+  version: f4aecaf29e4ee125a35ec1bdab86add2c05fbfef
   trackbranch: stable/ussuri
 - name: os_keystone
   scm: git
@@ -136,7 +136,7 @@
 - name: os_manila
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_manila
-  version: e6be9ced0357db618b92f5b25991fba691941ebc
+  version: f1198397d859af53ade86f853deefa32a7656abc
   trackbranch: stable/ussuri
 - name: os_masakari
   scm: git
@@ -171,7 +171,7 @@
 - name: os_panko
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_panko
-  version: ba15680dc4e8a8c2b8db5c24aaa919dd0b4ceed9
+  version: 6bb320d39d7259c22e69cebcd218f71e98cc7192
   trackbranch: stable/ussuri
 - name: os_placement
   scm: git
@@ -181,7 +181,7 @@
 - name: os_rally
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_rally
-  version: b1d866a56aa58a4e6b2816bfc18aed4047526cff
+  version: 21005bd625cd86f1109a69f5425a7093b4e19acd
   trackbranch: stable/ussuri
 - name: os_sahara
   scm: git
@@ -191,7 +191,7 @@
 - name: os_swift
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_swift
-  version: d134e6849165578301ef74611a8b6b47ff97a479
+  version: fc55b10b8771b603be90a304a2c1906a89c7bae2
   trackbranch: stable/ussuri
 - name: os_tacker
   scm: git
@@ -201,7 +201,7 @@
 - name: os_tempest
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_tempest
-  version: 4fbb0ff2acde78855965acb650c645f32deb9f97
+  version: 6db911b42c60ad0c2328b923c31ff9c8765c56ec
   trackbranch: stable/ussuri
 - name: os_trove
   scm: git
@@ -221,12 +221,12 @@
 - name: qdrouterd
   scm: git
   src: https://opendev.org/openstack/ansible-role-qdrouterd
-  version: 19dc77221f9602280e7dacef491143117689c0d2
+  version: 911f5340184c9c2e7c5a87fe2ceff673f30bf69a
   trackbranch: stable/ussuri
 - name: rabbitmq_server
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-rabbitmq_server
-  version: 7d2bf72d58a70db6b53a52220efe24b04e2147ad
+  version: 78a4fbab7a6b8e880d9b4b1b2f8985040925e72d
   trackbranch: stable/ussuri
 - name: repo_server
   scm: git
@@ -251,7 +251,7 @@
 - name: bird
   scm: git
   src: https://github.com/logan2211/ansible-bird
-  version: 9e5a7d7fc8b72ad4aa73280a7638b0554cf20d5c
+  version: 904e55d56f82f36e3e9e9fbc5b3bd932a1151f7b
   trackbranch: master
 - name: etcd
   scm: git
@@ -311,7 +311,7 @@
 - name: python_venv_build
   src: https://opendev.org/openstack/ansible-role-python_venv_build
   scm: git
-  version: 73ac14dfaa5b7df9927190b0a5e66de11d5baac5
+  version: 335c4fc073ca67c94020e097187b292ce82d9057
   trackbranch: stable/ussuri
 - name: uwsgi
   src: https://opendev.org/openstack/ansible-role-uwsgi
