@@ -190,9 +190,9 @@
   trackbranch: stable/ussuri
 - name: os_swift
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_swift
-  version: fc55b10b8771b603be90a304a2c1906a89c7bae2
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_swift
+  version: 45bffedce03e3aae5c23e7cfe8f7d591deb17c90
+  trackbranch: elastx/ussuri
 - name: os_tacker
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_tacker
