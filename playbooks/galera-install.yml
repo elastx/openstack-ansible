@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Gather galera facts
-  hosts: galera_all
+  hosts: galera_all,billing_galera_all
   gather_facts: "{{ osa_gather_facts | default(True) }}"
   tasks:
     - name: Gather additional facts
@@ -59,6 +59,49 @@
         haproxy_state: enabled
       when:
         - "groups['galera_all'] | length > 1"
+  vars:
+    galera_server_id: "{{ inventory_hostname | openstack.osa.string_2_int }}"
+    galera_wsrep_node_name: "{{ container_name | default(inventory_hostname) }}"
+  environment: "{{ deployment_environment_variables | default({}) }}"
+  tags:
+    - galera
+
+- name: Install billing galera server
+  hosts: billing_galera_all
+  gather_facts: false
+  serial: "{{ galera_serial | default(1) }}"
+  user: root
+  pre_tasks:
+    - include_tasks: "common-tasks/os-{{ container_tech | default('lxc') }}-container-setup.yml"
+      when: not is_metal
+      vars:
+        list_of_bind_mounts: "{{ galera_container_bind_mounts }}"
+        extra_container_config_no_restart:
+          - "lxc.start.order=10"
+    - include_tasks: common-tasks/unbound-clients.yml
+      when:
+        - hostvars['localhost']['resolvconf_enabled'] | bool
+    - include_tasks: common-tasks/haproxy-endpoint-manage.yml
+      vars:
+        haproxy_backend: billing_galera-back
+        haproxy_state: drain
+      when:
+        - "groups['billing_galera_all'] | length > 1"
+  roles:
+    - role: "galera_server"
+      vars:
+        galera_install_client: "{{ (galera_root_user == 'root') }}"
+        galera_install_server: true
+    - role: "openstack.osa.system_crontab_coordination"
+      tags:
+        - crontab
+  post_tasks:
+    - include_tasks: common-tasks/haproxy-endpoint-manage.yml
+      vars:
+        haproxy_backend: billing_galera-back
+        haproxy_state: enabled
+      when:
+        - "groups['billing_galera_all'] | length > 1"
   vars:
     galera_server_id: "{{ inventory_hostname | openstack.osa.string_2_int }}"
     galera_wsrep_node_name: "{{ container_name | default(inventory_hostname) }}"
