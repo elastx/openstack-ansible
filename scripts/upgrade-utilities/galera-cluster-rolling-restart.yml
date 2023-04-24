@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Gracefully restart mariadb/galera cluster
-  hosts: galera_all
+  hosts: galera_all,billing_galera_all
   serial: 1
   max_fail_percentage: 0
   gather_facts: false
