@@ -32,7 +32,7 @@ galera_disable_privatedevices: "{{ not is_metal }}"
 # the load balancers, and the galera nodes.
 galera_monitoring_allowed_source: >-
   {{
-    groups['galera_all'] | union(groups['haproxy'])
+    groups['billing_galera_all'] | union(groups['haproxy'])
       | map('extract', hostvars, 'ansible_host')
       | list
       | join(' ') ~ ' 127.0.0.1'
@@ -42,6 +42,6 @@ galera_monitoring_allowed_source: >-
 # force kill the sessions to force a failover to the active endpoint.
 haproxy_shutdown_sessions: yes
 
-# We need to set these variables since we have two galera clusters
-galera_cluster_members: "{{ groups['galera_all'] }}"
-galera_cluster_name: openstack_galera_cluster
+# Override galera_cluster_members for Gnocchi cluster
+galera_cluster_members: "{{ groups['billing_galera_all'] }}"
+galera_cluster_name: billing_galera_cluster
