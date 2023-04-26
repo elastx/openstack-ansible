@@ -165,9 +165,9 @@
   trackbranch: elastx/ussuri
 - name: os_octavia
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_octavia
-  version: a2fcdbebb7f02983495d0165ad1e5ab5b4b16513
-  trackbranch: stable/ussuri
+  src: https://github.com/elastx/openstack-ansible-os_octavia
+  version: 7a4ef81266248028ebb4aedd5550a49bdec934ed
+  trackbranch: elastx/ussuri
 - name: os_panko
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_panko
