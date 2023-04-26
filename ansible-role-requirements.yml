@@ -321,5 +321,5 @@
 - name: os_adjutant
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_adjutant
-  version: 07b51ab807d23789dda8261d1834888a2c854478
+  version: ed757ef52805906782b39bd4560fdec86a662d9b
   trackbranch: elastx/train
