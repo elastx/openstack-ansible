@@ -79,6 +79,8 @@ haproxy_default_services:
       haproxy_port: 9292
       haproxy_balance_type: http
       haproxy_balance_alg: source
+      haproxy_timeout_client: 30m
+      haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['glance_api'] is defined and groups['glance_api'] | length > 0 }}"
@@ -104,6 +106,8 @@ haproxy_default_services:
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_ssl_all_vips: "{{ haproxy_ssl_all_vips }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 30m
+      haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['gnocchi_all'] is defined and groups['gnocchi_all'] | length > 0 }}"
@@ -144,6 +148,8 @@ haproxy_default_services:
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_ssl_all_vips: "{{ haproxy_ssl_all_vips }}"
       haproxy_balance_type: http
+      haproxy_timeout_client: 10m
+      haproxy_timeout_server: 10m
       haproxy_backend_options:
         - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['neutron_server'] is defined and groups['neutron_server'] | length > 0 }}"
@@ -199,6 +205,8 @@ haproxy_default_services:
       haproxy_ssl: "{{ haproxy_ssl }}"
       haproxy_ssl_all_vips: "{{ haproxy_ssl_all_vips }}"
       haproxy_port: 8776
+      haproxy_timeout_client: 90m
+      haproxy_timeout_server: 90m
       haproxy_balance_type: http
       haproxy_backend_options:
         - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
@@ -249,6 +257,8 @@ haproxy_default_services:
       haproxy_balance_alg: source
       haproxy_port: 8080
       haproxy_balance_type: http
+      haproxy_timeout_client: 30m
+      haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['swift_proxy'] is defined and groups['swift_proxy'] | length > 0 }}"
