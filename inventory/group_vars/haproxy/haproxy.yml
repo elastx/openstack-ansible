@@ -83,6 +83,7 @@ haproxy_default_services:
       haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+      haproxy_backend_arguments:
         - "no option http-use-htx"
       haproxy_frontend_raw:
         - "no option http-use-htx"
@@ -264,6 +265,7 @@ haproxy_default_services:
       haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+      haproxy_backend_arguments:
         - "no option http-use-htx"
       haproxy_frontend_raw:
         - "no option http-use-htx"
