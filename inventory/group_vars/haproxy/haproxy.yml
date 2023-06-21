@@ -264,6 +264,9 @@ haproxy_default_services:
       haproxy_timeout_server: 30m
       haproxy_backend_options:
         - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
+        - "no option http-use-htx"
+      haproxy_frontend_raw:
+        - "no option http-use-htx"
       haproxy_service_enabled: "{{ groups['swift_proxy'] is defined and groups['swift_proxy'] | length > 0 }}"
   - service:
       haproxy_service_name: aodh_api
