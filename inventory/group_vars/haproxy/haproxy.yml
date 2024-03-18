@@ -92,6 +92,8 @@ haproxy_cinder_api_service:
   haproxy_ssl_all_vips: "{{ haproxy_ssl_all_vips }}"
   haproxy_port: 8776
   haproxy_balance_type: http
+  haproxy_timeout_client: 90m
+  haproxy_timeout_server: 90m
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['cinder_api'] is defined and groups['cinder_api'] | length > 0 }}"
@@ -146,6 +148,8 @@ haproxy_glance_api_service:
   haproxy_port: 9292
   haproxy_balance_type: http
   haproxy_balance_alg: source
+  haproxy_timeout_client: 30m
+  haproxy_timeout_server: 30m
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['glance_api'] is defined and groups['glance_api'] | length > 0 }}"
@@ -157,6 +161,8 @@ haproxy_gnocchi_service:
   haproxy_ssl: "{{ haproxy_ssl }}"
   haproxy_ssl_all_vips: "{{ haproxy_ssl_all_vips }}"
   haproxy_balance_type: http
+  haproxy_timeout_client: 30m
+  haproxy_timeout_server: 30m
   haproxy_backend_options:
     - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['gnocchi_all'] is defined and groups['gnocchi_all'] | length > 0 }}"
@@ -309,6 +315,8 @@ haproxy_neutron_server_service:
   haproxy_ssl: "{{ haproxy_ssl }}"
   haproxy_ssl_all_vips: "{{ haproxy_ssl_all_vips }}"
   haproxy_balance_type: http
+  haproxy_timeout_client: 10m
+  haproxy_timeout_server: 10m
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['neutron_server'] is defined and groups['neutron_server'] | length > 0 }}"
@@ -509,6 +517,8 @@ haproxy_swift_proxy_service:
   haproxy_balance_alg: source
   haproxy_port: 8080
   haproxy_balance_type: http
+  haproxy_timeout_client: 30m
+  haproxy_timeout_server: 30m
   haproxy_backend_options:
     - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['swift_proxy'] is defined and groups['swift_proxy'] | length > 0 }}"
