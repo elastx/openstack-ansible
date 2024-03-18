@@ -104,6 +104,8 @@ haproxy_cloudkitty_api_service:
   haproxy_port: 8089
   haproxy_balance_type: http
   haproxy_balance_alg: source
+  haproxy_timeout_client: 30m
+  haproxy_timeout_server: 30m
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['cloudkitty_api'] is defined and groups['cloudkitty_api'] | length > 0 }}"
