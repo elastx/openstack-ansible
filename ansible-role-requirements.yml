@@ -19,9 +19,9 @@
   trackbranch: master
 - name: galera_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-galera_server
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-galera_server
+  version: 8e5f9bb072026bfc8132aada526ffb2f4ef8bcef
+  trackbranch: elastx/victoria
 - name: ceph_client
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-ceph_client
@@ -29,9 +29,9 @@
   trackbranch: victoria-eom
 - name: haproxy_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-haproxy_server
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-haproxy_server
+  version: f347de385251b98bbf6b7d89d9950b1e98eff358
+  trackbranch: elastx/victoria
 - name: keepalived
   scm: git
   src: https://github.com/evrardjp/ansible-keepalived
@@ -39,9 +39,9 @@
   trackbranch: master
 - name: lxc_container_create
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_container_create
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-lxc_container_create
+  version: d0bb990c28748f8069c52cb15185387b726acdec
+  trackbranch: elastx/victoria
 - name: lxc_hosts
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
@@ -59,9 +59,9 @@
   trackbranch: victoria-eom
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: 26726cac40742ee684c30f880e97dcd4c3647622
+  trackbranch: elastx/victoria
 - name: openstack_openrc
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
@@ -89,14 +89,14 @@
   trackbranch: victoria-eom
 - name: os_ceilometer
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_ceilometer
+  version: 4afd5a72628546a120ef58fee242a896a82d41c4
+  trackbranch: elastx/victoria
 - name: os_cinder
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cinder
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_cinder
+  version: 852479fd1532d27fc709ec640ed1713270f31abc
+  trackbranch: elastx/victoria
 - name: os_cloudkitty
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_cloudkitty
@@ -124,9 +124,9 @@
   trackbranch: victoria-eom
 - name: os_horizon
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_horizon
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: b27237d98bfb6e76bd29bd5d651300e190b906e9
+  trackbranch: elastx/victoria
 - name: os_ironic
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_ironic
@@ -159,19 +159,19 @@
   trackbranch: victoria-eom
 - name: os_neutron
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_neutron
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_neutron
+  version: b1e0604830021a7e5fa5dd9bc1d17cf6dd0e0df7
+  trackbranch: elastx/victoria
 - name: os_nova
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_nova
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_nova
+  version: 3f00296eb560a69011ad7bb59dd1c934786020c9
+  trackbranch: elastx/victoria
 - name: os_octavia
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_octavia
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_octavia
+  version: d4dbbdea306c1f6f403249a52982219d9348d3b3
+  trackbranch: elastx/victoria
 - name: os_panko
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_panko
@@ -199,9 +199,9 @@
   trackbranch: victoria-eom
 - name: os_swift
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_swift
-  version: victoria-eom
-  trackbranch: victoria-eom
+  src: https://github.com/elastx/openstack-ansible-os_swift
+  version: 58f5348be3687a713a0fba26bb21c56402220c5b
+  trackbranch: elastx/victoria
 - name: os_tacker
   scm: git
   src: https://opendev.org/openstack/openstack-ansible-os_tacker
