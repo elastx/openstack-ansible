@@ -240,6 +240,12 @@ haproxy_default_services:
       haproxy_backend_options:
         - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
       haproxy_service_enabled: "{{ groups['horizon_all'] is defined and groups['horizon_all'] | length > 0 }}"
+      haproxy_backend_arguments:
+        - "no option httpclose"
+        - "option http-server-close"
+      haproxy_frontend_raw:
+        - "no option httpclose"
+        - "option http-server-close"
   - service:
       haproxy_service_name: sahara_api
       haproxy_backend_nodes: "{{ groups['sahara_api'] | default([]) }}"
