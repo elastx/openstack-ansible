@@ -135,9 +135,9 @@
   shallow_since: '2022-01-12'
 - name: os_gnocchi
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_gnocchi
-  version: unmaintained/wallaby
-  trackbranch: unmaintained/wallaby
+  src: https://github.com/elastx/openstack-ansible-os_gnocchi
+  version: ae3f71cef1e3e034f7698e694b06ee22d094a0a1
+  trackbranch: elastx/wallaby
   shallow_since: '2021-12-22'
 - name: os_heat
   scm: git
