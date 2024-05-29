@@ -190,7 +190,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: 28247e6c8be49014209e41e025285d7d37b21101
+  version: e2b24bae31ccfadfff0d4530e744a3592b9079ce
   trackbranch: elastx/wallaby
   shallow_since: '2022-06-28'
 - name: os_nova
