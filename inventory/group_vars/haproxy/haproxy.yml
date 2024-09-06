@@ -61,6 +61,8 @@ haproxy_adjutant_api_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['adjutant_api'] is defined and groups['adjutant_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ adjutant_wsgi_processes | default(9) // 3 }}"
 
 haproxy_aodh_api_service:
   haproxy_service_name: aodh_api
@@ -72,6 +74,8 @@ haproxy_aodh_api_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['aodh_api'] is defined and groups['aodh_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ aodh_wsgi_processes | default(9) // 3 }}"
 
 haproxy_barbican_service:
   haproxy_service_name: barbican
@@ -83,6 +87,8 @@ haproxy_barbican_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['barbican_api'] is defined and groups['barbican_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ barbican_wsgi_processes | default(9) // 3 }}"
 
 haproxy_ceph_rgw_service:
   haproxy_service_name: ceph-rgw
@@ -110,6 +116,8 @@ haproxy_cinder_api_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['cinder_api'] is defined and groups['cinder_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ cinder_wsgi_processes | default(9) // 3 }}"
 
 haproxy_cloudkitty_api_service:
   haproxy_service_name: cloudkitty_api
@@ -124,6 +132,8 @@ haproxy_cloudkitty_api_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['cloudkitty_api'] is defined and groups['cloudkitty_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ cloudkitty_wsgi_processes | default(9) // 3 }}"
 
 haproxy_designate_api_service:
   haproxy_service_name: designate_api
@@ -137,6 +147,8 @@ haproxy_designate_api_service:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
     - "httplog"
   haproxy_service_enabled: "{{ groups['designate_api'] is defined and groups['designate_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ designate_wsgi_processes | default(9) // 3 }}"
 
 haproxy_galera_service:
   haproxy_service_name: galera
@@ -166,6 +178,8 @@ haproxy_glance_api_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['glance_api'] is defined and groups['glance_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ glance_wsgi_processes | default(9) // 3 }}"
 
 haproxy_gnocchi_service:
   haproxy_service_name: gnocchi
@@ -179,6 +193,8 @@ haproxy_gnocchi_service:
   haproxy_backend_options:
     - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['gnocchi_all'] is defined and groups['gnocchi_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ gnocchi_wsgi_processes | default(9) // 3 }}"
 
 haproxy_heat_api_cfn_service:
   haproxy_service_name: heat_api_cfn
@@ -190,6 +206,8 @@ haproxy_heat_api_cfn_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['heat_api_cfn'] is defined and groups['heat_api_cfn'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ heat_api_cfn_wsgi_processes | default(9) // 3 }}"
 
 haproxy_heat_api_service:
   haproxy_service_name: heat_api
@@ -201,6 +219,8 @@ haproxy_heat_api_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['heat_api'] is defined and groups['heat_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ heat_api_wsgi_processes | default(9) // 3 }}"
 
 haproxy_horizon_service:
   haproxy_service_name: horizon
@@ -219,6 +239,8 @@ haproxy_horizon_service:
   haproxy_frontend_acls: "{{ (haproxy_ssl_letsencrypt_enable | bool and haproxy_ssl | bool) | ternary(haproxy_ssl_letsencrypt_acl, {}) }}"
   haproxy_acls: "{{ keystone_security_txt_content is defined | ternary(haproxy_security_txt_acl, {}) }}"
   haproxy_frontend_raw: "{{ (haproxy_ssl | bool and haproxy_security_headers is defined) | ternary( haproxy_security_headers + [ haproxy_horizon_csp | default(haproxy_security_headers_csp)], []) }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ horizon_wsgi_processes | default(9) // 3 }}"
 
 haproxy_ironic_api_service:
   haproxy_service_name: ironic_api
@@ -230,6 +252,8 @@ haproxy_ironic_api_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['ironic_api'] is defined and groups['ironic_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ ironic_api_wsgi_processes | default(9) // 3 }}"
 
 haproxy_ironic_inspector_service:
   haproxy_service_name: ironic_inspector
@@ -241,6 +265,8 @@ haproxy_ironic_inspector_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['ironic_inspector'] is defined and groups['ironic_inspector'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ ironic_inspector_wsgi_processes | default(9) // 3 }}"
 
 haproxy_keystone_service:
   haproxy_service_name: keystone_service
@@ -252,6 +278,8 @@ haproxy_keystone_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['keystone_all'] is defined and groups['keystone_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ keystone_wsgi_processes | default(9) // 3 }}"
 
 haproxy_letsencrypt_service:
   haproxy_service_name: letsencrypt
@@ -275,6 +303,8 @@ haproxy_magnum_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['magnum_all'] is defined and groups['magnum_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ magnum_wsgi_processes | default(9) // 3 }}"
 
 haproxy_manila_service:
   haproxy_service_name: manila
@@ -286,6 +316,8 @@ haproxy_manila_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['manila_api'] is defined and groups['manila_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ manila_wsgi_processes | default(9) // 3 }}"
 
 haproxy_masakari_api_service:
   haproxy_service_name: masakari_api
@@ -297,6 +329,8 @@ haproxy_masakari_api_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['masakari_api'] is defined and groups['masakari_api'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ masakari_wsgi_processes | default(9) // 3 }}"
 
 haproxy_mistral_service:
   haproxy_service_name: mistral
@@ -308,6 +342,8 @@ haproxy_mistral_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['mistral_all'] is defined and groups['mistral_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ mistral_wsgi_processes | default(9) // 3 }}"
 
 haproxy_murano_service:
   haproxy_service_name: murano
@@ -321,6 +357,8 @@ haproxy_murano_service:
   haproxy_backend_httpcheck_options:
     - "expect status 401"
   haproxy_service_enabled: "{{ groups['murano_all'] is defined and groups['murano_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ murano_wsgi_processes | default(9) // 3 }}"
 
 haproxy_neutron_server_service:
   haproxy_service_name: neutron_server
@@ -334,6 +372,8 @@ haproxy_neutron_server_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['neutron_server'] is defined and groups['neutron_server'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ neutron_api_workers | default(9) // 3 }}"
 
 haproxy_nova_api_metadata_service:
   haproxy_service_name: nova_api_metadata
@@ -347,6 +387,8 @@ haproxy_nova_api_metadata_service:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_allowlist_networks: "{{ haproxy_nova_metadata_allowlist_networks }}"
   haproxy_service_enabled: "{{ groups['nova_api_metadata'] is defined and groups['nova_api_metadata'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ nova_api_metadata_wsgi_processes | default(9) // 3 }}"
 
 haproxy_nova_api_compute_service:
   haproxy_service_name: nova_api_os_compute
@@ -358,6 +400,8 @@ haproxy_nova_api_compute_service:
   haproxy_backend_options:
     - "httpchk HEAD / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['nova_api_os_compute'] is defined and groups['nova_api_os_compute'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ nova_wsgi_processes | default(9) // 3 }}"
 
 # By default the nova console service on HAProxy is configured in HTTP mode to
 # allow for more fine grained control. But if the SSL connection is terminated
@@ -377,6 +421,8 @@ haproxy_nova_console_service:
   haproxy_backend_options: "{{ haproxy_nova_console_http_mode | ternary(['httpchk HEAD ' + nova_console_path + ' HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck'], []) }}"
   haproxy_backend_httpcheck_options: "{{ haproxy_nova_console_http_mode | ternary(['expect status 200'], []) }}"
   haproxy_service_enabled: "{{ groups['nova_console'] is defined and groups['nova_console'] | length > 0 and nova_console_type != 'disabled' }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ nova_wsgi_processes | default(9) // 3 }}"
 
 haproxy_octavia_service:
   haproxy_service_name: octavia
@@ -388,6 +434,8 @@ haproxy_octavia_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['octavia_all'] is defined and groups['octavia_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ octavia_wsgi_processes | default(9) // 3 }}"
 
 haproxy_opendaylight_neutron_service:
   haproxy_service_name: opendaylight-neutron
@@ -399,6 +447,8 @@ haproxy_opendaylight_neutron_service:
   haproxy_timeout_server: 5000s
   haproxy_allowlist_networks: "{{ haproxy_opendaylight_allowlist_networks }}"
   haproxy_service_enabled: "{{ neutron_plugin_type == 'ml2.opendaylight' }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ opendaylight_wsgi_processes | default(9) // 3 }}"
 
 haproxy_opendaylight_websocket_service:
   haproxy_service_name: opendaylight-websocket
@@ -441,6 +491,8 @@ haproxy_placement_service:
   haproxy_backend_options:
     - "httpchk GET / HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['placement_all'] is defined and groups['placement_all'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ placement_wsgi_processes | default(9) // 3 }}"
 
 haproxy_rabbitmq_service:
   haproxy_service_name: rabbitmq_mgmt
@@ -506,6 +558,8 @@ haproxy_swift_proxy_service:
   haproxy_backend_options:
     - "httpchk GET /healthcheck HTTP/1.0\\r\\nUser-agent:\\ osa-haproxy-healthcheck"
   haproxy_service_enabled: "{{ groups['swift_proxy'] is defined and groups['swift_proxy'] | length > 0 }}"
+  haproxy_backend_server_options:
+    - "maxconn {{ swift_proxy_server_workers | default(9) // 3 }}"
 
 haproxy_tacker_service:
   haproxy_service_name: tacker
