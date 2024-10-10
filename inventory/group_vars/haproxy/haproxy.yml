@@ -180,6 +180,10 @@ haproxy_glance_api_service:
   haproxy_service_enabled: "{{ groups['glance_api'] is defined and groups['glance_api'] | length > 0 }}"
   haproxy_backend_server_options:
     - "maxconn {{ glance_wsgi_processes | default(9) // 3 }}"
+  haproxy_backend_arguments:
+    - "no option http-use-htx"
+  haproxy_frontend_raw:
+    - "no option http-use-htx"
 
 haproxy_gnocchi_service:
   haproxy_service_name: gnocchi
