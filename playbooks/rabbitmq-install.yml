@@ -56,7 +56,9 @@
 - name: Install rabbitmq server
   hosts: "{{ rabbitmq_host_group | default('rabbitmq_all') }}"
   gather_facts: false
-  serial: 20%
+  # We had to run this playbook on one server at a time or certificate creation would fail as they were generate only for the first server in each batch.
+  #serial: 20%
+  serial: "1"
   user: root
   roles:
     - role: "rabbitmq_server"

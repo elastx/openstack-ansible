@@ -22,7 +22,9 @@
 - name: haproxy base config
   hosts: haproxy
   gather_facts: false
-  serial: "50%"
+  # We had to run this playbook on one server at a time or certificate creation would fail as they were generate only for the first server in each batch.
+  #serial: "50%"
+  serial: "1"
   user: root
   pre_tasks:
     - name: Gather additional facts
