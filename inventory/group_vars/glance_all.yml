@@ -18,7 +18,5 @@ glance_default_store: "{{ ((groups['swift_all'] is defined) and (groups['swift_a
 
 # glance default list of bind mounts
 glance_container_bind_mounts:
-  - bind_dir_path: "/var/lib/glance/images"
-    mount_path: "/openstack/{{ inventory_hostname }}"
-  - bind_dir_path: "/var/lib/glance/cache"
+  - bind_dir_path: "/var/lib/glance"
     mount_path: "/openstack/{{ inventory_hostname }}"
