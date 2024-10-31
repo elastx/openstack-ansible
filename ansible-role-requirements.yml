@@ -25,9 +25,9 @@
   shallow_since: '2024-02-07'
 - name: haproxy_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-haproxy_server
-  version: c6ed7bced5d02b9f7b98970de404fa5ad58d5d67
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-haproxy_server
+  version: 880b5806cf366d1640968a63b7b690a7307411a7
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: keepalived
   scm: git
@@ -37,9 +37,9 @@
   shallow_since: '2022-07-18'
 - name: lxc_container_create
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-lxc_container_create
-  version: 1d1c73d46b8532ea8bcafc62b1acacde6981c273
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-lxc_container_create
+  version: cd35133c3b376185bff83753be9b11f66289fc38
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: lxc_hosts
   scm: git
@@ -61,9 +61,9 @@
   shallow_since: '2024-07-07'
 - name: os_keystone
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_keystone
-  version: d240eb03c8d0db6c1cb1e21a146fadef6931bb5d
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_keystone
+  version: 88cebb948db17dc06e18b7cc735ebd0368b92868
+  trackbranch: elastx/yoga
   shallow_since: '2023-10-22'
 - name: openstack_openrc
   scm: git
@@ -97,21 +97,21 @@
   shallow_since: '2024-02-07'
 - name: os_ceilometer
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_ceilometer
-  version: 1df50144a3ddcb724129573b875b792ff349a124
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_ceilometer
+  version: 25a2a4ff31a7b36c17528f70915af76a6136ce19
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: os_cinder
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cinder
-  version: 2b1d1c48aa1360ff61de3c469e5ad7c328c06863
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_cinder
+  version: 58f695afa290a602e715e40ff546a44d0b652684
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: os_cloudkitty
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_cloudkitty
-  version: 7df78f39e5139a260cf03730d3c49c275e4fc00b
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_cloudkitty
+  version: d9d9c686b8be49f4d056c6986ebb66bd41a1a4fa
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: os_designate
   scm: git
@@ -127,9 +127,9 @@
   shallow_since: '2024-02-07'
 - name: os_gnocchi
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_gnocchi
-  version: 6c0c3fae8ef61314570ac4d11f77d4a1b71ec112
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_gnocchi
+  version: 342e7dfb12e1be08529fe0dd1e040d0cde828f3c
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: os_heat
   scm: git
@@ -139,9 +139,9 @@
   shallow_since: '2024-02-07'
 - name: os_horizon
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_horizon
-  version: fca51741994f5e1c1c24fa7dad4d0a04bd93c878
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_horizon
+  version: 6d1c06237971954deef53a357735560782f59e47
+  trackbranch: elastx/yoga
   shallow_since: '2022-08-11'
 - name: os_ironic
   scm: git
@@ -181,9 +181,9 @@
   shallow_since: '2023-05-01'
 - name: os_neutron
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_neutron
-  version: 5f7e8e34a8e862ebfb12ecd89ba2f8f9f6853aff
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_neutron
+  version: c83ce276a8666d3b27bb98857eaa196fcef58ec9
+  trackbranch: elastx/yoga
   shallow_since: '2023-10-12'
 - name: os_nova
   scm: git
@@ -193,9 +193,9 @@
   shallow_since: '2023-11-05'
 - name: os_octavia
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-os_octavia
-  version: f8b8e0bfabebc06558cca1fa3231bb5cc411b297
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-os_octavia
+  version: df44a3f86d2621ba886090f1c72dca01d4bfa21b
+  trackbranch: elastx/yoga
   shallow_since: '2022-11-29'
 - name: os_placement
   scm: git
