@@ -182,7 +182,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: c83ce276a8666d3b27bb98857eaa196fcef58ec9
+  version: a16afb38aa9b17febfdd2f866ea6d8446212375a
   trackbranch: elastx/yoga
   shallow_since: '2023-10-12'
 - name: os_nova
@@ -194,7 +194,7 @@
 - name: os_octavia
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_octavia
-  version: df44a3f86d2621ba886090f1c72dca01d4bfa21b
+  version: 62bf1bbdd66e2c482185a4100667213fc9b08bdd
   trackbranch: elastx/yoga
   shallow_since: '2022-11-29'
 - name: os_placement
@@ -259,9 +259,9 @@
   shallow_since: '2024-02-07'
 - name: rabbitmq_server
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-rabbitmq_server
-  version: 99123c627c6ae5b208dc25bfd6f68dd0f5716ef1
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-rabbitmq_server
+  version: c77aad3a013cc25764b9c54894222bae9378be4a
+  trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: repo_server
   scm: git
