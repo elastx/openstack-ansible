@@ -62,7 +62,7 @@
 - name: os_keystone
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_keystone
-  version: 88cebb948db17dc06e18b7cc735ebd0368b92868
+  version: 57a9b592514066bc161c7655f5183249d2fd0ff4
   trackbranch: elastx/yoga
   shallow_since: '2023-10-22'
 - name: openstack_openrc
@@ -182,7 +182,7 @@
 - name: os_neutron
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_neutron
-  version: a16afb38aa9b17febfdd2f866ea6d8446212375a
+  version: 01508afa9c472665a61dc597222687862ee5d722
   trackbranch: elastx/yoga
   shallow_since: '2023-10-12'
 - name: os_nova
