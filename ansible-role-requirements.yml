@@ -122,7 +122,7 @@
 - name: os_glance
   scm: git
   src: https://github.com/elastx/openstack-ansible-os_glance
-  version: d10d6b1c81fc8a22231c420878a8e0f8d96e40a1
+  version: 0e5d2b8938ecca8919c5f29bb3652a3444a8f1c4
   trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: os_gnocchi
