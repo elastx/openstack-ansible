@@ -55,9 +55,9 @@
   shallow_since: '2024-02-07'
 - name: openstack_hosts
   scm: git
-  src: https://opendev.org/openstack/openstack-ansible-openstack_hosts
-  version: d3186b2c14784cfeaa6ca9051cf55b4c9e31e68b
-  trackbranch: unmaintained/yoga
+  src: https://github.com/elastx/openstack-ansible-openstack_hosts
+  version: 1461516179e6fd36aca28bfab7979c36a4eea4fa
+  trackbranch: elastx/yoga
   shallow_since: '2024-07-07'
 - name: os_keystone
   scm: git
