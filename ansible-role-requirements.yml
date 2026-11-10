@@ -44,7 +44,7 @@
 - name: lxc_hosts
   scm: git
   src: https://github.com/elastx/openstack-ansible-lxc_hosts
-  version: a3ab45ea2caf66dc71b71e116a9bd1f36e918a06
+  version: 6d7bcf63f02dfa9e2c56e8ce9432623434bca44a
   trackbranch: elastx/yoga
   shallow_since: '2024-02-07'
 - name: memcached_server
