@@ -15,10 +15,13 @@
 
 # This is the default LXC AppArmor profile
 # Groups which need the unbound profile have a specific override
-lxc_container_config_list:
-  - "lxc.apparmor.profile={{ 'unconfined' if hostvars[physical_host]['ansible_facts']['distribution'] == 'Debian' else ('generated' if hostvars[physical_host]['ansible_facts']['distribution_version'] is version('24.04', '>=') else 'lxc-openstack') }}"
-  - "lxc.apparmor.allow_nesting=1"
-
+# 24.04 hosts use LXC's generated profile with nesting; 22.04 keeps lxc-openstack
+# so existing containers' configs are unchanged and are not restarted
+lxc_container_config_list: >-
+  {%- set _distro = hostvars[physical_host]['ansible_facts']['distribution'] -%}
+  {%- set _noble = _distro != 'Debian' and hostvars[physical_host]['ansible_facts']['distribution_version'] is version('24.04', '>=') -%}
+  {{ ['lxc.apparmor.profile=' ~ ('unconfined' if _distro == 'Debian' else ('generated' if _noble else 'lxc-openstack'))]
+     + (['lxc.apparmor.allow_nesting=1'] if _noble else []) }}
 
 # Needed by playbooks/common-tasks/os-lxc-container-setup.yml
 lxc_container_log_path: "/var/log/lxc"
