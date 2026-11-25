@@ -83,20 +83,19 @@
 # collector scripts and the stale .prom files, which node_exporter would
 # otherwise keep serving with the last sample forever.
 
-- name: Fail early when no utility container matches the collector host pattern
-  ansible.builtin.fail:
+- name: Warn when no utility container matches the collector host pattern
+  ansible.builtin.debug:
     msg: >-
-      prometheus_collectors_host_pattern is
+      WARNING: prometheus_collectors_host_pattern is
       '{{ prometheus_collectors_host_pattern | default("sto1") }}' but no host
       in this play carries it in its inventory name
-      ({{ ansible_play_hosts | join(', ') }}). The OpenStack API collectors
-      would not be deployed anywhere. Fix the pattern for this environment,
-      or set it to an empty string to deploy on every utility container.
+      ({{ ansible_play_hosts | join(', ') }}) -- the OpenStack API collectors
+      are not deployed anywhere in this run. Fix the pattern for this
+      environment; the play continues so node_exporter is unaffected.
   when:
     - prometheus_collectors[ansible_distribution] is defined
     - prometheus_collectors_host_pattern | default('') | length > 0
     - prometheus_collectors_host_pattern not in (ansible_play_hosts | join(' '))
-  become: true
   run_once: true
 
 - name: Install node exporter collectors

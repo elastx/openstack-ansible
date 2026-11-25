@@ -29,6 +29,7 @@ prometheus_collectors:
 # removed: cron entries, collector scripts and the stale .prom files, which
 # node_exporter would otherwise keep serving with the last sample forever.
 # Set this to an empty string to deploy the collectors on every utility
-# container again; the role fails the deployment loudly when a non-empty
-# pattern matches no host in the play.
+# container again; when a non-empty pattern matches no host, the play
+# continues and only a warning is logged, so node_exporter deployment is
+# never blocked by a bad pattern
 prometheus_collectors_host_pattern: "sto1"
