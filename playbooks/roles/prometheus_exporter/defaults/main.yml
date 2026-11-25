@@ -19,3 +19,16 @@ prometheus_collectors:
   Ubuntu:
     - { name: "gpu_capacity", filending: "py", pre_script: ". /root/openrc && ", minute: "*/5" }
     - { name: "billing_summary", filending: "py", pre_script: ". /root/openrc && ", minute: "1" }
+
+# The Ubuntu list above holds the OpenStack API collectors (gpu_capacity,
+# billing_summary and, from its own PR, openstack_capacity). They query the
+# whole cloud with the /root/openrc credentials and return identical data
+# no matter which site's utility container runs them, so they are deployed
+# on ONE site's utility containers only -- the ones whose inventory name
+# matches this pattern. Sites that do not match get any earlier deployment
+# removed: cron entries, collector scripts and the stale .prom files, which
+# node_exporter would otherwise keep serving with the last sample forever.
+# Set this to an empty string to deploy the collectors on every utility
+# container again; the role fails the deployment loudly when a non-empty
+# pattern matches no host in the play.
+prometheus_collectors_host_pattern: "sto1"
