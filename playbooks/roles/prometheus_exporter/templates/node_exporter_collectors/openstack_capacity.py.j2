@@ -1,0 +1,1710 @@
+{% if venv_tag is defined %}
+#!/openstack/venvs/utility-{{ venv_tag }}/bin/python3
+{% else %}
+#!/usr/bin/env python3
+{% endif %}
+import os
+import sys
+
+# Specialized openstack_capacity collector: no options, no flags. The cron
+# entry supplies the OS_* environment via ". /root/openrc", so this
+# preamble only makes the openstack CLI resolvable (it lives in the same
+# directory as the python interpreting this script under the utility
+# venv) and pins the collector arguments to the fleet-wide prometheus
+# snapshot. The collector below is embedded verbatim inside a Jinja raw
+# block because its source contains strings that would otherwise be
+# parsed as Jinja tags.
+os.environ["PATH"] = (
+    os.path.dirname(os.path.abspath(sys.executable))
+    + os.pathsep
+    + os.environ.get("PATH", "")
+)
+sys.argv = [sys.argv[0], "--all", "--format", "prometheus"]
+{% raw %}
+#!/usr/bin/env python3
+"""Show exact remaining CPU / memory / local-disk capacity per hypervisor in a
+Nova host aggregate.
+
+Numbers come from Placement, not from `openstack hypervisor show`: Nova
+microversion 2.88 (Train) removed vcpus_used / free_ram_mb / free_disk_gb /
+local_gb_used from the hypervisor API, and even before that those fields
+ignored allocation ratios and reserved amounts. Placement is what the
+scheduler actually consults, so it is the only source that answers "what will
+still fit here".
+
+For each resource class the arithmetic mirrors Placement's own capacity check:
+
+    capacity = (total - reserved) * allocation_ratio
+    free     = capacity - used
+
+`reserved` is where reserved_host_memory_mb / reserved_host_disk_mb /
+reserved_host_cpus end up, so they are already accounted for.
+
+Both VCPU (shared) and PCPU (dedicated/pinned) are reported; the PCPU columns
+only appear when at least one host in the aggregate actually has PCPU
+inventory, so hosts without cpu_dedicated_set do not get noise columns.
+
+Auth: by default the script shells out to `openstack` three times (in
+parallel) to get a token and the compute/placement endpoint URLs, so it honours
+OS_CLOUD, clouds.yaml, application credentials and everything else the CLI
+supports. It does NOT need the osc-placement plugin. Supply --token plus
+--compute-url/--placement-url (or OS_TOKEN / OS_COMPUTE_URL /
+OS_PLACEMENT_URL) to skip the CLI entirely.
+
+Examples:
+    ./openstack-aggregate-capacity.py my-aggregate
+    ./openstack-aggregate-capacity.py --sort vcpu_free my-aggregate
+    ./openstack-aggregate-capacity.py --format json my-aggregate
+    ./openstack-aggregate-capacity.py --all            # every compute host
+    ./openstack-aggregate-capacity.py --all --az sto1a,sto2a
+    ./openstack-aggregate-capacity.py --all --format prometheus
+    ./openstack-aggregate-capacity.py --all --sort os
+    ./openstack-aggregate-capacity.py --summary        # one TOTAL-style row per aggregate, as CSV
+
+Prometheus: --format prometheus writes an exposition-format snapshot suitable
+for the node_exporter textfile collector. Metric units are Placement's own
+(_vcpu_ counts, _memory_mb_ MiB, _disk_gb_ GB) rather than converted to bytes,
+because Placement's DISK_GB is GB or GiB depending on the virt driver and
+guessing would silently misreport. Dashboards therefore line up exactly with
+`openstack resource provider inventory list`.
+
+Write it atomically, or the collector will occasionally read a half-written
+file:
+
+    OUT=/var/lib/node_exporter/textfile/openstack_capacity.prom
+    ./openstack-aggregate-capacity.py --all --format prometheus > "$OUT.tmp" \\
+      && mv "$OUT.tmp" "$OUT"
+"""
+
+import argparse
+import concurrent.futures
+import json
+import os
+import re
+import ssl
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+# Resource classes we report on. VCPU/PCPU are counts, MEMORY_MB is MiB,
+# DISK_GB is GB (Placement's unit, decimal GB by convention).
+CPU_CLASSES = ("VCPU", "PCPU")
+MEM_CLASS = "MEMORY_MB"
+DISK_CLASS = "DISK_GB"
+
+# QEMU version -> Ubuntu LTS release. Nova's libvirt driver stores QEMU's
+# version (from virConnectGetVersion) on every hypervisor record as
+# hypervisor_version, encoded major*1e6+minor*1e3+micro. We decode it to
+# "X.Y.Z" and map "major.minor" to the Ubuntu LTS the QEMU package ships in.
+# This comes from the os-hypervisors/detail call the script already makes, so
+# the OS column needs no extra API calls, no CLI, and no SSH. Override the map
+# with QEMU_TO_OS_JSON (a JSON object of {"major.minor": "label"}).
+DEFAULT_QEMU_TO_OS = {
+    "2.11": "ubuntu 18.04",
+    "4.2": "ubuntu 20.04",
+    "6.2": "ubuntu 22.04",
+    "8.2": "ubuntu 24.04",
+    "10.2": "ubuntu 26.04",
+}
+
+# Placement accepts the "latest" microversion keyword, which avoids having to
+# guess a version the deployment supports.
+PLACEMENT_HEADERS = {"OpenStack-API-Version": "placement latest"}
+# Pinned deliberately: 2.1 has everything we read (os-aggregates hosts,
+# os-services host/binary/status/state) and no response-shape surprises.
+COMPUTE_HEADERS = {"X-OpenStack-Nova-API-Version": "2.1"}
+
+
+VALID_INTERFACES = ("admin", "public", "internal")
+
+UUID_RE = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
+
+
+class Fatal(Exception):
+    """Anything that should abort with a clean message rather than a traceback."""
+
+
+class ApiError(Fatal):
+    """An HTTP-level failure, carrying the status code so callers can react to
+    it (e.g. negotiate a microversion down on 406)."""
+
+    def __init__(self, message, code=None):
+        super().__init__(message)
+        self.code = code
+
+
+def normalize_interface(value):
+    """Accept the legacy adminURL/publicURL/internalURL spellings.
+
+    Plenty of openrc files still export OS_INTERFACE=internalURL from the
+    Keystone v2 days. openstacksdk tolerates it, but
+    `openstack endpoint list --interface` only accepts the bare form.
+    """
+    iface = (value or "internal").strip().lower()
+    if iface.endswith("url"):
+        iface = iface[: -len("url")]
+    if iface not in VALID_INTERFACES:
+        raise Fatal(
+            "interface %r is not one of %s (set --interface or OS_INTERFACE)"
+            % (value, ", ".join(VALID_INTERFACES))
+        )
+    return iface
+
+
+# ---------------------------------------------------------------------------
+# HTTP / auth
+# ---------------------------------------------------------------------------
+
+
+def run_openstack(args, timeout):
+    """Run the openstack CLI and return stripped stdout."""
+    cmd = ["openstack"] + args
+    try:
+        proc = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+        )
+    except FileNotFoundError:
+        raise Fatal(
+            "the 'openstack' CLI was not found; either install it or pass "
+            "--token together with --compute-url and --placement-url"
+        )
+    except subprocess.TimeoutExpired:
+        raise Fatal("timed out running: %s" % " ".join(cmd))
+    if proc.returncode != 0:
+        raise Fatal(
+            "failed (exit %d): %s\n%s"
+            % (proc.returncode, " ".join(cmd), proc.stderr.decode(errors="replace").strip())
+        )
+    return proc.stdout.decode(errors="replace").strip()
+
+
+def endpoint_for(service, interface, region, timeout):
+    """Look up a service endpoint URL via the CLI.
+
+    `openstack endpoint list -f value` is used rather than `catalog list`
+    because its output shape has been stable across releases.
+    """
+    args = ["endpoint", "list", "--service", service, "--interface", interface]
+    if region:
+        args += ["--region", region]
+    args += ["-f", "value", "-c", "URL"]
+    out = run_openstack(args, timeout)
+    urls = [line.strip() for line in out.splitlines() if line.strip()]
+    if not urls:
+        raise Fatal(
+            "no '%s' endpoint with interface '%s'%s found in the catalog. "
+            "Try --interface public, or pass the URL directly with "
+            "--compute-url/--placement-url."
+            % (service, interface, " in region %s" % region if region else "")
+        )
+    return urls[0]
+
+
+def resolve_auth(args):
+    """Return (token, compute_url, placement_url), consulting the CLI only for
+    whatever was not supplied explicitly."""
+    token = args.token or os.environ.get("OS_TOKEN")
+    compute = args.compute_url or os.environ.get("OS_COMPUTE_URL")
+    placement = args.placement_url or os.environ.get("OS_PLACEMENT_URL")
+
+    jobs = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+        if not token:
+            jobs["token"] = pool.submit(
+                run_openstack, ["token", "issue", "-f", "value", "-c", "id"], args.timeout
+            )
+        if not compute:
+            jobs["compute"] = pool.submit(
+                endpoint_for, "compute", args.interface, args.region, args.timeout
+            )
+        if not placement:
+            jobs["placement"] = pool.submit(
+                endpoint_for, "placement", args.interface, args.region, args.timeout
+            )
+        results = {}
+        for key, fut in jobs.items():
+            results[key] = fut.result()
+
+    token = token or results["token"]
+    compute = compute or results["compute"]
+    placement = placement or results["placement"]
+
+    # Nova is usually registered as .../v2.1, but some deployments register the
+    # unversioned root. Appending the version is harmless in the former case
+    # and required in the latter.
+    if not re.search(r"/v2(\.1)?/?$", urllib.parse.urlparse(compute).path):
+        compute = compute.rstrip("/") + "/v2.1"
+
+    return token.strip(), compute.rstrip("/"), placement.rstrip("/")
+
+
+def make_opener(insecure):
+    if insecure:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        return urllib.request.build_opener(urllib.request.HTTPSHandler(context=ctx))
+    return urllib.request.build_opener()
+
+
+def api_get(opener, url, token, headers, timeout):
+    req = urllib.request.Request(url, method="GET")
+    req.add_header("X-Auth-Token", token)
+    req.add_header("Accept", "application/json")
+    for key, value in headers.items():
+        req.add_header(key, value)
+    try:
+        with opener.open(req, timeout=timeout) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode(errors="replace").strip()
+        raise ApiError(
+            "GET %s -> HTTP %s %s\n%s" % (url, exc.code, exc.reason, body[:500]),
+            code=exc.code,
+        )
+    except urllib.error.URLError as exc:
+        raise ApiError("GET %s failed: %s" % (url, exc.reason))
+    except json.JSONDecodeError as exc:
+        raise ApiError("GET %s returned invalid JSON: %s" % (url, exc))
+
+
+# ---------------------------------------------------------------------------
+# Data collection
+# ---------------------------------------------------------------------------
+
+
+def all_aggregates(ctx):
+    """Fetch every host aggregate once; used for both lookup and AZ mapping."""
+    data = api_get(
+        ctx["opener"],
+        "%s/os-aggregates" % ctx["compute"],
+        ctx["token"],
+        COMPUTE_HEADERS,
+        ctx["timeout"],
+    )
+    return data.get("aggregates", [])
+
+
+def aggregate_membership(aggregates):
+    """Map host -> sorted list of every aggregate it belongs to.
+
+    Includes AZ aggregates, which is deliberate: "which aggregates is this host
+    in" has one honest answer, and silently hiding some because their name
+    happens to match the AZ column would be worse than the small redundancy.
+    """
+    membership = {}
+    for agg in aggregates:
+        name = agg.get("name") or str(agg.get("id"))
+        for host in agg.get("hosts") or []:
+            membership.setdefault(host, set()).add(name)
+    return {host: sorted(names) for host, names in membership.items()}
+
+
+def find_aggregate(aggregates, name):
+    """Return (aggregate_dict, [hostnames]) for an aggregate by name, id or uuid."""
+    matches = [
+        agg
+        for agg in aggregates
+        if name in (agg.get("name"), str(agg.get("id")), agg.get("uuid"))
+    ]
+    if not matches:
+        known = ", ".join(sorted(a.get("name", "?") for a in aggregates)) or "(none)"
+        raise Fatal("no aggregate matching %r. Known aggregates: %s" % (name, known))
+    if len(matches) > 1:
+        raise Fatal(
+            "%r matches %d aggregates; use the numeric id or uuid" % (name, len(matches))
+        )
+    agg = matches[0]
+    return agg, list(agg.get("hosts") or [])
+
+
+def availability_zones(ctx, aggregates):
+    """Map compute host -> availability zone name.
+
+    Two sources, in this order:
+
+    1. os-availability-zone/detail, which reports the *effective* zone and so
+       resolves default_availability_zone for hosts that are in no AZ aggregate
+       (a config value not exposed anywhere in the API). Authoritative, but it
+       builds its host lists from
+
+           service_get_all(context, {'disabled': False}, ...)
+
+       so it silently omits every host whose nova-compute is *disabled*.
+
+    2. Aggregate metadata, to recover exactly those omitted hosts. This cannot
+       be the primary source: a host belongs to several aggregates, so a
+       functional one carrying stray availability_zone metadata would shadow
+       the real AZ aggregate.
+
+    A disabled host is where the free capacity usually is, so dropping it from
+    an AZ-filtered report would defeat the point.
+    """
+    # Candidate zones per host from aggregate metadata; independent of service
+    # state, which is what makes it usable for disabled hosts.
+    agg_az = {}
+    for agg in aggregates:
+        zone = agg.get("availability_zone")
+        if not zone:
+            continue
+        for host in agg.get("hosts") or []:
+            agg_az.setdefault(host, set()).add(zone)
+
+    host_az = {}
+    warning = None
+    try:
+        data = api_get(
+            ctx["opener"],
+            "%s/os-availability-zone/detail" % ctx["compute"],
+            ctx["token"],
+            COMPUTE_HEADERS,
+            ctx["timeout"],
+        )
+    except ApiError as exc:
+        data = None
+        warning = (
+            "could not read the availability zone list (%s); falling back to "
+            "aggregate metadata, so a host in no AZ aggregate shows no zone" % exc
+        )
+
+    if data:
+        for zone in data.get("availabilityZoneInfo", []):
+            name = zone.get("zoneName")
+            for host, binaries in (zone.get("hosts") or {}).items():
+                # Zones also list controller services (the "internal" zone);
+                # only hosts running nova-compute are hypervisors.
+                if "nova-compute" in (binaries or {}):
+                    host_az[host] = name
+
+    conflicts = []
+    for host, zones in agg_az.items():
+        if host in host_az:
+            continue
+        if len(zones) > 1:
+            conflicts.append("%s (%s)" % (host, ", ".join(sorted(zones))))
+        host_az[host] = sorted(zones)[0]
+
+    if conflicts:
+        detail = (
+            "host(s) in more than one AZ aggregate, took the first "
+            "alphabetically: %s" % "; ".join(sorted(conflicts))
+        )
+        warning = "%s. %s" % (warning, detail) if warning else detail
+
+    return host_az, warning
+
+
+def hypervisor_map(ctx):
+    """Map nova-compute service host -> list of hypervisor records.
+
+    The compute node UUID *is* its Placement resource provider UUID, and
+    microversion 2.53+ reports it as the hypervisor `id`. Using that is far more
+    reliable than matching provider names against service hosts: a provider is
+    named after hypervisor_hostname, which routinely differs from the
+    [DEFAULT] host value that aggregates and os-services report (FQDN vs short
+    name, or an explicit host= override).
+
+    Returns (mapping, uuids_usable). On a cloud too old for 2.53 the hypervisor
+    id is an integer, and the caller has to fall back to name matching.
+    """
+    url = "%s/os-hypervisors/detail" % ctx["compute"]
+    try:
+        data = api_get(
+            ctx["opener"],
+            url,
+            ctx["token"],
+            {"X-OpenStack-Nova-API-Version": "2.53"},
+            ctx["timeout"],
+        )
+    except ApiError as exc:
+        if exc.code != 406:
+            raise
+        data = api_get(ctx["opener"], url, ctx["token"], COMPUTE_HEADERS, ctx["timeout"])
+
+    mapping = {}
+    uuids_usable = True
+    for hyp in data.get("hypervisors", []):
+        rp_uuid = str(hyp.get("id", ""))
+        if not UUID_RE.match(rp_uuid):
+            uuids_usable = False
+            rp_uuid = None
+        host = (hyp.get("service") or {}).get("host") or hyp.get("hypervisor_hostname")
+        mapping.setdefault(host, []).append(
+            {
+                "rp_uuid": rp_uuid,
+                "hypervisor_hostname": hyp.get("hypervisor_hostname"),
+                # Still present because we ask for 2.53 explicitly: microversion
+                # 2.88 dropped running_vms along with the other usage fields,
+                # and microversions are opt-in, so pinning below it keeps it.
+                "running_vms": hyp.get("running_vms"),
+                # QEMU version as Nova's libvirt driver recorded it from
+                # virConnectGetVersion(), encoded major*1e6+minor*1e3+micro
+                # (e.g. 8002002 = 8.2.2). May be None/absent on old clouds or
+                # non-libvirt drivers; parsed to "X.Y.Z" for the OS column.
+                "hypervisor_version": hyp.get("hypervisor_version"),
+            }
+        )
+    return mapping, uuids_usable
+
+
+def build_targets(hosts, hyp_map, rp_by_name, warnings):
+    """Turn service host names into concrete (label, provider uuid) targets.
+
+    A service host maps to several hypervisors under Ironic, so each gets its
+    own row, labelled host/hypervisor_hostname to keep them distinguishable.
+    """
+    targets = []
+    for host in hosts:
+        entries = hyp_map.get(host) or []
+        if not entries:
+            warnings.append(
+                "service host %r has no hypervisor record - skipped. It is in the "
+                "aggregate but os-hypervisors does not list it." % host
+            )
+            continue
+        multiple = len(entries) > 1
+        for entry in entries:
+            uuid = (
+                entry["rp_uuid"]
+                or rp_by_name.get(entry["hypervisor_hostname"])
+                or rp_by_name.get(host)
+            )
+            if not uuid:
+                warnings.append(
+                    "no Placement resource provider for %r (hypervisor_hostname %r) "
+                    "- skipped." % (host, entry["hypervisor_hostname"])
+                )
+                continue
+            label = host
+            if multiple:
+                label = "%s/%s" % (host, entry["hypervisor_hostname"])
+            targets.append(
+                {
+                    "label": label,
+                    "host": host,
+                    "hypervisor_hostname": entry["hypervisor_hostname"],
+                    "running_vms": entry["running_vms"],
+                    "hypervisor_version": entry["hypervisor_version"],
+                    "uuid": uuid,
+                }
+            )
+    return targets
+
+
+def compute_services(ctx):
+    """Map host -> {'status': enabled|disabled, 'state': up|down} for nova-compute."""
+    data = api_get(
+        ctx["opener"],
+        "%s/os-services?binary=nova-compute" % ctx["compute"],
+        ctx["token"],
+        COMPUTE_HEADERS,
+        ctx["timeout"],
+    )
+    services = data.get("services", [])
+    by_host = {}
+    for svc in services:
+        # A host can legitimately appear once; if it appears twice keep the
+        # entry that is up, so a stale down record does not mask a live one.
+        entry = {"status": svc.get("status"), "state": svc.get("state")}
+        existing = by_host.get(svc["host"])
+        if existing is None or existing.get("state") != "up":
+            by_host[svc["host"]] = entry
+    return by_host, services
+
+
+def qemu_to_os_map():
+    """Load the "major.minor" -> OS label map, honouring QEMU_TO_OS_JSON."""
+    raw = os.environ.get("QEMU_TO_OS_JSON")
+    if not raw:
+        return DEFAULT_QEMU_TO_OS
+    try:
+        loaded = json.loads(raw)
+        return {str(k): str(v) for k, v in loaded.items()}
+    except (ValueError, TypeError):
+        return DEFAULT_QEMU_TO_OS
+
+
+def parse_hypervisor_version(raw):
+    """Decode Nova's hypervisor_version int to a "X.Y.Z" string, or None.
+
+    Nova's libvirt driver stores QEMU's version from virConnectGetVersion(),
+    encoded as major*1_000_000 + minor*1_000 + micro (e.g. 8002002 = 8.2.2).
+    Returns None when the field is absent or not an integer (non-libvirt
+    drivers, old clouds), so the OS column degrades to "-" for that host.
+    """
+    if raw is None:
+        return None
+    try:
+        v = int(raw)
+    except (ValueError, TypeError):
+        return None
+    if v <= 0:
+        return None
+    major, rem = divmod(v, 1_000_000)
+    minor, micro = divmod(rem, 1_000)
+    return "%d.%d.%d" % (major, minor, micro)
+
+
+def derive_os_version(qemu_version, mapping):
+    """Map a "X.Y.Z" QEMU version to an OS label via major.minor, or None."""
+    if not qemu_version:
+        return None
+    m = re.match(r"(\d+\.\d+)\.", qemu_version)
+    return mapping.get(m.group(1)) if m else None
+
+
+def resource_providers(ctx):
+    """Map resource provider name -> uuid, restricted to root providers.
+
+    Nested providers (NUMA nodes, PGPUs) are named like "<host>_NUMA0" and are
+    skipped: their inventory is not what a plain VCPU/MEMORY_MB/DISK_GB request
+    lands on, and including them would double-count.
+    """
+    data = api_get(
+        ctx["opener"],
+        "%s/resource_providers" % ctx["placement"],
+        ctx["token"],
+        PLACEMENT_HEADERS,
+        ctx["timeout"],
+    )
+    by_name = {}
+    for rp in data.get("resource_providers", []):
+        if rp.get("parent_provider_uuid"):
+            continue
+        by_name[rp["name"]] = rp["uuid"]
+    return by_name
+
+
+def provider_detail(ctx, uuid):
+    """Fetch inventories and usages for one provider.
+
+    Returns None when Placement has no such provider, which happens when a
+    compute node exists in Nova but has never reported inventory.
+    """
+    try:
+        inv = api_get(
+            ctx["opener"],
+            "%s/resource_providers/%s/inventories" % (ctx["placement"], uuid),
+            ctx["token"],
+            PLACEMENT_HEADERS,
+            ctx["timeout"],
+        )
+        usage = api_get(
+            ctx["opener"],
+            "%s/resource_providers/%s/usages" % (ctx["placement"], uuid),
+            ctx["token"],
+            PLACEMENT_HEADERS,
+            ctx["timeout"],
+        )
+    except ApiError as exc:
+        if exc.code == 404:
+            return None
+        raise
+    return inv.get("inventories", {}), usage.get("usages", {})
+
+
+# ---------------------------------------------------------------------------
+# Capacity arithmetic
+# ---------------------------------------------------------------------------
+
+
+def resource_figures(inventories, usages, rclass):
+    """Return the capacity picture for one resource class, or None if the
+    provider has no inventory of it."""
+    inv = inventories.get(rclass)
+    if not inv:
+        return None
+    total = inv.get("total", 0)
+    reserved = inv.get("reserved", 0)
+    ratio = inv.get("allocation_ratio", 1.0)
+    # Mirrors Placement's own check; floored because a fractional unit of a
+    # vCPU or a GB cannot be allocated.
+    capacity = int((total - reserved) * ratio)
+    used = usages.get(rclass, 0)
+    return {
+        "total": total,
+        "reserved": reserved,
+        "allocation_ratio": ratio,
+        "capacity": capacity,
+        "used": used,
+        "free": capacity - used,
+        # The largest single allocation that can land here: a flavor asking for
+        # more than max_unit is rejected even when free capacity looks ample.
+        "max_unit": inv.get("max_unit"),
+        "min_unit": inv.get("min_unit"),
+        "step_size": inv.get("step_size"),
+    }
+
+
+def cpu_overcommit(rows):
+    """Allocated CPU units per physical host CPU, across the given rows.
+
+    This is the overcommit *in effect*, as distinct from the configured ceiling
+    shown in the VCPU_R / PCPU_R columns: a host with cpu_allocation_ratio 8.0
+    and 200 vCPUs placed on 64 host CPUs is permitted 8x but is running at
+    3.13x.
+
+    VCPU and PCPU are summed so that a host splitting its cores between
+    cpu_shared_set and cpu_dedicated_set gets one honest whole-host figure.
+
+    The denominator is Placement's raw `total`, which is the CPU count Nova
+    sees for the host - SMT siblings included, so on a hyperthreaded box this
+    is per-thread, not per-physical-core.
+
+    Returns None when there is no CPU inventory at all to divide by.
+    """
+    used = total = 0
+    for row in rows:
+        for rclass in CPU_CLASSES:
+            res = row["resources"].get(rclass)
+            if not res:
+                continue
+            used += res["used"]
+            total += res["total"]
+    if not total:
+        return None
+    return used / total
+
+
+def build_rows(ctx, targets, services, host_az, host_aggregates, workers, warnings):
+    """Collect a per-hypervisor capacity record for every target, in parallel."""
+    rows = []
+    if not targets:
+        return rows
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(provider_detail, ctx, t["uuid"]): t for t in targets}
+        details = {}
+        for fut in concurrent.futures.as_completed(futures):
+            target = futures[fut]
+            details[target["label"]] = fut.result()
+
+    for target in targets:
+        detail = details[target["label"]]
+        if detail is None:
+            warnings.append(
+                "resource provider %s (%s) is not in Placement - skipped; that "
+                "compute has most likely never reported inventory."
+                % (target["uuid"], target["label"])
+            )
+            continue
+        inventories, usages = detail
+        svc = services.get(target["host"], {})
+        row = {
+            "host": target["label"],
+            "service_host": target["host"],
+            "hypervisor_hostname": target["hypervisor_hostname"],
+            "availability_zone": host_az.get(target["host"]) or "",
+            "aggregates": list(host_aggregates.get(target["host"]) or []),
+            "running_vms": target["running_vms"],
+            "resource_provider": target["uuid"],
+            "service_status": svc.get("status"),
+            "service_state": svc.get("state"),
+            "schedulable": svc.get("status") == "enabled" and svc.get("state") == "up",
+            # QEMU version straight from the os-hypervisors/detail response
+            # already fetched for running_vms -- no extra API call. None when
+            # the cloud / driver does not report it, so the OS column shows
+            # "-" for that host without affecting the others.
+            "qemu_version": parse_hypervisor_version(target.get("hypervisor_version")),
+            "os_version": None,
+            "resources": {},
+        }
+        row["os_version"] = derive_os_version(row["qemu_version"], qemu_to_os_map())
+        for rclass in CPU_CLASSES + (MEM_CLASS, DISK_CLASS):
+            figures = resource_figures(inventories, usages, rclass)
+            if figures is not None:
+                row["resources"][rclass] = figures
+        if not row["resources"]:
+            warnings.append(
+                "%s (provider %s) has no VCPU/PCPU/MEMORY_MB/DISK_GB inventory at "
+                "all - skipped." % (target["label"], target["uuid"])
+            )
+            continue
+        # Derived here rather than in each renderer, so table/json/csv/prometheus
+        # cannot drift apart.
+        row["cpu_overcommit"] = cpu_overcommit([row])
+        if DISK_CLASS not in row["resources"]:
+            warnings.append(
+                "%s has no DISK_GB inventory on its own provider - disk is served by "
+                "shared storage (Ceph et al) via a sharing provider, so there is no "
+                "local disk figure to report." % target["label"]
+            )
+        rows.append(row)
+
+    return rows
+
+
+def aggregate_summary_rows(aggregates, rows, services):
+    """Collapse per-hypervisor rows into one TOTAL-style record per aggregate.
+
+    Mirrors the table TOTAL row for every aggregate in one pass: capacity, VMs
+    and cpu_overcommit cover only the aggregate's schedulable members, so
+    headroom on a disabled or down host never pads the numbers - they answer
+    "what could still land on this aggregate". host_count and schedulable_count
+    keep the scope visible; members without a hypervisor or Placement record
+    count as members but contribute no capacity to their aggregate's sums.
+    """
+    rows_by_host = {}
+    for row in rows:
+        rows_by_host.setdefault(row["service_host"], []).append(row)
+
+    summaries = []
+    for agg in sorted(aggregates, key=lambda a: (a.get("name") or "", a.get("id") or 0)):
+        members = list(agg.get("hosts") or [])
+        agg_rows = [r for host in members for r in rows_by_host.get(host, ())]
+        sched = [r for r in agg_rows if r["schedulable"]]
+        vm_counts = [r["running_vms"] for r in sched if r["running_vms"] is not None]
+        record = {
+            "name": agg.get("name"),
+            "id": agg.get("id"),
+            "uuid": agg.get("uuid") or "",
+            "availability_zone": agg.get("availability_zone") or "",
+            "host_count": len(members),
+            "schedulable_count": sum(
+                1
+                for member in members
+                if (services.get(member) or {}).get("status") == "enabled"
+                and (services.get(member) or {}).get("state") == "up"
+            ),
+            "running_vms": sum(vm_counts) if vm_counts else None,
+            "cpu_overcommit": cpu_overcommit(sched),
+            "summary": {},
+            "hosts": members,
+        }
+        for rclass in CPU_CLASSES + (MEM_CLASS, DISK_CLASS):
+            have = [r for r in sched if rclass in r["resources"]]
+            if not have:
+                continue
+            record["summary"][rclass] = {
+                "used": sum(r["resources"][rclass]["used"] for r in have),
+                "capacity": sum(r["resources"][rclass]["capacity"] for r in have),
+                "free": sum(r["resources"][rclass]["free"] for r in have),
+            }
+        summaries.append(record)
+    return summaries
+
+
+# ---------------------------------------------------------------------------
+# Rendering
+# ---------------------------------------------------------------------------
+
+MIB_PER_GIB = 1024.0
+
+
+def sort_rows(rows, key):
+    if key == "host":
+        rows.sort(key=lambda r: r["host"])
+        return
+    if key in ("os", "qemu"):
+        # Ascending (A->Z); rows with no value sort last under a stable
+        # secondary sort on host so ties break deterministically.
+        field = "os_version" if key == "os" else "qemu_version"
+
+        def sort_key(row):
+            return (row[field] is None, row[field] or "", row["host"])
+
+        rows.sort(key=sort_key)
+        return
+    rclass, field = {
+        "vcpu_free": ("VCPU", "free"),
+        "pcpu_free": ("PCPU", "free"),
+        "mem_free": (MEM_CLASS, "free"),
+        "disk_free": (DISK_CLASS, "free"),
+    }[key]
+
+    def sort_key(row):
+        res = row["resources"].get(rclass)
+        if res is None:
+            # Hosts with no inventory of this class sort last rather than
+            # pretending to have zero headroom.
+            return (1, 0, row["host"])
+        # Descending: most headroom first.
+        return (0, -res[field], row["host"])
+
+    rows.sort(key=sort_key)
+
+
+def render_table(rows, show_pcpu, totals_note, show_aggregates):
+    def cpu_cols(prefix):
+        return ["%s_USED" % prefix, "%s_CAP" % prefix, "%s_FREE" % prefix, "%s_R" % prefix]
+
+    header = ["HOST", "AZ"]
+    if show_aggregates:
+        header.append("AGGREGATES")
+    header.append("SVC")
+    # OS column is shown whenever any host has a QEMU version from the API
+    # (always, on a libvirt cloud); a cloud that does not report
+    # hypervisor_version gets no column rather than a column of "-".
+    # Placed in the text block (before VMS) so the left/right alignment split
+    # below keeps it left-justified.
+    show_os = any(r.get("os_version") is not None or r.get("qemu_version") is not None
+                  for r in rows)
+    if show_os:
+        header.append("OS")
+    # Leading text columns are left-aligned, every numeric column right-aligned.
+    text_cols = len(header)
+    header.append("VMS")
+    header += cpu_cols("VCPU")
+    if show_pcpu:
+        header += cpu_cols("PCPU")
+    header.append("CPU_OC")
+    header += ["MEM_USED_GI", "MEM_CAP_GI", "MEM_FREE_GI", "MEM_R"]
+    header += ["DISK_USED_GB", "DISK_CAP_GB", "DISK_FREE_GB", "DISK_R"]
+
+    def count_cells(row, rclass):
+        if rclass not in row["resources"]:
+            return ["-", "-", "-", "-"]
+        res = row["resources"][rclass]
+        return [
+            str(res["used"]),
+            str(res["capacity"]),
+            str(res["free"]),
+            "%g" % res["allocation_ratio"],
+        ]
+
+    def mem_cells(row):
+        if MEM_CLASS not in row["resources"]:
+            return ["-", "-", "-", "-"]
+        res = row["resources"][MEM_CLASS]
+        return [
+            "%.1f" % (res["used"] / MIB_PER_GIB),
+            "%.1f" % (res["capacity"] / MIB_PER_GIB),
+            "%.1f" % (res["free"] / MIB_PER_GIB),
+            "%g" % res["allocation_ratio"],
+        ]
+
+    body = []
+    for row in rows:
+        svc = "%s/%s" % (row["service_status"] or "?", row["service_state"] or "?")
+        cells = [row["host"], row["availability_zone"] or "-"]
+        if show_aggregates:
+            cells.append(",".join(row["aggregates"]) or "-")
+        cells.append(svc)
+        if show_os:
+            # Prefer the mapped OS label; fall back to the raw QEMU version
+            # when no mapping matched, then to "-" when virsh could not read it.
+            os_cell = row.get("os_version") or row.get("qemu_version") or "-"
+            cells.append(os_cell)
+        cells.append("-" if row["running_vms"] is None else str(row["running_vms"]))
+        cells += count_cells(row, "VCPU")
+        if show_pcpu:
+            cells += count_cells(row, "PCPU")
+        cells.append(
+            "-" if row["cpu_overcommit"] is None else "%.2f" % row["cpu_overcommit"]
+        )
+        cells += mem_cells(row)
+        cells += count_cells(row, DISK_CLASS)
+        body.append(cells)
+
+    # Totals over schedulable hosts only; capacity on a disabled or down
+    # compute cannot be used, so summing it would overstate headroom.
+    sched = [r for r in rows if r["schedulable"]]
+    totals = ["TOTAL(%d)" % len(sched)] + [""] * (text_cols - 1)
+
+    def total_counts(rclass):
+        present = [r for r in sched if rclass in r["resources"]]
+        if not present:
+            return ["-", "-", "-", ""]
+        return [
+            str(sum(r["resources"][rclass]["used"] for r in present)),
+            str(sum(r["resources"][rclass]["capacity"] for r in present)),
+            str(sum(r["resources"][rclass]["free"] for r in present)),
+            "",
+        ]
+
+    vm_counts = [r["running_vms"] for r in sched if r["running_vms"] is not None]
+    totals.append(str(sum(vm_counts)) if vm_counts else "-")
+
+    totals += total_counts("VCPU")
+    if show_pcpu:
+        totals += total_counts("PCPU")
+    # Recomputed from the summed used/total, not averaged across hosts: a mean
+    # of per-host ratios would weight a small host the same as a large one.
+    fleet_oc = cpu_overcommit(sched)
+    totals.append("-" if fleet_oc is None else "%.2f" % fleet_oc)
+    present_mem = [r for r in sched if MEM_CLASS in r["resources"]]
+    if present_mem:
+        totals += [
+            "%.1f" % (sum(r["resources"][MEM_CLASS]["used"] for r in present_mem) / MIB_PER_GIB),
+            "%.1f" % (sum(r["resources"][MEM_CLASS]["capacity"] for r in present_mem) / MIB_PER_GIB),
+            "%.1f" % (sum(r["resources"][MEM_CLASS]["free"] for r in present_mem) / MIB_PER_GIB),
+            "",
+        ]
+    else:
+        totals += ["-", "-", "-", ""]
+    totals += total_counts(DISK_CLASS)
+
+    table = [header] + body + [totals]
+    widths = [max(len(r[i]) for r in table) for i in range(len(header))]
+
+    def emit(cells):
+        parts = []
+        for idx, cell in enumerate(cells):
+            if idx < text_cols:
+                parts.append(cell.ljust(widths[idx]))
+            else:
+                parts.append(cell.rjust(widths[idx]))
+        return "  ".join(parts).rstrip()
+
+    out = [emit(header), emit(["-" * w for w in widths])]
+    out += [emit(cells) for cells in body]
+    out.append(emit(["-" * w for w in widths]))
+    out.append(emit(totals))
+    if totals_note:
+        out.append("")
+        out.append(totals_note)
+    return "\n".join(out)
+
+
+def render_csv(rows, show_pcpu):
+    import csv as _csv
+    import io
+
+
+    classes = ["VCPU"] + (["PCPU"] if show_pcpu else []) + [MEM_CLASS, DISK_CLASS]
+    header = [
+        "host",
+        "availability_zone",
+        # Semicolon-joined, not comma: a comma here would survive CSV quoting
+        # but break the `cut -d,` that people actually use on this output.
+        "aggregates",
+        "running_vms",
+        "cpu_overcommit",
+        "hypervisor_hostname",
+        "resource_provider",
+        "service_status",
+        "service_state",
+        "schedulable",
+        "qemu_version",
+        "os_version",
+    ]
+    for rclass in classes:
+        low = rclass.lower()
+        header += [
+            "%s_total" % low,
+            "%s_reserved" % low,
+            "%s_allocation_ratio" % low,
+            "%s_capacity" % low,
+            "%s_used" % low,
+            "%s_free" % low,
+            "%s_max_unit" % low,
+        ]
+    buf = io.StringIO()
+    writer = _csv.writer(buf)
+    writer.writerow(header)
+    for row in rows:
+        cells = [
+            row["host"],
+            row["availability_zone"],
+            ";".join(row["aggregates"]),
+            "" if row["running_vms"] is None else row["running_vms"],
+            "" if row["cpu_overcommit"] is None else "%.4f" % row["cpu_overcommit"],
+            row["hypervisor_hostname"],
+            row["resource_provider"],
+            row["service_status"],
+            row["service_state"],
+            row["schedulable"],
+            "" if row.get("qemu_version") is None else row["qemu_version"],
+            "" if row.get("os_version") is None else row["os_version"],
+        ]
+        for rclass in classes:
+            res = row["resources"].get(rclass)
+            if res is None:
+                cells += [""] * 7
+            else:
+                cells += [
+                    res["total"],
+                    res["reserved"],
+                    res["allocation_ratio"],
+                    res["capacity"],
+                    res["used"],
+                    res["free"],
+                    res["max_unit"],
+                ]
+        writer.writerow(cells)
+    return buf.getvalue().rstrip("\n")
+
+
+def render_summary_csv(summaries, show_pcpu):
+    """One CSV row per aggregate: identity columns, TOTAL-style sums, members.
+
+    Column order mirrors render_csv's convention of fixed identity columns
+    followed by per-class figures. The hosts column is ';'-joined exactly like
+    the aggregates column in the per-hypervisor CSV, so `cut -d,` keeps
+    working on both files.
+    """
+    import csv as _csv
+    import io
+
+    def class_cols(prefix):
+        return ["%s_used" % prefix, "%s_capacity" % prefix, "%s_free" % prefix]
+
+    header = [
+        "name",
+        "id",
+        "uuid",
+        "availability_zone",
+        "host_count",
+        "schedulable_count",
+        "running_vms",
+        "cpu_overcommit",
+    ]
+    header += class_cols("vcpu")
+    if show_pcpu:
+        header += class_cols("pcpu")
+    header += class_cols("memory_mb")
+    header += class_cols("disk_gb")
+    header.append("hosts")
+
+    classes = [("VCPU", "vcpu")] + ([("PCPU", "pcpu")] if show_pcpu else [])
+    classes += [(MEM_CLASS, "memory_mb"), (DISK_CLASS, "disk_gb")]
+
+    buf = io.StringIO()
+    writer = _csv.writer(buf)
+    writer.writerow(header)
+    for rec in summaries:
+        cells = [
+            rec["name"],
+            rec["id"],
+            rec["uuid"],
+            rec["availability_zone"],
+            rec["host_count"],
+            rec["schedulable_count"],
+            "" if rec["running_vms"] is None else rec["running_vms"],
+            "" if rec["cpu_overcommit"] is None else "%.4f" % rec["cpu_overcommit"],
+        ]
+        for rclass, prefix in classes:
+            figures = rec["summary"].get(rclass)
+            if figures is None:
+                cells += ["", "", ""]
+            else:
+                cells += [figures["used"], figures["capacity"], figures["free"]]
+        cells.append(";".join(rec["hosts"]))
+        writer.writerow(cells)
+    return buf.getvalue().rstrip("\n")
+
+
+# ---------------------------------------------------------------------------
+# Prometheus exposition
+# ---------------------------------------------------------------------------
+
+PROM_PREFIX = "openstack_hypervisor"
+PROM_SCRAPE_PREFIX = "openstack_capacity_scrape"
+
+# (resource class, metric-name fragment carrying the unit, HELP unit wording)
+PROM_CLASSES = (
+    ("VCPU", "vcpu", "vCPUs"),
+    ("PCPU", "pcpu", "dedicated (pinned) CPUs"),
+    (MEM_CLASS, "memory_mb", "MiB of RAM"),
+    (DISK_CLASS, "disk_gb", "GB of local disk as Placement reports it"),
+)
+
+# (figure key, HELP sentence)
+PROM_FIELDS = (
+    ("capacity", "Allocatable %s: (total - reserved) * allocation_ratio."),
+    ("used", "Currently allocated %s."),
+    ("free", "Allocatable minus allocated %s."),
+    ("total", "Raw inventory total in %s, before reserved and allocation_ratio."),
+    ("reserved", "%s withheld from scheduling by reserved_host_* settings."),
+    ("allocation_ratio", "Overcommit multiplier applied to %s."),
+    ("max_unit", "Largest single allocation of %s a request may ask for."),
+)
+
+
+def prom_escape(value):
+    """Escape a label value per the exposition format."""
+    return (
+        str(value)
+        .replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\n", "\\n")
+    )
+
+
+def prom_labels(pairs):
+    return ",".join('%s="%s"' % (key, prom_escape(val)) for key, val in pairs)
+
+
+def prom_number(value):
+    """Render a value the way Prometheus wants it: integers without a trailing
+    .0, floats plainly, and never in exponent-with-plus notation."""
+    if isinstance(value, bool):
+        return "1" if value else "0"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        if value.is_integer():
+            return str(int(value))
+        return repr(value)
+    return str(value)
+
+
+def render_prometheus(rows, scope, skipped, elapsed):
+    """Emit an exposition-format snapshot.
+
+    Numeric series carry only host and az labels to keep cardinality low; the
+    rest of the identifying detail lives on a single _info metric, which is the
+    conventional way to attach metadata without multiplying series.
+    """
+    out = []
+
+    def family(name, help_text, samples):
+        # A family with no samples is omitted entirely rather than emitted
+        # empty, so a cloud with no pinned CPUs has no PCPU series at all.
+        if not samples:
+            return
+        out.append("# HELP %s %s" % (name, help_text))
+        out.append("# TYPE %s gauge" % name)
+        out.extend(samples)
+
+    def base_labels(row):
+        return [("host", row["host"]), ("az", row["availability_zone"])]
+
+    def info_labels(row):
+        # The qemu_version / os_version labels are only appended when the
+        # API provided hypervisor_version, so a scrape on a non-libvirt
+        # cloud carries no empty labels and the series set stays stable.
+        labels = [
+            ("host", row["host"]),
+            ("az", row["availability_zone"]),
+            ("hypervisor", row["hypervisor_hostname"] or ""),
+            ("resource_provider", row["resource_provider"]),
+            ("service_status", row["service_status"] or ""),
+            ("service_state", row["service_state"] or ""),
+        ]
+        if row.get("qemu_version") is not None:
+            labels.append(("qemu_version", row["qemu_version"]))
+            labels.append(("os_version", row["os_version"] or ""))
+        return labels
+
+    for rclass, slug, unit_words in PROM_CLASSES:
+        for field, help_tpl in PROM_FIELDS:
+            name = "%s_%s_%s" % (PROM_PREFIX, slug, field)
+            samples = []
+            for row in rows:
+                res = row["resources"].get(rclass)
+                if res is None or res.get(field) is None:
+                    continue
+                samples.append(
+                    "%s{%s} %s"
+                    % (name, prom_labels(base_labels(row)), prom_number(res[field]))
+                )
+            family(name, help_tpl % unit_words, samples)
+
+    family(
+        "%s_cpu_overcommit_ratio" % PROM_PREFIX,
+        "Allocated CPU units per physical host CPU (VCPU+PCPU used / total). The "
+        "overcommit in effect, not the configured ceiling - compare against "
+        "openstack_hypervisor_vcpu_allocation_ratio for that. Denominator counts "
+        "SMT threads, as Nova does.",
+        [
+            "%s_cpu_overcommit_ratio{%s} %s"
+            % (
+                PROM_PREFIX,
+                prom_labels(base_labels(row)),
+                prom_number(round(row["cpu_overcommit"], 4)),
+            )
+            for row in rows
+            if row["cpu_overcommit"] is not None
+        ],
+    )
+
+    family(
+        "%s_running_vms" % PROM_PREFIX,
+        "Instances assigned to this hypervisor, as Nova's resource tracker last "
+        "counted them. Includes stopped instances, since they still hold their "
+        "allocation, and is only as fresh as the tracker's update period.",
+        [
+            "%s_running_vms{%s} %s"
+            % (PROM_PREFIX, prom_labels(base_labels(row)), prom_number(row["running_vms"]))
+            for row in rows
+            if row["running_vms"] is not None
+        ],
+    )
+
+    family(
+        "%s_schedulable" % PROM_PREFIX,
+        "1 when nova-compute on this host is both enabled and up, else 0. "
+        "Capacity on a host reporting 0 cannot actually be used.",
+        [
+            "%s_schedulable{%s} %s"
+            % (PROM_PREFIX, prom_labels(base_labels(row)), prom_number(row["schedulable"]))
+            for row in rows
+        ],
+    )
+
+    family(
+        "%s_info" % PROM_PREFIX,
+        "Always 1. Carries hypervisor identity as labels.",
+        [
+            "%s_info{%s} 1"
+            % (PROM_PREFIX, prom_labels(info_labels(row)))
+            for row in rows
+        ],
+    )
+
+    # Aggregate membership is many-to-many, so it gets one series per pair
+    # rather than a joined label value. That is what lets you fan capacity out
+    # by aggregate with a group_left join:
+    #   sum by (aggregate) (
+    #     openstack_hypervisor_vcpu_free
+    #       * on(host) group_left(aggregate) openstack_hypervisor_aggregate
+    #   )
+    family(
+        "%s_aggregate" % PROM_PREFIX,
+        "Always 1. One series per host/aggregate membership; join on host to "
+        "group capacity by aggregate.",
+        [
+            "%s_aggregate{%s} 1"
+            % (
+                PROM_PREFIX,
+                prom_labels(
+                    [
+                        ("host", row["host"]),
+                        ("az", row["availability_zone"]),
+                        ("aggregate", name),
+                    ]
+                ),
+            )
+            for row in rows
+            for name in row["aggregates"]
+        ],
+    )
+
+    family(
+        "%s_success" % PROM_SCRAPE_PREFIX,
+        "1 when the collection completed. Absent or stale means the run failed; "
+        "alert on absence rather than on the value.",
+        ["%s_success 1" % PROM_SCRAPE_PREFIX],
+    )
+    family(
+        "%s_duration_seconds" % PROM_SCRAPE_PREFIX,
+        "Wall-clock seconds spent collecting from the Nova and Placement APIs.",
+        ["%s_duration_seconds %s" % (PROM_SCRAPE_PREFIX, prom_number(round(elapsed, 3)))],
+    )
+    family(
+        "%s_hosts" % PROM_SCRAPE_PREFIX,
+        "Hypervisors reported on in this snapshot.",
+        ["%s_hosts{scope=\"%s\"} %d" % (PROM_SCRAPE_PREFIX, prom_escape(scope), len(rows))],
+    )
+    family(
+        "%s_hosts_skipped" % PROM_SCRAPE_PREFIX,
+        "Hosts in scope that produced no data (no provider, no inventory). "
+        "Non-zero means the numbers above are incomplete.",
+        ["%s_hosts_skipped{scope=\"%s\"} %d" % (PROM_SCRAPE_PREFIX, prom_escape(scope), skipped)],
+    )
+
+    return "\n".join(out)
+
+
+# ---------------------------------------------------------------------------
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(
+        description="Show remaining CPU/memory/local-disk capacity per hypervisor "
+        "in a Nova host aggregate, using Placement as the source of truth.\n\n"
+        "Capacity is (total - reserved) * allocation_ratio, and free is that minus\n"
+        "what Placement has allocated -- the same arithmetic the scheduler applies,\n"
+        "so reserved_host_* settings and overcommit are already accounted for.",
+        epilog="""\
+output formats (-f/--format):
+  table       aligned columns for humans, with a TOTAL row covering only the
+              schedulable hosts (default)
+  json        one object per hypervisor, including max_unit/min_unit/step_size
+              that the table omits
+  csv         same fields as json, flat, for spreadsheets
+  prometheus  exposition format for the node_exporter textfile collector.
+              Units are Placement's own (_vcpu_ counts, _memory_mb_ MiB,
+              _disk_gb_ GB) rather than converted to bytes, because DISK_GB is
+              GB or GiB depending on the virt driver and guessing would
+              misreport.
+
+CPU_OC column / cpu_overcommit:
+  The CPU overcommit actually in effect: allocated CPU units per physical host
+  CPU, i.e. (VCPU+PCPU used) / (VCPU+PCPU total). Distinct from the VCPU_R and
+  PCPU_R columns, which are the configured *ceiling* - a host with
+  cpu_allocation_ratio 8.0 running 200 vCPUs on 64 host CPUs shows VCPU_R 8 and
+  CPU_OC 3.12. A value under 1.00 means the host is not oversubscribed at all.
+
+  VCPU and PCPU are summed so a host splitting cores between cpu_shared_set and
+  cpu_dedicated_set gets one whole-host figure. The denominator is the CPU count
+  Nova sees, which includes SMT siblings, so on a hyperthreaded host this is
+  per-thread rather than per-physical-core. In TOTAL it is recomputed from the
+  summed used and total, not averaged across hosts, so a small host cannot
+  skew it.
+
+VMS column / running_vms:
+  Instances assigned to the hypervisor, taken from the compute node record that
+  Nova's resource tracker maintains. Two things to know: it counts stopped
+  instances too, because a SHUTOFF instance still holds its allocation, and it
+  is only as fresh as the tracker's update period (60s by default), so it can
+  lag a burst of builds. A '-' means the field was absent for that host. In
+  TOTAL it is summed over the schedulable hosts like everything else, and any
+  VMs left on excluded hosts are called out in the note under the table.
+
+aggregate membership:
+  A host usually belongs to several aggregates (a functional one plus its AZ
+  aggregate), so every format lists all of them. The table shows an AGGREGATES
+  column only under --all, where the grouping is otherwise invisible; json/csv/
+  prometheus always carry it. json uses a list, csv joins with ';' so that
+  `cut -d,` keeps working, and prometheus emits one
+  openstack_hypervisor_aggregate series per membership so you can group by it:
+
+    sum by (aggregate) (
+      openstack_hypervisor_vcpu_free
+        * on(host) group_left(aggregate) openstack_hypervisor_aggregate
+    )
+
+summary rows (--summary):
+  One TOTAL-style row per aggregate in the cloud, written as CSV (no --format
+  needed; only csv is accepted alongside --summary). Every number mirrors the
+  table's TOTAL line: capacity, running_vms and cpu_overcommit are summed over
+  the aggregate's schedulable members only, so headroom on a disabled or down
+  host never pads the row. Identifying columns come first (name, id, uuid,
+  availability_zone, host_count, schedulable_count) and a final hosts column
+  lists the members, ';'-joined. Members with no hypervisor or Placement record
+  still count towards host_count - a warning on stderr names them - but
+  contribute no capacity. Rows are ordered by aggregate name, so --sort does
+  not apply; sort the CSV with sort -t, if you need another order.
+
+examples:
+  %(prog)s v2-standard
+  %(prog)s --all --az sto1a,sto2a
+  %(prog)s --sort vcpu_free --only-schedulable v2-standard
+  %(prog)s --all --sort os   # group hosts by OS release
+  %(prog)s --all --sort qemu
+  %(prog)s --summary   # one TOTAL-style CSV row per aggregate
+
+  # Prometheus, written atomically so the collector never reads a partial file:
+  OUT=/var/lib/node_exporter/textfile/openstack_capacity.prom
+  %(prog)s --all --format prometheus > "$OUT.tmp" && mv "$OUT.tmp" "$OUT"
+
+notes:
+  A disabled or down host is still listed, because that is usually where the
+  free capacity is, but it is excluded from TOTAL since the scheduler cannot
+  use it. Use --only-schedulable to drop those rows entirely.
+
+OS column:
+  The OS column is always on (no flag needed). It is derived from
+  hypervisor_version, which Nova's libvirt driver records on every
+  hypervisor via virConnectGetVersion() and which the script already reads
+  from os-hypervisors/detail for running_vms -- so the OS column costs zero
+  extra API calls, no CLI, and no SSH. The QEMU version is decoded from
+  Nova's major*1e6+minor*1e3+micro integer (e.g. 8002002 = 8.2.2) and the
+  major.minor is mapped to an Ubuntu LTS release (6.2 -> 22.04, 8.2 -> 24.04,
+  10.2 -> 26.04). The table shows the OS label; json/csv add qemu_version
+  and os_version fields; prometheus adds qemu_version and os_version labels
+  on openstack_hypervisor_info. Sort with --sort os or --sort qemu (ascending;
+  hosts with no value sort last). Override the version->OS map with
+  QEMU_TO_OS_JSON (a JSON object of {"major.minor": "label"}). A host with no
+  hypervisor_version (non-libvirt driver, or a cloud that does not report it)
+  shows "-" and carries no qemu/os prometheus labels.
+""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "aggregate",
+        nargs="?",
+        help="aggregate name, numeric id or uuid (omit only with --all)",
+    )
+    parser.add_argument(
+        "-a",
+        "--all",
+        action="store_true",
+        help="every host running nova-compute, ignoring aggregates",
+    )
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help="one summary (TOTAL-style) row per aggregate in the cloud, as CSV: "
+        "capacity summed over each aggregate's schedulable members, every "
+        "aggregate at once. Conflicts with an aggregate name, --all, --az, "
+        "--only-schedulable, --sort and non-csv --format.",
+    )
+    parser.add_argument(
+        "-f",
+        "--format",
+        choices=("table", "json", "csv", "prometheus"),
+        default=None,
+        help="output format: table (default), json, csv, or prometheus for the "
+        "node_exporter textfile collector. See the notes at the end of this help "
+        "for what each one contains",
+    )
+    parser.add_argument(
+        "-z",
+        "--az",
+        action="append",
+        metavar="ZONE",
+        help="only hosts in this availability zone, e.g. sto1a. Repeatable, and "
+        "accepts a comma-separated list (--az sto1a,sto2a)",
+    )
+    parser.add_argument(
+        "-s",
+        "--sort",
+        choices=("host", "vcpu_free", "pcpu_free", "mem_free", "disk_free", "os", "qemu"),
+        default="host",
+        help="sort order; the *_free keys sort most-headroom-first (default: "
+        "host). 'os' and 'qemu' sort ascending by the OS-release / QEMU "
+        "version (both derived from hypervisor_version in the Nova API); "
+        "rows with no value sort last.",
+    )
+    parser.add_argument(
+        "--only-schedulable",
+        action="store_true",
+        help="omit hosts whose nova-compute is disabled or down",
+    )
+    parser.add_argument("--token", help="Keystone token (default: openstack token issue)")
+    parser.add_argument("--compute-url", help="Nova endpoint, e.g. https://nova.example/v2.1")
+    parser.add_argument("--placement-url", help="Placement endpoint, e.g. https://placement.example")
+    parser.add_argument(
+        "--interface",
+        default=os.environ.get("OS_INTERFACE", "internal"),
+        help="catalog interface for endpoint lookup (default: internal)",
+    )
+    parser.add_argument(
+        "--region",
+        default=os.environ.get("OS_REGION_NAME"),
+        help="catalog region for endpoint lookup",
+    )
+    parser.add_argument("--workers", type=int, default=16, help="parallel API fetches (default: 16)")
+    parser.add_argument("--timeout", type=int, default=60, help="per-request timeout (default: 60s)")
+    parser.add_argument("--insecure", action="store_true", help="skip TLS verification")
+    args = parser.parse_args(argv)
+
+    if not args.all and not args.aggregate and not args.summary:
+        parser.error("give an aggregate name, or --all for every compute host, or --summary")
+    if args.all and args.summary:
+        parser.error("--summary already reports every aggregate; --all adds nothing")
+    if args.aggregate and args.summary:
+        parser.error(
+            "--summary reports every aggregate, not only %r; drop one of them"
+            % args.aggregate
+        )
+    if args.summary and args.az:
+        parser.error(
+            "--az filters hosts, but --summary reports one row per aggregate; "
+            "filter the CSV with awk/grep instead"
+        )
+    if args.summary and args.only_schedulable:
+        parser.error(
+            "--summary already sums schedulable members only (the TOTAL-row "
+            "semantics); --only-schedulable shapes the per-hypervisor table"
+        )
+    if args.summary and args.sort != "host":
+        parser.error(
+            "summary rows are ordered by aggregate name; --sort does not apply"
+        )
+    if args.summary and args.format not in (None, "csv"):
+        parser.error("--summary writes CSV; drop --format %r" % args.format)
+    if args.all and args.aggregate:
+        parser.error(
+            "%r was given together with --all; --all ignores aggregates, so drop "
+            "one of them" % args.aggregate
+        )
+    if args.workers < 1:
+        parser.error("--workers must be at least 1")
+    try:
+        args.interface = normalize_interface(args.interface)
+    except Fatal as exc:
+        parser.error(str(exc))
+
+    # Flatten "--az a,b --az c" into a lower-cased set for matching.
+    zones = set()
+    for chunk in args.az or []:
+        for name in chunk.split(","):
+            name = name.strip()
+            if name:
+                zones.add(name.lower())
+    args.az = zones
+
+    # --summary writes CSV by definition, so no --format is needed with it; the
+    # default for everything else is the table renderer. Done here, rather
+    # than at argparse level, so an explicit `--summary -f json` can be
+    # rejected with a precise message instead of failing on a default clash.
+    if args.summary:
+        args.format = "csv"
+    else:
+        args.format = args.format or "table"
+    return args
+
+
+def main(argv):
+    args = parse_args(argv)
+
+    token, compute, placement = resolve_auth(args)
+    ctx = {
+        "opener": make_opener(args.insecure),
+        "token": token,
+        "compute": compute,
+        "placement": placement,
+        "timeout": args.timeout,
+    }
+
+    started = time.monotonic()
+    warnings = []
+    services, _raw = compute_services(ctx)
+    hyp_map, uuids_usable = hypervisor_map(ctx)
+    aggregates = all_aggregates(ctx)
+
+    if args.summary:
+        # One TOTAL-style row per aggregate. An aggregate that names an AZ
+        # carries it in its own record, so the os-availability-zone call the
+        # other modes make is skipped. Providers are fetched once for the
+        # union of all aggregate members, not once per aggregate, so a host
+        # sitting in several aggregates is only queried once.
+        if not aggregates:
+            raise Fatal("this cloud has no host aggregates - nothing to summarize")
+        member_hosts = {host for agg in aggregates for host in (agg.get("hosts") or [])}
+        missing = sorted(host for host in member_hosts if host not in hyp_map)
+        if missing:
+            warnings.append(
+                "aggregate member(s) without a hypervisor record, counted in "
+                "host_count but contributing no capacity: %s" % ", ".join(missing)
+            )
+        hosts = sorted(host for host in member_hosts if host in hyp_map)
+        host_az = {}
+        scope = "summary of every aggregate"
+    else:
+        host_az, az_warning = availability_zones(ctx, aggregates)
+        if az_warning:
+            warnings.append(az_warning)
+
+        if args.all:
+            scope = "all compute hosts"
+            hosts = sorted(hyp_map)
+        else:
+            agg, hosts = find_aggregate(aggregates, args.aggregate)
+            scope = "aggregate %s (id %s)" % (agg.get("name"), agg.get("id"))
+            if not hosts:
+                raise Fatal("aggregate %s has no hosts" % agg.get("name"))
+
+    if args.az:
+        if not host_az:
+            raise Fatal(
+                "--az was given but the availability zones could not be read, so "
+                "there is nothing to filter on"
+            )
+        in_scope = list(hosts)
+        hosts = [h for h in hosts if (host_az.get(h) or "").lower() in args.az]
+        # Never drop a host for an unknown zone without saying so: that is how
+        # a genuinely disabled host would go missing unnoticed.
+        unknown = [h for h in in_scope if not host_az.get(h)]
+        if unknown:
+            warnings.append(
+                "no availability zone known for %s, so --az could not match "
+                "%s. Add the host to an AZ aggregate, or drop --az to see it."
+                % (", ".join(sorted(unknown)), "them" if len(unknown) > 1 else "it")
+            )
+        if not hosts:
+            seen = sorted({host_az.get(h) or "(unknown)" for h in in_scope})
+            raise Fatal(
+                "no hosts in availability zone %s. Hosts in scope belong to: %s"
+                % (", ".join(sorted(args.az)), ", ".join(seen))
+            )
+        scope += " in az %s" % ",".join(sorted(args.az))
+
+    # Provider names are only needed as a fallback for pre-2.53 clouds, where
+    # os-hypervisors reports an integer id instead of the provider uuid.
+    rp_by_name = {}
+    if not uuids_usable:
+        warnings.append(
+            "this cloud is older than compute microversion 2.53, so provider UUIDs "
+            "are not available from os-hypervisors; falling back to matching "
+            "Placement provider names against hypervisor_hostname."
+        )
+        rp_by_name = resource_providers(ctx)
+
+    host_aggregates = aggregate_membership(aggregates)
+    targets = build_targets(hosts, hyp_map, rp_by_name, warnings)
+    rows = build_rows(
+        ctx, targets, services, host_az, host_aggregates, args.workers, warnings
+    )
+    skipped = len(hosts) - len(rows)
+
+    if args.only_schedulable:
+        dropped = [r["host"] for r in rows if not r["schedulable"]]
+        rows = [r for r in rows if r["schedulable"]]
+        if dropped:
+            warnings.append("omitted (not schedulable): %s" % ", ".join(sorted(dropped)))
+
+    # Printed before the bail-out below: when nothing matched, these warnings
+    # are the only thing that explains why.
+    for warning in warnings:
+        print("warning: %s" % warning, file=sys.stderr)
+
+    if not rows:
+        raise Fatal(
+            "no hosts with Placement inventory to report on%s"
+            % (" - see the warnings above" if warnings else "")
+        )
+
+    if args.summary:
+        show_pcpu = any("PCPU" in r["resources"] for r in rows)
+        summaries = aggregate_summary_rows(aggregates, rows, services)
+        print(render_summary_csv(summaries, show_pcpu))
+        return 0
+
+    sort_rows(rows, args.sort)
+    show_pcpu = any("PCPU" in r["resources"] for r in rows)
+
+    if args.format == "json":
+        print(
+            json.dumps(
+                {
+                    "scope": scope,
+                    "hosts": rows,
+                    "warnings": warnings,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    elif args.format == "csv":
+        print(render_csv(rows, show_pcpu))
+    elif args.format == "prometheus":
+        print(render_prometheus(rows, scope, skipped, time.monotonic() - started))
+    else:
+        unschedulable = [r for r in rows if not r["schedulable"]]
+        if unschedulable:
+            note = (
+                "TOTAL covers the %d schedulable host(s); %d host(s) are disabled or "
+                "down and their capacity is not usable."
+                % (len(rows) - len(unschedulable), len(unschedulable))
+            )
+            # VMs on an excluded host are still real VMs, so do not let the
+            # schedulable-only TOTAL quietly lose them.
+            stranded = sum(r["running_vms"] or 0 for r in unschedulable)
+            if stranded:
+                note += " %d VM(s) are still running on the excluded host(s)." % stranded
+        else:
+            note = (
+                "TOTAL covers all %d host(s); every nova-compute is enabled and up."
+                % len(rows)
+            )
+        print("# %s" % scope)
+        # The AGGREGATES column earns its width only with --all, where the
+        # grouping is otherwise invisible; in aggregate mode you already know.
+        print(render_table(rows, show_pcpu, note, show_aggregates=args.all))
+
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except Fatal as exc:
+        print("Error: %s" % exc, file=sys.stderr)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        sys.exit(130)
+{% endraw %}

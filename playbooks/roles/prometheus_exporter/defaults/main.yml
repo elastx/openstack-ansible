@@ -19,3 +19,4 @@ prometheus_collectors:
   Ubuntu:
     - { name: "gpu_capacity", filending: "py", pre_script: ". /root/openrc && ", minute: "*/5" }
     - { name: "billing_summary", filending: "py", pre_script: ". /root/openrc && ", minute: "1" }
+    - { name: "openstack_capacity", filending: "py", pre_script: ". /root/openrc && ", minute: "1" }
