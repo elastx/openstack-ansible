@@ -5,3 +5,10 @@
     state: restarted
   ignore_errors: "{{ ansible_check_mode }}"
   become: true
+
+- name: restart openstack-capacity-metrics
+  ansible.builtin.service:
+    name: openstack-capacity-metrics
+    state: restarted
+  ignore_errors: "{{ ansible_check_mode }}"
+  become: true

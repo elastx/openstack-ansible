@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Run openstack-capacity-metrics every {{ openstack_capacity_metrics_cadence }}
+
+[Timer]
+# First run soon after boot or a fresh deploy so the first snapshot appears
+# within minutes; afterwards every {{ openstack_capacity_metrics_cadence }},
+# measured from activation so the schedule cannot drift.
+OnBootSec=2min
+OnUnitActiveSec={{ openstack_capacity_metrics_cadence }}
+AccuracySec=1min
+# Catch up once after downtime so at most one interval's sample is lost.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

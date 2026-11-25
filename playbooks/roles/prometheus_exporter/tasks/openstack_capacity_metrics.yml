@@ -1,0 +1,84 @@
+---
+# openstack-capacity-metrics: collects the Placement-based hypervisor
+# capacity snapshot (CPU / memory / disk headroom per compute host) and
+# publishes it atomically into node_exporter's textfile directory, so the
+# data reaches the platform Prometheus through the same scrape that already
+# collects the utility containers. Runs once per hour via systemd timer;
+# every run and its exit code are visible in journald.
+#
+# A dedicated task file + timer instead of the prometheus_collectors entry:
+# the generic cron line supports no arguments, redirects stdout straight
+# into the .prom file (non-atomic) and captures any non-metric output as
+# payload -- the app writes its own file via tmp+rename and refuses to
+# publish unless the run contains the scrape_success canary.
+#
+# run_once on every task: the snapshot describes the whole cloud, so exactly
+# one utility container per environment may publish it -- a second publisher
+# would emit identical label sets that silently coalesce in Prometheus.
+
+- name: Create openstack-capacity-metrics directory
+  ansible.builtin.file:
+    path: "{{ openstack_capacity_metrics_dir }}"
+    state: directory
+    mode: "0755"
+  become: true
+  run_once: true
+
+- name: Install openstack-capacity-metrics scripts
+  ansible.builtin.copy:
+    src: "openstack-capacity-metrics/{{ item }}"
+    dest: "{{ openstack_capacity_metrics_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0755"
+  with_items:
+    - openstack-aggregate-capacity.py
+    - openstack-capacity-metrics.py
+  become: true
+  run_once: true
+
+- name: Install openstack-capacity-metrics environment file
+  ansible.builtin.copy:
+    content: |
+      # {{ ansible_managed }}
+      # Publish mode: no VictoriaMetrics push target is configured; the
+      # snapshot is written into node_exporter's textfile directory instead.
+      CAPACITY_SNAPSHOT={{ openstack_capacity_metrics_textfile }}
+      CAPACITY_ARGS=--all
+      CAPACITY_TIMEOUT=600
+    dest: /etc/default/openstack-capacity-metrics
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  run_once: true
+
+- name: Install openstack-capacity-metrics service unit
+  ansible.builtin.template:
+    src: openstack-capacity-metrics.service.j2
+    dest: /etc/systemd/system/openstack-capacity-metrics.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart openstack-capacity-metrics
+  become: true
+  run_once: true
+
+- name: Install openstack-capacity-metrics timer unit
+  ansible.builtin.template:
+    src: openstack-capacity-metrics.timer.j2
+    dest: /etc/systemd/system/openstack-capacity-metrics.timer
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  run_once: true
+
+- name: Enable and start openstack-capacity-metrics timer
+  ansible.builtin.systemd:
+    name: openstack-capacity-metrics.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  become: true
+  run_once: true

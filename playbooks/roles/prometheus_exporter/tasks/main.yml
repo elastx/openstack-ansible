@@ -26,3 +26,9 @@
   tags:
     - node_exporter-install
   when: node_exporter_enabled | bool
+
+- name: Import openstack_capacity_metrics.yml
+  ansible.builtin.import_tasks: openstack_capacity_metrics.yml
+  tags:
+    - openstack-capacity
+  when: openstack_capacity_metrics_enabled | bool

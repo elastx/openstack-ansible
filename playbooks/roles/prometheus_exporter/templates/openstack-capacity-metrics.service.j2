@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Collect and publish OpenStack hypervisor capacity metrics
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/openstack-capacity-metrics
+# Source /root/openrc in a shell so the OpenStack credentials stay out of
+# unit files and out of the repository, exactly like the gpu_capacity and
+# billing_summary collectors do via their cron pre_script. When a venv_tag
+# is set, prepend the OSA utility venv to PATH so the openstack CLI -- used
+# by the collector for token and endpoint discovery -- resolves.
+ExecStart=/bin/sh -c{% if openstack_capacity_metrics_venv_bin %} '. /root/openrc; export PATH={{ openstack_capacity_metrics_venv_bin }}:$PATH; exec {{ openstack_capacity_metrics_dir }}/openstack-capacity-metrics.py'{% else %} '. /root/openrc; exec {{ openstack_capacity_metrics_dir }}/openstack-capacity-metrics.py'{% endif %}
+User=root
+
+[Install]
+WantedBy=multi-user.target

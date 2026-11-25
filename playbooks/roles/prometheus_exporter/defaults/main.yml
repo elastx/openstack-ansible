@@ -19,3 +19,21 @@ prometheus_collectors:
   Ubuntu:
     - { name: "gpu_capacity", filending: "py", pre_script: ". /root/openrc && ", minute: "*/5" }
     - { name: "billing_summary", filending: "py", pre_script: ". /root/openrc && ", minute: "1" }
+
+# OpenStack capacity metrics publisher
+#
+# Runs openstack-capacity-metrics on ONE utility container per environment
+# once per hour: it collects the Placement-aware hypervisor capacity snapshot
+# (openstack_hypervisor_* / openstack_capacity_scrape_* metric families) and
+# publishes it atomically into node_exporter's textfile directory, so the
+# data rides the platform's existing Prometheus scrape. Not a
+# prometheus_collectors entry: that cron line supports no arguments and
+# redirects stdout straight into the .prom file, which neither allows the
+# collector's own arguments nor an atomic write.
+openstack_capacity_metrics_enabled: true
+openstack_capacity_metrics_dir: /usr/local/lib/openstack-capacity-metrics
+openstack_capacity_metrics_textfile: "{{ node_exporter_textfile_collector_dir }}/openstack_capacity.prom"
+openstack_capacity_metrics_cadence: "60min"
+# Prepended to PATH in the service unit so the collector finds the openstack
+# CLI in the OSA utility venv; empty when no venv_tag is set for the host.
+openstack_capacity_metrics_venv_bin: "{{ '/openstack/venvs/utility-' ~ venv_tag ~ '/bin' if venv_tag is defined else '' }}"
