@@ -91,7 +91,7 @@
   ansible.builtin.cron:
     name: "node-exporter-collector-{{ item.name }}"
     minute: "{{ item.minute }}"
-    job: "{{ item.pre_script | default(omit) }}{{ node_exporter_collector_dir }}/{{ item.name }}.{{ item.filending }} > {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
+    job: "{{ item.pre_script | default(omit) }}{{ node_exporter_collector_dir }}/{{ item.name }}.{{ item.filending }} > {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom.tmp && mv {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom.tmp {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
     state: present
     disabled: "{{ item.disabled | default('no') }}"
   with_items:
@@ -102,6 +102,17 @@
 - name: Remove metric file for disabled collectors
   ansible.builtin.file:
     path: "{{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
+    state: absent
+  with_items:
+    - "{{ prometheus_collectors[ansible_distribution] }}"
+  become: true
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - item.disabled|default(False)
+
+- name: Remove stale tmp file for disabled collectors
+  ansible.builtin.file:
+    path: "{{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom.tmp"
     state: absent
   with_items:
     - "{{ prometheus_collectors[ansible_distribution] }}"
@@ -135,7 +146,7 @@
   ansible.builtin.cron:
     name: "node-exporter-collector-{{ item.name }}"
     minute: "{{ item.minute }}"
-    job: "{{ item.pre_script | default(omit) }}{{ node_exporter_collector_dir }}/{{ item.name }}.{{ item.filending }} > {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
+    job: "{{ item.pre_script | default(omit) }}{{ node_exporter_collector_dir }}/{{ item.name }}.{{ item.filending }} > {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom.tmp && mv {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom.tmp {{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
     state: present
     disabled: "{{ item.disabled | default('no') }}"
   with_items:
@@ -146,6 +157,17 @@
 - name: Remove metric file for disabled collectors
   ansible.builtin.file:
     path: "{{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
+    state: absent
+  with_items:
+    - "{{ additional_prometheus_collectors }}"
+  become: true
+  when:
+    - additional_prometheus_collectors is defined
+    - item.disabled|default(False)
+
+- name: Remove stale tmp file for disabled collectors
+  ansible.builtin.file:
+    path: "{{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom.tmp"
     state: absent
   with_items:
     - "{{ additional_prometheus_collectors }}"
