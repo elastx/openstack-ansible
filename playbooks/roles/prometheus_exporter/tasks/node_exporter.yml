@@ -75,6 +75,26 @@
     mode: "0600"
   become: true
 
+# OpenStack API collectors run only on hosts matching
+# prometheus_collectors_host_pattern (see defaults/main.yml); all other
+# sites get earlier deployments removed below.
+
+- name: Warn when no utility container matches the collector host pattern
+  ansible.builtin.debug:
+    msg: >-
+      WARNING: prometheus_collectors_host_pattern is
+      '{{ prometheus_collectors_host_pattern | default("sto1") }}' but no host
+      in this play carries it in its inventory name
+      ({{ ansible_play_hosts | join(', ') }}) -- the OpenStack API collectors
+      are not deployed anywhere in this run. Note that a --limit run that
+      leaves out the matching container triggers this warning even though
+      nothing is wrong. The play continues so node_exporter is unaffected.
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern | default('') | length > 0
+    - prometheus_collectors_host_pattern not in (ansible_play_hosts | join(' '))
+  run_once: true
+
 - name: Install node exporter collectors
   ansible.builtin.template:
     src: node_exporter_collectors/{{ item.name }}.{{ item.filending }}.j2
@@ -85,7 +105,9 @@
   with_items:
     - "{{ prometheus_collectors[ansible_distribution] }}"
   become: true
-  when: prometheus_collectors[ansible_distribution] is defined
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern in inventory_hostname
 
 - name: Create node exporter collectors cronjob
   ansible.builtin.cron:
@@ -97,7 +119,9 @@
   with_items:
     - "{{ prometheus_collectors[ansible_distribution] }}"
   become: true
-  when: prometheus_collectors[ansible_distribution] is defined
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern in inventory_hostname
 
 - name: Remove metric file for disabled collectors
   ansible.builtin.file:
@@ -108,7 +132,41 @@
   become: true
   when:
     - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern in inventory_hostname
     - item.disabled|default(False)
+
+- name: Remove collectors from sites that no longer run them
+  ansible.builtin.file:
+    path: "{{ node_exporter_collector_dir }}/{{ item.name }}.{{ item.filending }}"
+    state: absent
+  with_items:
+    - "{{ prometheus_collectors[ansible_distribution] }}"
+  become: true
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern not in inventory_hostname
+
+- name: Remove collectors cronjob from sites that no longer run them
+  ansible.builtin.cron:
+    name: "node-exporter-collector-{{ item.name }}"
+    state: absent
+  with_items:
+    - "{{ prometheus_collectors[ansible_distribution] }}"
+  become: true
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern not in inventory_hostname
+
+- name: Remove stale metric files from sites that no longer run them
+  ansible.builtin.file:
+    path: "{{ node_exporter_textfile_collector_dir }}/{{ item.name }}.prom"
+    state: absent
+  with_items:
+    - "{{ prometheus_collectors[ansible_distribution] }}"
+  become: true
+  when:
+    - prometheus_collectors[ansible_distribution] is defined
+    - prometheus_collectors_host_pattern not in inventory_hostname
 
 - name: Install packages needed for addition node exporter collectors
   ansible.builtin.apt:

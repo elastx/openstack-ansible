@@ -19,3 +19,11 @@ prometheus_collectors:
   Ubuntu:
     - { name: "gpu_capacity", filending: "py", pre_script: ". /root/openrc && ", minute: "*/5" }
     - { name: "billing_summary", filending: "py", pre_script: ". /root/openrc && ", minute: "1" }
+
+# Collectors query the whole cloud; run them only on utility containers whose
+# inventory name contains this pattern (the scraped one). "" = all containers.
+# Keep in sync with the Prometheus scrape target in the infra repo
+# (group_vars/elx_inf_mon.yml: node_additional_targets) -- if either changes
+# alone, collection stops with no error, so alert on absence of the
+# openstack_gpu_capacity_* / openstack_rating_* / openstack_capacity_* series.
+prometheus_collectors_host_pattern: "sto1"
