@@ -20,16 +20,10 @@ prometheus_collectors:
     - { name: "gpu_capacity", filending: "py", pre_script: ". /root/openrc && ", minute: "*/5" }
     - { name: "billing_summary", filending: "py", pre_script: ". /root/openrc && ", minute: "1" }
 
-# The Ubuntu list above holds the OpenStack API collectors (gpu_capacity,
-# billing_summary and, from its own PR, openstack_capacity). They query the
-# whole cloud with the /root/openrc credentials and return identical data
-# no matter which site's utility container runs them, so they are deployed
-# on ONE site's utility containers only -- the ones whose inventory name
-# matches this pattern. Sites that do not match get any earlier deployment
-# removed: cron entries, collector scripts and the stale .prom files, which
-# node_exporter would otherwise keep serving with the last sample forever.
-# Set this to an empty string to deploy the collectors on every utility
-# container again; when a non-empty pattern matches no host, the play
-# continues and only a warning is logged, so node_exporter deployment is
-# never blocked by a bad pattern
+# Collectors query the whole cloud; run them only on utility containers whose
+# inventory name contains this pattern (the scraped one). "" = all containers.
+# Keep in sync with the Prometheus scrape target in the infra repo
+# (group_vars/elx_inf_mon.yml: node_additional_targets) -- if either changes
+# alone, collection stops with no error, so alert on absence of the
+# openstack_gpu_capacity_* / openstack_rating_* / openstack_capacity_* series.
 prometheus_collectors_host_pattern: "sto1"

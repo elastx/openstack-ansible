@@ -75,13 +75,9 @@
     mode: "0600"
   become: true
 
-# The OpenStack API collectors below return identical data from every
-# site's utility container -- they query the whole cloud with the
-# /root/openrc credentials -- so they are installed on ONE site only,
-# selected by prometheus_collectors_host_pattern. Sites that do not match
-# get any earlier deployment removed right below: their cron entries, the
-# collector scripts and the stale .prom files, which node_exporter would
-# otherwise keep serving with the last sample forever.
+# OpenStack API collectors run only on hosts matching
+# prometheus_collectors_host_pattern (see defaults/main.yml); all other
+# sites get earlier deployments removed below.
 
 - name: Warn when no utility container matches the collector host pattern
   ansible.builtin.debug:
@@ -90,8 +86,9 @@
       '{{ prometheus_collectors_host_pattern | default("sto1") }}' but no host
       in this play carries it in its inventory name
       ({{ ansible_play_hosts | join(', ') }}) -- the OpenStack API collectors
-      are not deployed anywhere in this run. Fix the pattern for this
-      environment; the play continues so node_exporter is unaffected.
+      are not deployed anywhere in this run. Note that a --limit run that
+      leaves out the matching container triggers this warning even though
+      nothing is wrong. The play continues so node_exporter is unaffected.
   when:
     - prometheus_collectors[ansible_distribution] is defined
     - prometheus_collectors_host_pattern | default('') | length > 0
